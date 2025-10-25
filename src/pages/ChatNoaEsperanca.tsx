@@ -63,53 +63,51 @@ const ChatNoaEsperanca: React.FC = () => {
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Avatar Section */}
-          <div className="lg:col-span-1">
-            <div className="bg-slate-800 rounded-xl p-8 text-center">
-              {/* Avatar Nôa Esperança Animado */}
-              <div className="mb-6">
-                <NoaAnimatedAvatar
-                  isSpeaking={isSpeaking}
-                  isListening={isListening}
-                  size="lg"
-                  showStatus={true}
-                />
-              </div>
+      <div className="max-w-5xl mx-auto p-6">
+        <div className="space-y-6">
+          {/* Avatar Section - Centralizado */}
+          <div className="bg-slate-800 rounded-xl p-8 text-center">
+            {/* Avatar Nôa Esperança Animado */}
+            <div className="mb-6 flex justify-center">
+              <NoaAnimatedAvatar
+                isSpeaking={isSpeaking}
+                isListening={isListening}
+                size="xl"
+                showStatus={true}
+              />
+            </div>
 
-              {/* Avatar Info */}
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-white">Nôa Esperança</h3>
-                <p className="text-slate-300 text-sm">
-                  IA Residente especializada em Cannabis Medicinal e Nefrologia
-                </p>
-                
-                {/* Capabilities */}
-                <div className="grid grid-cols-2 gap-3 mt-6">
-                  <div className="flex items-center space-x-2 text-xs">
-                    <Heart className="w-4 h-4 text-pink-400" />
-                    <span>Análise Emocional</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-xs">
-                    <Brain className="w-4 h-4 text-blue-400" />
-                    <span>Diagnóstico IA</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-xs">
-                    <Users className="w-4 h-4 text-green-400" />
-                    <span>Suporte Médico</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-xs">
-                    <Sparkles className="w-4 h-4 text-purple-400" />
-                    <span>Memória Persistente</span>
-                  </div>
+            {/* Avatar Info */}
+            <div className="space-y-3">
+              <h3 className="text-2xl font-semibold text-white">Nôa Esperança</h3>
+              <p className="text-slate-300">
+                IA Residente especializada em Cannabis Medicinal e Nefrologia
+              </p>
+              
+              {/* Capabilities */}
+              <div className="flex justify-center gap-4 mt-6 flex-wrap">
+                <div className="flex items-center space-x-2 text-sm text-slate-300">
+                  <Heart className="w-5 h-5 text-pink-400" />
+                  <span>Análise Emocional</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm text-slate-300">
+                  <Brain className="w-5 h-5 text-blue-400" />
+                  <span>Diagnóstico IA</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm text-slate-300">
+                  <Users className="w-5 h-5 text-green-400" />
+                  <span>Suporte Médico</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm text-slate-300">
+                  <Sparkles className="w-5 h-5 text-purple-400" />
+                  <span>Memória Persistente</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Chat Section */}
-          <div className="lg:col-span-2">
+          <div className="flex flex-col">
             <div className="bg-slate-800 rounded-xl h-[600px] flex flex-col">
               {/* Chat Header */}
               <div className="p-4 border-b border-slate-700">

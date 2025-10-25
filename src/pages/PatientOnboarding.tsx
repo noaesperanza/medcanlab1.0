@@ -52,13 +52,11 @@ const PatientOnboarding: React.FC = () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1)
     } else {
-      // Último passo: Iniciar avaliação com IA residente
+      // Último passo: Navegar para página de chat unificada com IA residente
+      // Enviar mensagem de inicialização da avaliação
       await sendMessage('Iniciar Avaliação Clínica Inicial IMRE Triaxial')
-      toggleChat()
-      // Navegar para dashboard do paciente após iniciar avaliação
-      setTimeout(() => {
-        navigate('/app/patient-dashboard')
-      }, 2000)
+      // Navegar para página de chat unificada
+      navigate('/app/chat-noa-esperanca')
     }
   }
 
