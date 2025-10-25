@@ -45,6 +45,32 @@ const PatientDashboard: React.FC = () => {
     navigate('/app/clinical-assessment')
   }
 
+  // Navigation handlers
+  const handleNavigate = (path: string) => {
+    navigate(path)
+  }
+
+  const handleChatWithNoa = () => {
+    navigate('/app/chat-noa-esperanca')
+  }
+
+  const handleViewReports = () => {
+    navigate('/app/reports')
+  }
+
+  const handleViewAgenda = () => {
+    navigate('/app/patient-appointments')
+  }
+
+  const handleViewKPIs = () => {
+    // TODO: Implement KPIs page
+    console.log('Ver KPIs')
+  }
+
+  const handleClinicalAssessment = () => {
+    navigate('/app/clinical-assessment')
+  }
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
@@ -79,38 +105,38 @@ const PatientDashboard: React.FC = () => {
         <div className="w-64 bg-slate-800 border-r border-slate-700 min-h-screen">
           <div className="p-6">
             <nav className="space-y-2">
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white">
+              <button onClick={() => window.location.reload()} className="w-full flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white text-left">
                 <BarChart3 className="w-5 h-5" />
                 <span>Dashboard</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={handleViewAgenda} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <Calendar className="w-5 h-5" />
                 <span>Agenda</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={handleViewKPIs} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <TrendingUp className="w-5 h-5" />
                 <span>Meus KPIs</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={handleClinicalAssessment} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <Heart className="w-5 h-5" />
                 <span>Avaliação Clínica</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={handleChatWithNoa} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <MessageCircle className="w-5 h-5" />
                 <span>Chat com Nôa</span>
-              </a>
-              <a href="/app/patient-chat" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={() => handleNavigate('/app/patient-chat')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <Stethoscope className="w-5 h-5" />
                 <span>Chat com Profissional</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={handleViewReports} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <FileText className="w-5 h-5" />
                 <span>Relatórios</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={() => alert('Funcionalidade de compartilhamento em desenvolvimento')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <Share2 className="w-5 h-5" />
                 <span>Compartilhamento</span>
-              </a>
+              </button>
             </nav>
           </div>
           
@@ -249,12 +275,14 @@ const PatientDashboard: React.FC = () => {
 
                   {/* Avatar */}
                   <div className="flex justify-center mb-6">
-                    <NoaAnimatedAvatar
-                      isSpeaking={isSpeaking}
-                      isListening={isListening}
-                      size="md"
-                      showStatus={true}
-                    />
+                    <button onClick={handleChatWithNoa} className="cursor-pointer hover:opacity-80 transition-opacity">
+                      <NoaAnimatedAvatar
+                        isSpeaking={isSpeaking}
+                        isListening={isListening}
+                        size="md"
+                        showStatus={true}
+                      />
+                    </button>
                   </div>
 
                   {/* Welcome Message */}
