@@ -40,9 +40,16 @@ const PatientDashboard: React.FC = () => {
     }
   }
 
-  const handleStartAssessment = () => {
-    console.log('🚀 Iniciando Avaliação Clínica...')
-    navigate('/app/clinical-assessment')
+  const handleStartAssessment = async () => {
+    console.log('🚀 Iniciando Avaliação Clínica com IA Residente...')
+    
+    // Enviar mensagem para IA residente iniciar a condução da avaliação IMRE
+    await sendMessage('Iniciar Avaliação Clínica Inicial IMRE Triaxial')
+    
+    // Abrir o chat da Nôa
+    if (!isOpen) {
+      toggleChat()
+    }
   }
 
   // Navigation handlers

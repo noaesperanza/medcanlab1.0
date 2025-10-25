@@ -56,6 +56,35 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
   // Inicializar IA Residente
   const residentAI = new NoaResidentAI(residentAIConfig)
 
+  // Função para iniciar condução da avaliação IMRE pela IA
+  const startIMREAssessment = async (): Promise<string> => {
+    console.log('🎯 Nôa Esperança iniciando Avaliação Clínica IMRE Triaxial...')
+    
+    // Mensagem de boas-vindas e início da condução
+    const welcomeMessage = `Olá! Sou a Nôa Esperança, sua IA Residente especializada em Cannabis Medicinal e Nefrologia. 🌬️
+
+Vou conduzi-lo através da **Avaliação Clínica Inicial IMRE**, baseada na **Arte da Entrevista Clínica (AEC)** do Dr. Eduardo Faveret.
+
+A metodologia IMRE é composta por **28 blocos semânticos** que seguem a estrutura da Arte da Entrevista Clínica:
+• **Lista Indiciária** - Identificação de sintomas
+• **Desenvolvimento da Queixa** - Anamnese detalhada
+• **História Patológica** - Antecedentes médicos
+• **História Familiar** - Antecedentes hereditários
+• **Hábitos de Vida** - Alimentação e exercícios
+• **Medicações** - Uso atual e histórico
+• **Alergias** - Identificação de reações
+• **Fechamento Consensual** - Síntese e validação
+• **Monitoramento Renal** - Cidade Amiga dos Rins
+
+Este processo leva cerca de 10-15 minutos e segue a metodologia AEC para escuta profunda e ética.
+
+**Por favor, me conte: o que o trouxe aqui hoje?** 🎭
+
+(Descreva livremente sua situação, sintomas ou preocupações de saúde)`
+
+    return welcomeMessage
+  }
+
   const sendMessage = async (content: string) => {
     const userMessage: NoaMessage = {
       id: Date.now().toString(),
@@ -68,23 +97,44 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
     setIsTyping(true)
 
     try {
-      // Usar IA Residente para processar a mensagem
-      console.log('🧠 Processando mensagem com IA Residente...')
-      const aiResponse = await residentAI.processMessage(content)
+      // Detectar se é comando para iniciar avaliação IMRE
+      const isIMRECommand = content.toLowerCase().includes('iniciar avaliação') || 
+                            content.toLowerCase().includes('imre') ||
+                            content.toLowerCase().includes('avaliação clínica')
       
-      console.log('✅ Resposta da IA Residente:', aiResponse)
-      
-      const noaMessage: NoaMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'noa',
-        content: aiResponse.content,
-        timestamp: new Date(),
-        aiResponse: aiResponse,
-        confidence: aiResponse.confidence,
-        suggestions: aiResponse.suggestions
-      }
+      if (isIMRECommand) {
+        // Iniciar condução da avaliação IMRE pela IA
+        console.log('🎯 Iniciando condução da Avaliação Clínica IMRE...')
+        const imreResponse = await startIMREAssessment()
+        
+        const noaMessage: NoaMessage = {
+          id: (Date.now() + 1).toString(),
+          type: 'noa',
+          content: imreResponse,
+          timestamp: new Date(),
+          confidence: 0.95
+        }
+        
+        setMessages(prev => [...prev, noaMessage])
+      } else {
+        // Processamento normal com IA Residente
+        console.log('🧠 Processando mensagem com IA Residente...')
+        const aiResponse = await residentAI.processMessage(content)
+        
+        console.log('✅ Resposta da IA Residente:', aiResponse)
+        
+        const noaMessage: NoaMessage = {
+          id: (Date.now() + 1).toString(),
+          type: 'noa',
+          content: aiResponse.content,
+          timestamp: new Date(),
+          aiResponse: aiResponse,
+          confidence: aiResponse.confidence,
+          suggestions: aiResponse.suggestions
+        }
 
-      setMessages(prev => [...prev, noaMessage])
+        setMessages(prev => [...prev, noaMessage])
+      }
     } catch (error) {
       console.error('Erro ao processar mensagem com Nôa:', error)
       
