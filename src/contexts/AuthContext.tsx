@@ -135,18 +135,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('🔍 [loadUserProfile] Iniciando busca de perfil para userId:', userId)
       
-      // Pegar usuário diretamente (mais rápido e simples)
-      console.log('🔍 [loadUserProfile] Obtendo usuário do auth...')
-      const { data: { user: authUser }, error: userError } = await supabase.auth.getUser()
+      // Pegar sessão (mais rápido que getUser)
+      console.log('🔍 [loadUserProfile] Obtendo sessão do auth...')
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
       
-      if (userError) {
-        console.log('❌ [loadUserProfile] Erro ao obter usuário:', userError)
+      if (sessionError || !session?.user) {
+        console.log('❌ [loadUserProfile] Erro ou sessão não encontrada:', sessionError)
         setIsLoading(false)
         setIsLoadingProfile(false)
         return
       }
       
-      console.log('✅ [loadUserProfile] Usuário obtido:', authUser.id, authUser.email)
+      const authUser = session.user
+      console.log('✅ [loadUserProfile] Usuário obtido da sessão:', authUser.id, authUser.email)
       
       // Determinar tipo de usuário baseado nos metadados
       let userType: 'patient' | 'professional' | 'student' | 'admin' = 'patient'
