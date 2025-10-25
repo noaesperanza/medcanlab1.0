@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { NoaEsperancaCore, noaEsperancaConfig, NoaInteraction } from '../lib/noaEsperancaCore'
+import { NoaResidentAI, residentAIConfig, AIResponse } from '../lib/noaResidentAI'
 
 export interface NoaMessage {
   id: string
@@ -9,6 +10,9 @@ export interface NoaMessage {
   isTyping?: boolean
   audioUrl?: string
   videoUrl?: string
+  aiResponse?: AIResponse
+  confidence?: number
+  suggestions?: string[]
 }
 
 export interface NoaContextType {
@@ -48,6 +52,9 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
   
   // Inicializar Nôa Esperança Core
   const noaCore = new NoaEsperancaCore(noaEsperancaConfig)
+  
+  // Inicializar IA Residente
+  const residentAI = new NoaResidentAI(residentAIConfig)
 
   const sendMessage = async (content: string) => {
     const userMessage: NoaMessage = {
@@ -61,34 +68,20 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
     setIsTyping(true)
 
     try {
-      // Criar interação para Nôa Esperança
-      const interacao: NoaInteraction = {
-        id: Date.now().toString(),
-        timestamp: new Date(),
-        tipo: 'consulta',
-        modalidade: 'texto',
-        conteudo: content,
-        contexto: {
-          paciente: null,
-          sintomas: [],
-          queixa: content,
-          historia: ''
-        },
-        resposta: {
-          empatia: 0,
-          tecnicidade: 0,
-          educacao: 0
-        }
-      }
-
-      // Usar Nôa Esperança Core para gerar resposta
-      const resposta = await noaCore.realizarEntrevistaClinica(interacao)
+      // Usar IA Residente para processar a mensagem
+      console.log('🧠 Processando mensagem com IA Residente...')
+      const aiResponse = await residentAI.processMessage(content)
+      
+      console.log('✅ Resposta da IA Residente:', aiResponse)
       
       const noaMessage: NoaMessage = {
         id: (Date.now() + 1).toString(),
         type: 'noa',
-        content: resposta,
-        timestamp: new Date()
+        content: aiResponse.content,
+        timestamp: new Date(),
+        aiResponse: aiResponse,
+        confidence: aiResponse.confidence,
+        suggestions: aiResponse.suggestions
       }
 
       setMessages(prev => [...prev, noaMessage])

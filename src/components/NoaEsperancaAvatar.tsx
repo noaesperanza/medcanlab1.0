@@ -95,7 +95,7 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
                 </div>
                 <div>
                   <h3 className="font-semibold">Nôa Esperança</h3>
-                  <p className="text-sm opacity-90">Assistente Médica - Cannabis Medicinal</p>
+                  <p className="text-sm opacity-90">IA Residente - Cannabis Medicinal</p>
                 </div>
               </div>
               
@@ -110,18 +110,23 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
             {/* Personalidade da Nôa */}
             {showPersonality && (
               <div className="mt-3 p-3 bg-white/10 rounded-lg">
-                <div className="flex items-center space-x-4 text-sm">
+                <div className="text-xs mb-2 font-medium">IA Residente - Capacidades:</div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="flex items-center space-x-1">
-                    <Heart className="w-4 h-4" />
-                    <span>Empática</span>
+                    <Heart className="w-3 h-3" />
+                    <span>Análise Emocional</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Brain className="w-4 h-4" />
-                    <span>Técnica</span>
+                    <Brain className="w-3 h-3" />
+                    <span>Diagnóstico IA</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Users className="w-4 h-4" />
-                    <span>Educativa</span>
+                    <Users className="w-3 h-3" />
+                    <span>Suporte Médico</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Sparkles className="w-3 h-3" />
+                    <span>Memória Persistente</span>
                   </div>
                 </div>
               </div>
@@ -135,8 +140,18 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
                 <Bot className="w-12 h-12 mx-auto mb-3 text-purple-400" />
                 <p className="text-sm">Olá! Sou a Nôa Esperança.</p>
                 <p className="text-xs text-gray-400 mt-1">
-                  Especialista em Cannabis Medicinal e Arte da Entrevista Clínica
+                  IA Residente especializada em Cannabis Medicinal
                 </p>
+                <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-gray-400">
+                  <div className="flex items-center justify-center space-x-1">
+                    <Heart className="w-3 h-3" />
+                    <span>Análise Emocional</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-1">
+                    <Brain className="w-3 h-3" />
+                    <span>Diagnóstico IA</span>
+                  </div>
+                </div>
               </div>
             ) : (
               messages.map((message) => (
@@ -144,16 +159,42 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
                   key={message.id}
                   className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
-                  <div
-                    className={`
-                      max-w-xs px-4 py-2 rounded-lg text-sm
-                      ${message.type === 'user' 
-                        ? 'bg-purple-500 text-white' 
-                        : 'bg-gray-100 text-gray-800'
-                      }
-                    `}
-                  >
-                    {message.content}
+                  <div className="max-w-xs">
+                    <div
+                      className={`
+                        px-4 py-2 rounded-lg text-sm
+                        ${message.type === 'user' 
+                          ? 'bg-purple-500 text-white' 
+                          : 'bg-gray-100 text-gray-800'
+                        }
+                      `}
+                    >
+                      {message.content}
+                    </div>
+                    
+                    {/* Mostrar informações da IA Residente */}
+                    {message.type === 'noa' && message.aiResponse && (
+                      <div className="mt-2 text-xs text-gray-500">
+                        <div className="flex items-center space-x-2">
+                          <span>Confiança: {Math.round((message.confidence || 0) * 100)}%</span>
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-green-400 rounded-full" title="Análise Emocional" />
+                            <div className="w-2 h-2 bg-blue-400 rounded-full" title="Diagnóstico IA" />
+                            <div className="w-2 h-2 bg-purple-400 rounded-full" title="Memória Persistente" />
+                          </div>
+                        </div>
+                        
+                        {/* Sugestões da IA */}
+                        {message.suggestions && message.suggestions.length > 0 && (
+                          <div className="mt-2 p-2 bg-blue-50 rounded text-xs">
+                            <div className="font-medium text-blue-700 mb-1">Sugestões:</div>
+                            {message.suggestions.map((suggestion, index) => (
+                              <div key={index} className="text-blue-600">• {suggestion}</div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
@@ -214,11 +255,11 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
               </button>
               
               <div className="flex items-center space-x-2">
-                <span>IMRE Triaxial</span>
+                <span>IA Residente</span>
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-green-400 rounded-full" title="Eixo Somático" />
-                  <div className="w-2 h-2 bg-blue-400 rounded-full" title="Eixo Psíquico" />
-                  <div className="w-2 h-2 bg-purple-400 rounded-full" title="Eixo Social" />
+                  <div className="w-2 h-2 bg-green-400 rounded-full" title="Análise Emocional" />
+                  <div className="w-2 h-2 bg-blue-400 rounded-full" title="Diagnóstico IA" />
+                  <div className="w-2 h-2 bg-purple-400 rounded-full" title="Memória Persistente" />
                 </div>
               </div>
             </div>
