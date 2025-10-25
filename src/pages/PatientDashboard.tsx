@@ -172,15 +172,14 @@ const PatientDashboard: React.FC = () => {
             <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">Meu Dashboard de Saúde</h2>
               <p className="text-white/90 mb-4">
-                Bem-vindo à Nôa Esperanza! Para começar sua jornada de cuidado personalizado, 
-                recomendamos realizar uma avaliação clínica inicial. Este processo leva cerca de 
-                10-15 minutos e ajudará nossos profissionais a entender melhor seu quadro de saúde.
+                Bem-vindo à Nôa Esperanza! Aqui você pode acompanhar sua jornada de cuidado personalizado, 
+                conversar com a IA residente e acessar seus relatórios clínicos.
               </p>
               <button 
-                onClick={handleStartAssessment}
+                onClick={() => handleNavigate('/patient-onboarding')}
                 className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
               >
-                Iniciar Avaliação Clínica
+                Nova Avaliação Clínica
               </button>
             </div>
 

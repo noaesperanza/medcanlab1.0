@@ -47,6 +47,7 @@ import PesquisaDashboard from './pages/PesquisaDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import MedCannLabStructure from './pages/MedCannLabStructure'
 import NotFound from './pages/NotFound'
+import PatientOnboarding from './pages/PatientOnboarding'
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
               <Route path="/pre-anamnese" element={<PreAnamnese />} />
               <Route path="/experiencia-paciente" element={<ExperienciaPaciente />} />
               <Route path="/curso-eduardo-faveret" element={<CursoEduardoFaveret />} />
+              <Route path="/patient-onboarding" element={<PatientOnboarding />} />
               
               <Route path="/app" element={<Layout />}>
                 <Route index element={<Navigate to="dashboard" replace />} />

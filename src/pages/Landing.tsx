@@ -64,6 +64,8 @@ const Landing: React.FC = () => {
       console.log('🔄 Usuário logado detectado, redirecionando...', user.type)
       if (user.type === 'admin') {
         navigate('/app/admin')
+      } else if (user.type === 'patient') {
+        navigate('/patient-onboarding')
       } else {
         navigate('/app/dashboard')
       }
@@ -110,6 +112,8 @@ const Landing: React.FC = () => {
       // Redirecionar baseado no tipo de usuário
       if (registerData.userType === 'admin') {
         navigate('/app/admin')
+      } else if (registerData.userType === 'patient') {
+        navigate('/patient-onboarding')
       } else {
         navigate('/app/dashboard')
       }
