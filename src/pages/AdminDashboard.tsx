@@ -103,10 +103,10 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
-      <div className="bg-slate-800 border-b border-slate-700 p-6">
+      <div className="bg-slate-800 border-b border-slate-700 p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-white">👑 Dashboard Administrativo</h1>
+            <h1 className="text-2xl font-bold text-white">👑 Dashboard Administrativo</h1>
             <p className="text-slate-400">Gestão Integrada - Clínica, Ensino e Pesquisa</p>
           </div>
           
@@ -123,39 +123,40 @@ const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Area Navigation */}
-      <div className="bg-slate-800 border-b border-slate-700 p-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex space-x-4">
-            {areas.map((area) => {
-              const Icon = area.icon
-              return (
-                <button
-                  key={area.id}
-                  onClick={() => setActiveArea(area.id as any)}
-                  className={`flex items-center space-x-3 px-6 py-3 rounded-lg transition-all ${
-                    activeArea === area.id
-                      ? `bg-gradient-to-r ${area.color} text-white shadow-lg`
-                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white'
-                  }`}
-                >
-                  <Icon className="w-5 h-5" />
-                  <div className="text-left">
-                    <div className="font-semibold">{area.name}</div>
-                    <div className="text-xs opacity-80">{area.description}</div>
-                  </div>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
-              )
-            })}
+      <div className="flex h-screen">
+        {/* Sidebar - Fixed Width */}
+        <div className="w-80 bg-slate-800 border-r border-slate-700 flex flex-col">
+          {/* Area Navigation */}
+          <div className="p-4 border-b border-slate-700">
+            <h3 className="text-lg font-semibold text-white mb-4">Áreas de Atuação</h3>
+            <div className="space-y-2">
+              {areas.map((area) => {
+                const Icon = area.icon
+                return (
+                  <button
+                    key={area.id}
+                    onClick={() => setActiveArea(area.id as any)}
+                    className={`w-full flex items-center space-x-3 p-3 rounded-lg transition-all ${
+                      activeArea === area.id
+                        ? `bg-gradient-to-r ${area.color} text-white shadow-lg`
+                        : 'bg-slate-700 text-slate-300 hover:bg-slate-600 hover:text-white'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5" />
+                    <div className="text-left flex-1">
+                      <div className="font-semibold">{area.name}</div>
+                      <div className="text-xs opacity-80">{area.description}</div>
+                    </div>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                )
+              })}
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-64 bg-slate-800 border-r border-slate-700 min-h-screen">
-          <div className="p-6">
+          {/* Sidebar Navigation */}
+          <div className="flex-1 p-4">
+            <h3 className="text-lg font-semibold text-white mb-4">Navegação</h3>
             <nav className="space-y-2">
               <a href="#" className="flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white">
                 <BarChart3 className="w-5 h-5" />
@@ -230,25 +231,74 @@ const AdminDashboard: React.FC = () => {
               )}
             </nav>
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 p-6">
-          <div className="max-w-6xl mx-auto">
-            {/* Welcome Section */}
-            <div className={`bg-gradient-to-r ${currentArea.color} rounded-xl p-6 mb-8`}>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                Bem-vindo à Área {currentArea.name}!
-              </h2>
-              <p className="text-white/90 mb-4">
-                {currentArea.description}
+          {/* Chat Nôa Esperança - Fixed at Bottom */}
+          <div className="p-4 border-t border-slate-700">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-semibold text-white mb-2">Nôa Esperança</h3>
+              <p className="text-sm text-slate-400">
+                {activeArea === 'clinica' && 'IA Residente • Suporte Clínico'}
+                {activeArea === 'ensino' && 'IA Residente • Tutora Acadêmica'}
+                {activeArea === 'pesquisa' && 'IA Residente • Suporte em Pesquisa'}
               </p>
-              <button className="bg-white text-slate-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                Explorar {currentArea.name}
+            </div>
+
+            {/* Avatar */}
+            <div className="flex justify-center mb-4">
+              <NoaAnimatedAvatar
+                isSpeaking={isSpeaking}
+                isListening={isListening}
+                size="sm"
+                showStatus={true}
+              />
+            </div>
+
+            {/* Quick Actions */}
+            <div className="space-y-2 mb-4">
+              <button 
+                onClick={toggleChat}
+                className={`w-full bg-gradient-to-r ${currentArea.color} text-white py-2 px-3 rounded-lg font-semibold hover:opacity-90 transition-opacity text-sm`}
+              >
+                {activeArea === 'clinica' && 'Analisar Caso Clínico'}
+                {activeArea === 'ensino' && 'Arte da Entrevista Clínica'}
+                {activeArea === 'pesquisa' && 'Analisar Dados de Pesquisa'}
               </button>
             </div>
 
-            {/* Stats Cards */}
+            {/* Chat Input */}
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Digite sua mensagem..."
+                className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500 text-sm"
+              />
+              <p className="text-xs text-slate-500 text-center">
+                Nôa utiliza AEC • LGPD Compliant
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content - Canvas Area */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          {/* Welcome Section */}
+          <div className={`bg-gradient-to-r ${currentArea.color} p-6`}>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Bem-vindo à Área {currentArea.name}!
+            </h2>
+            <p className="text-white/90 mb-4">
+              {currentArea.description}
+            </p>
+            <button className="bg-white text-slate-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              Explorar {currentArea.name}
+            </button>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               {currentArea.stats.map((stat, index) => (
                 <div key={index} className="bg-slate-800 rounded-xl p-6">
@@ -267,172 +317,84 @@ const AdminDashboard: React.FC = () => {
               ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Content Area */}
-              <div className="lg:col-span-2">
-                <div className="bg-slate-800 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-white">
-                      {activeArea === 'clinica' && '👥 Meus Pacientes'}
-                      {activeArea === 'ensino' && '📚 Meus Cursos'}
-                      {activeArea === 'pesquisa' && '🔬 Meus Estudos'}
-                    </h3>
-                    <button className={`bg-gradient-to-r ${currentArea.color} text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity`}>
-                      Ver Todos
-                    </button>
-                  </div>
-
-                  <div className="space-y-4">
-                    {activeArea === 'clinica' && (
-                      <>
-                        <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                              <span className="text-white font-bold text-sm">RV</span>
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-white">Dr. Ricardo Valença</h4>
-                              <p className="text-sm text-slate-400">Insuficiência Renal Crônica</p>
-                              <p className="text-xs text-slate-500">Score: 85/100</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                              <MessageCircle className="w-4 h-4" />
-                            </button>
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                              <Eye className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {activeArea === 'ensino' && (
-                      <>
-                        <div className="bg-slate-700 rounded-lg p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <h4 className="text-lg font-semibold text-white">Arte da Entrevista Clínica</h4>
-                              <p className="text-sm text-slate-400 mb-3">Fundamentos da entrevista clínica aplicada à Cannabis Medicinal</p>
-                              <div className="flex items-center space-x-4 text-sm text-slate-500 mb-4">
-                                <span>Progresso: 75%</span>
-                                <span>Instrutor: Dr. Eduardo Faveret</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="w-full bg-slate-600 rounded-full h-2">
-                            <div className="h-2 rounded-full bg-blue-500" style={{ width: '75%' }} />
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {activeArea === 'pesquisa' && (
-                      <>
-                        <div className="bg-slate-700 rounded-lg p-6">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex-1">
-                              <h4 className="text-lg font-semibold text-white">Eficácia do CBD na Insuficiência Renal</h4>
-                              <p className="text-sm text-slate-400 mb-3">Estudo longitudinal sobre os efeitos do CBD em pacientes com IRC</p>
-                              <div className="flex items-center space-x-4 text-sm text-slate-500 mb-4">
-                                <span>Progresso: 65%</span>
-                                <span>Participantes: 24</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="w-full bg-slate-600 rounded-full h-2">
-                            <div className="h-2 rounded-full bg-pink-500" style={{ width: '65%' }} />
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
+            {/* Main Content Area */}
+            <div className="bg-slate-800 rounded-xl p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-white">
+                  {activeArea === 'clinica' && '👥 Meus Pacientes'}
+                  {activeArea === 'ensino' && '📚 Meus Cursos'}
+                  {activeArea === 'pesquisa' && '🔬 Meus Estudos'}
+                </h3>
+                <button className={`bg-gradient-to-r ${currentArea.color} text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity`}>
+                  Ver Todos
+                </button>
               </div>
 
-              {/* Chat Section */}
-              <div className="lg:col-span-1">
-                <div className="bg-slate-800 rounded-xl p-6 h-full">
-                  <div className="text-center mb-6">
-                    <h3 className="text-xl font-semibold text-white mb-2">Nôa Esperança</h3>
-                    <p className="text-sm text-slate-400">
-                      {activeArea === 'clinica' && 'IA Residente • Suporte Clínico'}
-                      {activeArea === 'ensino' && 'IA Residente • Tutora Acadêmica'}
-                      {activeArea === 'pesquisa' && 'IA Residente • Suporte em Pesquisa'}
-                    </p>
-                  </div>
-
-                  {/* Avatar */}
-                  <div className="flex justify-center mb-6">
-                    <NoaAnimatedAvatar
-                      isSpeaking={isSpeaking}
-                      isListening={isListening}
-                      size="md"
-                      showStatus={true}
-                    />
-                  </div>
-
-                  {/* Welcome Message */}
-                  <div className="bg-slate-700 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-slate-300 mb-2">
-                      {activeArea === 'clinica' && '🩺 Olá! Sou a Nôa Esperança, sua assistente clínica especializada.'}
-                      {activeArea === 'ensino' && '🎓 Olá! Sou a Nôa Esperança, sua tutora acadêmica especializada.'}
-                      {activeArea === 'pesquisa' && '🔬 Olá! Sou a Nôa Esperança, sua assistente de pesquisa especializada.'}
-                    </p>
-                    <p className="text-xs text-slate-400 mb-2">Posso ajudar com:</p>
-                    <ul className="text-xs text-slate-400 space-y-1">
-                      {activeArea === 'clinica' && (
-                        <>
-                          <li>• Análise de casos clínicos</li>
-                          <li>• Suporte na Arte da Entrevista</li>
-                          <li>• Orientações sobre Cannabis Medicinal</li>
-                        </>
-                      )}
-                      {activeArea === 'ensino' && (
-                        <>
-                          <li>• Dúvidas sobre Cannabis Medicinal</li>
-                          <li>• Prática da Arte da Entrevista</li>
-                          <li>• Orientação nos estudos</li>
-                        </>
-                      )}
-                      {activeArea === 'pesquisa' && (
-                        <>
-                          <li>• Análise de dados de pesquisa</li>
-                          <li>• Metodologia científica</li>
-                          <li>• Interpretação de resultados</li>
-                        </>
-                      )}
-                    </ul>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="space-y-3 mb-6">
-                    <button className={`w-full bg-gradient-to-r ${currentArea.color} text-white py-3 px-4 rounded-lg font-semibold hover:opacity-90 transition-opacity`}>
-                      {activeArea === 'clinica' && 'Analisar Caso Clínico'}
-                      {activeArea === 'ensino' && 'Arte da Entrevista Clínica'}
-                      {activeArea === 'pesquisa' && 'Analisar Dados de Pesquisa'}
-                    </button>
-                  </div>
-
-                  {/* Chat Input */}
-                  <div className="space-y-3">
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Digite sua mensagem..."
-                        className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                      />
+              <div className="space-y-4">
+                {activeArea === 'clinica' && (
+                  <>
+                    <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">RV</span>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-white">Dr. Ricardo Valença</h4>
+                          <p className="text-sm text-slate-400">Insuficiência Renal Crônica</p>
+                          <p className="text-xs text-slate-500">Score: 85/100</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
+                          <MessageCircle className="w-4 h-4" />
+                        </button>
+                        <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                    
-                    <p className="text-xs text-slate-500 text-center">
-                      Nôa utiliza AEC para suporte especializado • LGPD Compliant
-                    </p>
-                  </div>
-                </div>
+                  </>
+                )}
+
+                {activeArea === 'ensino' && (
+                  <>
+                    <div className="bg-slate-700 rounded-lg p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h4 className="text-lg font-semibold text-white">Arte da Entrevista Clínica</h4>
+                          <p className="text-sm text-slate-400 mb-3">Fundamentos da entrevista clínica aplicada à Cannabis Medicinal</p>
+                          <div className="flex items-center space-x-4 text-sm text-slate-500 mb-4">
+                            <span>Progresso: 75%</span>
+                            <span>Instrutor: Dr. Eduardo Faveret</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="w-full bg-slate-600 rounded-full h-2">
+                        <div className="h-2 rounded-full bg-blue-500" style={{ width: '75%' }} />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {activeArea === 'pesquisa' && (
+                  <>
+                    <div className="bg-slate-700 rounded-lg p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h4 className="text-lg font-semibold text-white">Eficácia do CBD na Insuficiência Renal</h4>
+                          <p className="text-sm text-slate-400 mb-3">Estudo longitudinal sobre os efeitos do CBD em pacientes com IRC</p>
+                          <div className="flex items-center space-x-4 text-sm text-slate-500 mb-4">
+                            <span>Progresso: 65%</span>
+                            <span>Participantes: 24</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="w-full bg-slate-600 rounded-full h-2">
+                        <div className="h-2 rounded-full bg-pink-500" style={{ width: '65%' }} />
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
