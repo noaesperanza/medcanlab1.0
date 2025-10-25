@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   ArrowLeft, 
   GraduationCap, 
@@ -20,13 +21,14 @@ import {
   Award,
   BarChart3,
   Activity,
-  Microscope,
+  FlaskConical,
   Users
 } from 'lucide-react'
 import { useNoa } from '../contexts/NoaContext'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
 
 const EnsinoDashboard: React.FC = () => {
+  const navigate = useNavigate()
   const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
   const [inputMessage, setInputMessage] = useState('')
 
@@ -44,47 +46,126 @@ const EnsinoDashboard: React.FC = () => {
     }
   }
 
-  const courses = [
+  // Navigation handlers
+  const handleNavigate = (path: string) => {
+    navigate(path)
+  }
+
+  const handleContinueLearning = () => {
+    // Navigate to the main course
+    navigate('/curso-eduardo-faveret')
+  }
+
+  const handleOpenModule = (moduleId: number) => {
+    setSelectedModule(moduleId)
+  }
+
+  const handleOpenLesson = (lessonId: number) => {
+    setSelectedLesson(lessonId)
+  }
+
+  const handleJoinClass = (courseTitle: string) => {
+    if (courseTitle.includes('Cannabis Medicinal')) {
+      navigate('/curso-eduardo-faveret')
+    } else if (courseTitle.includes('IMRE')) {
+      navigate('/app/arte-entrevista-clinica')
+    } else {
+      navigate('/curso-eduardo-faveret')
+    }
+  }
+
+  const courseModules = [
     {
       id: 1,
-      title: 'Arte da Entrevista Clínica',
-      description: 'Fundamentos da entrevista clínica aplicada à Cannabis Medicinal',
-      progress: 75,
-      status: 'Em Andamento',
-      instructor: 'Dr. Eduardo Faveret',
-      duration: '40 horas',
-      nextClass: '2024-12-15',
-      color: 'from-pink-500 to-purple-500'
+      title: 'Introdução à Cannabis Medicinal',
+      duration: '8h',
+      description: 'Fundamentos históricos, legais e científicos da cannabis medicinal',
+      lessons: 4,
+      completed: 4,
+      color: 'from-green-500 to-emerald-600',
+      status: 'Concluído'
     },
     {
       id: 2,
-      title: 'Cannabis Medicinal - Pós-Graduação',
-      description: 'Especialização em Cannabis Medicinal e Terapêutica',
-      progress: 45,
-      status: 'Em Andamento',
-      instructor: 'Dr. Eduardo Faveret',
-      duration: '360 horas',
-      nextClass: '2024-12-18',
-      color: 'from-green-500 to-teal-500'
+      title: 'Farmacologia e Biologia da Cannabis',
+      duration: '12h',
+      description: 'Mecanismos de ação, receptores e sistemas endocanabinoides',
+      lessons: 6,
+      completed: 2,
+      color: 'from-blue-500 to-cyan-500',
+      status: 'Em Andamento'
     },
     {
       id: 3,
-      title: 'Sistema IMRE Triaxial',
-      description: 'Metodologia de avaliação clínica integrada',
-      progress: 100,
-      status: 'Concluído',
-      instructor: 'Dr. Profissional',
-      duration: '20 horas',
-      nextClass: null,
-      color: 'from-blue-500 to-cyan-500'
+      title: 'Aspectos Legais e Éticos',
+      duration: '6h',
+      description: 'Regulamentação, prescrição e aspectos éticos do uso medicinal',
+      lessons: 3,
+      completed: 0,
+      color: 'from-purple-500 to-pink-500',
+      status: 'Pendente'
+    },
+    {
+      id: 4,
+      title: 'Aplicações Clínicas e Protocolos',
+      duration: '15h',
+      description: 'Indicações clínicas, protocolos de tratamento e monitoramento',
+      lessons: 8,
+      completed: 0,
+      color: 'from-orange-500 to-red-500',
+      status: 'Pendente'
+    },
+    {
+      id: 5,
+      title: 'Avaliação e Monitoramento de Pacientes',
+      duration: '8h',
+      description: 'Ferramentas de avaliação, acompanhamento e ajuste de protocolos',
+      lessons: 4,
+      completed: 0,
+      color: 'from-teal-500 to-green-500',
+      status: 'Pendente'
+    },
+    {
+      id: 6,
+      title: 'Estudos de Caso e Práticas Clínicas',
+      duration: '10h',
+      description: 'Análise de casos reais e simulações práticas',
+      lessons: 5,
+      completed: 0,
+      color: 'from-indigo-500 to-purple-500',
+      status: 'Pendente'
+    },
+    {
+      id: 7,
+      title: 'Pesquisa Científica e Produção de Artigos',
+      duration: '6h',
+      description: 'Metodologia de pesquisa e publicação científica',
+      lessons: 3,
+      completed: 0,
+      color: 'from-pink-500 to-rose-500',
+      status: 'Pendente'
+    },
+    {
+      id: 8,
+      title: 'Avaliação Final e Certificação',
+      duration: '5h',
+      description: 'Prova final e obtenção do certificado',
+      lessons: 2,
+      completed: 0,
+      color: 'from-yellow-500 to-orange-500',
+      status: 'Pendente'
     }
   ]
+
+  const [selectedModule, setSelectedModule] = useState<number | null>(null)
+  const [selectedLesson, setSelectedLesson] = useState<number | null>(null)
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Em Andamento': return 'text-blue-400'
       case 'Concluído': return 'text-green-400'
       case 'Pendente': return 'text-yellow-400'
+      case 'Aguardando Inscrição': return 'text-purple-400'
       default: return 'text-slate-400'
     }
   }
@@ -101,13 +182,16 @@ const EnsinoDashboard: React.FC = () => {
       <div className="bg-slate-800 border-b border-slate-700 p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors">
+                         <button 
+               onClick={() => handleNavigate('/app/dashboard')}
+               className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+             >
               <ArrowLeft className="w-5 h-5" />
               <span>Voltar</span>
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-white">🎓 Dashboard Ensino</h1>
-              <p className="text-slate-400">Área de Ensino - Pós-Graduação Cannabis Medicinal</p>
+              <h1 className="text-2xl font-bold text-white">🎓 Curso Cannabis Medicinal</h1>
+              <p className="text-slate-400">Pós-Graduação em Cannabis Medicinal Integrativa - Dr. Eduardo Faveret</p>
             </div>
           </div>
           
@@ -129,253 +213,136 @@ const EnsinoDashboard: React.FC = () => {
         <div className="w-64 bg-slate-800 border-r border-slate-700 min-h-screen">
           <div className="p-6">
             <nav className="space-y-2">
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white">
+              <button onClick={() => handleNavigate('/app/ensino-dashboard')} className="w-full flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white">
                 <BarChart3 className="w-5 h-5" />
-                <span>🎓 Dashboard Ensino</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                <span>🎓 Dashboard Aluno</span>
+              </button>
+              <button onClick={() => handleNavigate('/app/library')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <BookOpen className="w-5 h-5" />
                 <span>📚 Biblioteca Médica</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                <Heart className="w-5 h-5" />
-                <span>❤️ Arte da Entrevista</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                <Brain className="w-5 h-5" />
-                <span>🧠 Cannabis Medicinal</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                <MessageCircle className="w-5 h-5" />
-                <span>💬 Chat Global + Fórum</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+
+              <button onClick={() => handleNavigate('/app/chat')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+                <Calendar className="w-5 h-5" />
+                <span>📅 Agenda</span>
+              </button>
+              <button onClick={() => handleNavigate('/app/library')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <Award className="w-5 h-5" />
                 <span>🏆 Certificados</span>
-              </a>
+              </button>
             </nav>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="flex-1 p-6">
-          <div className="max-w-6xl mx-auto">
-            {/* Welcome Section */}
+          <div className="max-w-7xl mx-auto">
+            {/* Course Header */}
             <div className="bg-gradient-to-r from-green-600 to-teal-500 rounded-xl p-6 mb-8">
-              <h2 className="text-2xl font-bold text-white mb-2">Bem-vindo à Pós-Graduação!</h2>
-              <p className="text-white/90 mb-4">
-                Continue sua jornada de aprendizado em Cannabis Medicinal com a Arte da Entrevista Clínica.
-                Acesse seus cursos, acompanhe seu progresso e interaja com a Nôa Esperança.
-              </p>
-              <button className="bg-white text-green-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                Continuar Aprendizado
-              </button>
-            </div>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <div className="bg-slate-800 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-green-500/10 rounded-lg">
-                    <BookOpen className="w-6 h-6 text-green-400" />
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-white mb-2">Curso Eduardo Faveret - Cannabis Medicinal</h2>
+                  <p className="text-white/90 mb-2">
+                    Curso completo de cannabis medicinal com metodologia prática e casos clínicos reais. 
+                    Desenvolvido pelo Dr. Eduardo Faveret, especialista em medicina integrativa.
+                  </p>
+                  <div className="flex items-center space-x-4 text-sm text-white/80">
+                    <span>Dr. Eduardo Faveret</span>
+                    <span>•</span>
+                    <span>2 meses / 60 horas</span>
+                    <span>•</span>
+                    <span>1247 alunos</span>
+                    <span>•</span>
+                    <span>⭐ 4.9</span>
                   </div>
-                  <TrendingUp className="w-5 h-5 text-green-400" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-1">3</h3>
-                <p className="text-sm text-slate-400">Cursos Ativos</p>
-              </div>
-
-              <div className="bg-slate-800 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-blue-500/10 rounded-lg">
-                    <Target className="w-6 h-6 text-blue-400" />
-                  </div>
-                  <TrendingUp className="w-5 h-5 text-green-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-1">73%</h3>
-                <p className="text-sm text-slate-400">Progresso Médio</p>
-              </div>
-
-              <div className="bg-slate-800 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-yellow-500/10 rounded-lg">
-                    <Clock className="w-6 h-6 text-yellow-400" />
-                  </div>
-                  <TrendingUp className="w-5 h-5 text-green-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-1">120h</h3>
-                <p className="text-sm text-slate-400">Horas Estudadas</p>
-              </div>
-
-              <div className="bg-slate-800 rounded-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="p-3 bg-purple-500/10 rounded-lg">
-                    <Award className="w-6 h-6 text-purple-400" />
-                  </div>
-                  <TrendingUp className="w-5 h-5 text-green-400" />
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-1">1</h3>
-                <p className="text-sm text-slate-400">Certificados</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Courses Section */}
+              {/* Video Player Section */}
               <div className="lg:col-span-2">
-                <div className="bg-slate-800 rounded-xl p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold text-white">📚 Meus Cursos</h3>
-                    <button className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-4 py-2 rounded-lg font-semibold hover:from-green-600 hover:to-teal-600 transition-colors">
-                      Ver Todos
-                    </button>
-                  </div>
+                {selectedModule ? (
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="mb-6">
+                      <h3 className="text-xl font-semibold text-white mb-2">
+                        {courseModules.find(m => m.id === selectedModule)?.title}
+                      </h3>
+                      <p className="text-slate-400 text-sm">
+                        {courseModules.find(m => m.id === selectedModule)?.description}
+                      </p>
+                    </div>
+                    
+                    {/* Video Player */}
+                    <div className="bg-black rounded-lg aspect-video mb-6 flex items-center justify-center">
+                      <div className="text-center">
+                        <Play className="w-16 h-16 text-white mb-4" />
+                        <p className="text-white text-lg">Player de Vídeo</p>
+                        <p className="text-gray-400 text-sm">Aula será carregada aqui</p>
+                      </div>
+                    </div>
 
-                  <div className="space-y-6">
-                    {courses.map((course) => (
-                      <div key={course.id} className="bg-slate-700 rounded-lg p-6 hover:bg-slate-650 transition-colors">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-3 mb-2">
-                              <h4 className="text-lg font-semibold text-white">{course.title}</h4>
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(course.status)}`}>
-                                {course.status}
-                              </span>
+                    {/* Lesson List */}
+                    <div className="space-y-3">
+                      <h4 className="text-lg font-semibold text-white mb-4">Aulas do Módulo</h4>
+                      {Array.from({ length: courseModules.find(m => m.id === selectedModule)?.lessons || 0 }, (_, i) => (
+                        <div key={i} className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                              <CheckCircle className="w-4 h-4 text-white" />
                             </div>
-                            <p className="text-sm text-slate-400 mb-3">{course.description}</p>
-                            
-                            <div className="flex items-center space-x-4 text-sm text-slate-500 mb-4">
-                              <span>Instrutor: {course.instructor}</span>
-                              <span>Duração: {course.duration}</span>
-                              {course.nextClass && <span>Próxima aula: {course.nextClass}</span>}
+                            <div>
+                              <p className="text-white font-medium">Aula {i + 1}: Título da Aula</p>
+                              <p className="text-slate-400 text-sm">Duração: 45 min</p>
                             </div>
                           </div>
-                          
-                          <div className="flex items-center space-x-2">
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                              <Play className="w-4 h-4" />
-                            </button>
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                              <Download className="w-4 h-4" />
-                            </button>
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                              <Share2 className="w-4 h-4" />
-                            </button>
-                          </div>
+                          <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
+                            <Play className="w-4 h-4" />
+                          </button>
                         </div>
-                        
-                        {/* Progress Bar */}
-                        <div className="mb-2">
-                          <div className="flex items-center justify-between text-sm mb-1">
-                            <span className="text-slate-400">Progresso</span>
-                            <span className="text-white font-medium">{course.progress}%</span>
-                          </div>
-                          <div className="w-full bg-slate-600 rounded-full h-2">
-                            <div 
-                              className={`h-2 rounded-full ${getProgressColor(course.progress)}`}
-                              style={{ width: `${course.progress}%` }}
-                            />
-                          </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="text-center py-12">
+                      <Play className="w-16 h-16 text-slate-400 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-white mb-2">Selecione um Módulo</h3>
+                      <p className="text-slate-400">Escolha um módulo abaixo para começar a assistir às aulas</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Course Modules Sidebar */}
+              <div className="lg:col-span-1">
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <h3 className="text-xl font-semibold text-white mb-6">Módulos do Curso</h3>
+                  
+                  <div className="space-y-4 max-h-[700px] overflow-y-auto">
+                    {courseModules.map((module) => (
+                      <div 
+                        key={module.id}
+                        onClick={() => setSelectedModule(module.id)}
+                        className={`p-4 rounded-lg cursor-pointer transition-all ${
+                          selectedModule === module.id 
+                            ? 'bg-slate-700 border-2 border-green-500' 
+                            : 'bg-slate-700/50 hover:bg-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <h4 className="text-sm font-semibold text-white">{module.title}</h4>
+                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(module.status)}`}>
+                            {module.status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 mb-2">{module.description}</p>
+                        <div className="flex items-center justify-between text-xs text-slate-500">
+                          <span>{module.duration}</span>
+                          <span>{module.lessons} aulas</span>
                         </div>
                       </div>
                     ))}
-                  </div>
-                </div>
-
-                {/* Upcoming Classes */}
-                <div className="bg-slate-800 rounded-xl p-6 mt-6">
-                  <h3 className="text-xl font-semibold text-white mb-6">📅 Próximas Aulas</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-pink-500 rounded-full flex items-center justify-center">
-                          <Heart className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-white">Arte da Entrevista Clínica</p>
-                          <p className="text-sm text-slate-400">15/12/2024 • 14:00</p>
-                        </div>
-                      </div>
-                      <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                        <Play className="w-4 h-4" />
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                          <Brain className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-white">Cannabis Medicinal</p>
-                          <p className="text-sm text-slate-400">18/12/2024 • 10:00</p>
-                        </div>
-                      </div>
-                      <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                        <Play className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Chat Section */}
-              <div className="lg:col-span-1">
-                <div className="bg-slate-800 rounded-xl p-6 h-full">
-                  <div className="text-center mb-6">
-                    <h3 className="text-xl font-semibold text-white mb-2">Nôa Esperança</h3>
-                    <p className="text-sm text-slate-400">IA Residente • Tutora Acadêmica</p>
-                  </div>
-
-                  {/* Avatar */}
-                  <div className="flex justify-center mb-6">
-                    <NoaAnimatedAvatar
-                      isSpeaking={isSpeaking}
-                      isListening={isListening}
-                      size="md"
-                      showStatus={true}
-                    />
-                  </div>
-
-                  {/* Welcome Message */}
-                  <div className="bg-slate-700 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-slate-300 mb-2">
-                      🎓 Olá, estudante! Sou a Nôa Esperança, sua tutora acadêmica especializada.
-                    </p>
-                    <p className="text-xs text-slate-400 mb-2">Posso ajudar com:</p>
-                    <ul className="text-xs text-slate-400 space-y-1">
-                      <li>• Dúvidas sobre Cannabis Medicinal</li>
-                      <li>• Prática da Arte da Entrevista</li>
-                      <li>• Orientação nos estudos</li>
-                    </ul>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="space-y-3 mb-6">
-                    <button className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-600 transition-colors">
-                      Arte da Entrevista Clínica
-                    </button>
-                    <button className="w-full bg-gradient-to-r from-green-500 to-teal-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-green-600 hover:to-teal-600 transition-colors">
-                      Cannabis Medicinal
-                    </button>
-                  </div>
-
-                  {/* Chat Input */}
-                  <div className="space-y-3">
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Digite sua mensagem..."
-                        className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-green-500"
-                      />
-                    </div>
-                    
-                    <p className="text-xs text-slate-500 text-center">
-                      Nôa utiliza AEC para tutoria acadêmica • LGPD Compliant
-                    </p>
                   </div>
                 </div>
               </div>

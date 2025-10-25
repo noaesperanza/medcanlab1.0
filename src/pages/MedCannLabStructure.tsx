@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { 
   Stethoscope, 
   BookOpen, 
-  Microscope, 
+  FlaskConical, 
   Users, 
   Heart, 
   MessageCircle, 
@@ -28,11 +28,11 @@ import {
   Search,
   Filter,
   ArrowRight,
-  ArrowDown,
-  ArrowUp,
+  ChevronDown,
+  ChevronUp,
   Zap,
   Bot,
-  Sparkles
+  Zap as SparklesIcon
 } from 'lucide-react'
 import { useNoa } from '../contexts/NoaContext'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
@@ -73,7 +73,7 @@ const MedCannLabStructure: React.FC = () => {
               name: 'IA Multimodal',
               description: 'Interface de Comunicação Avançada',
               color: 'from-cyan-500 to-teal-500',
-              icon: Sparkles
+              icon: SparklesIcon
             }
           }
         },
@@ -109,7 +109,7 @@ const MedCannLabStructure: React.FC = () => {
           name: 'Ensino/Pesquisa',
           description: 'Área Acadêmica e Científica',
           color: 'from-indigo-600 to-purple-500',
-          icon: Microscope,
+                        icon: FlaskConical,
           children: {
             'dashboard-profissional-academico': {
               name: 'Dashboard Profissional',
@@ -266,7 +266,7 @@ const MedCannLabStructure: React.FC = () => {
                         activeDashboard === 'ia-multimodal' ? 'bg-cyan-500 text-white' : 'bg-slate-600 text-slate-300 hover:bg-slate-500'
                       }`}
                     >
-                      <Sparkles className="w-4 h-4" />
+                      <SparklesIcon className="w-4 h-4" />
                       <span>IA Multimodal</span>
                     </button>
                   </div>
@@ -329,7 +329,7 @@ const MedCannLabStructure: React.FC = () => {
                     activeArea === 'ensino-pesquisa' ? 'bg-indigo-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
                   }`}
                 >
-                  <Microscope className="w-4 h-4" />
+                  <FlaskConical className="w-4 h-4" />
                   <span>Ensino/Pesquisa</span>
                   <ArrowRight className="w-3 h-3 ml-auto" />
                 </button>

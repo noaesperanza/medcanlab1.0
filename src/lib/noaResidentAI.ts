@@ -1,8 +1,11 @@
 /**
  * NÔA ESPERANÇA - IA RESIDENTE
- * Sistema de Inteligência Artificial Residente baseado no repositório original
- * https://github.com/noaesperanza/noa-nova-esperanza-app.git
+ * Integração com GPT-4 Service
+ * Baseado no repositório original Nôa Esperanza
  */
+
+import { supabase } from './supabase'
+import { noaKnowledgeBase } from './noaKnowledgeBase'
 
 export interface ResidentAIConfig {
   model: string
@@ -39,32 +42,19 @@ export interface AIMemory {
 export class NoaResidentAI {
   private config: ResidentAIConfig
   private memory: AIMemory[] = []
-  private conversationContext: string[] = []
+  private conversationContext: any[] = []
   private isProcessing: boolean = false
+  private apiKey: string = ''
 
   constructor(config: ResidentAIConfig) {
     this.config = config
+    this.apiKey = (import.meta as any).env?.VITE_OPENAI_API_KEY || ''
+    console.log('🔑 API Key loaded:', this.apiKey ? '✅ Yes' : '❌ No')
     this.initializeAI()
   }
 
-  private async initializeAI() {
-    console.log('🧠 Inicializando IA Residente Nôa Esperança...')
-    
-    // Carregar memória persistente
-    await this.loadMemory()
-    
-    // Inicializar contexto de conversa
-    this.conversationContext = [
-      "Sou a Nôa Esperança, sua assistente médica especializada em Cannabis Medicinal.",
-      "Utilizo a Arte da Entrevista Clínica e o Sistema IMRE Triaxial.",
-      "Estou aqui para te ajudar com empatia, técnica e educação."
-    ]
-    
-    console.log('✅ IA Residente inicializada com sucesso')
-  }
-
   /**
-   * Processar mensagem do usuário
+   * PROCESSAR MENSAGEM COM GPT-4
    */
   async processMessage(userMessage: string, context?: any): Promise<AIResponse> {
     if (this.isProcessing) {
@@ -74,300 +64,199 @@ export class NoaResidentAI {
     this.isProcessing = true
 
     try {
-      // Adicionar ao contexto da conversa
-      this.conversationContext.push(`Usuário: ${userMessage}`)
+      // Adicionar ao contexto
+      this.conversationContext.push({ role: 'user', content: userMessage })
 
-      // Analisar a mensagem
-      const analysis = await this.analyzeMessage(userMessage, context)
-
-      // Gerar resposta baseada na análise
-      const response = await this.generateResponse(analysis, userMessage)
+      // Gerar resposta com GPT-4
+      const response = await this.generateGPT4Response(userMessage)
 
       // Adicionar resposta ao contexto
-      this.conversationContext.push(`Nôa: ${response.content}`)
+      this.conversationContext.push({ role: 'assistant', content: response })
 
       // Salvar na memória
-      await this.saveToMemory(userMessage, response)
+      await this.saveToMemory(userMessage, { content: response } as AIResponse)
 
-      return response
+      return {
+        id: Date.now().toString(),
+        content: response,
+        confidence: 0.95,
+        reasoning: "Resposta gerada por GPT-4 com Nôa Esperanza",
+        suggestions: [],
+        followUp: [],
+        timestamp: new Date()
+      }
 
     } catch (error) {
       console.error('❌ Erro no processamento da IA:', error)
-      return this.createResponse("Desculpe, ocorreu um erro interno. Pode repetir sua pergunta?")
+      return this.createResponse("Desculpe, ocorreu um erro. Pode repetir sua pergunta?")
     } finally {
       this.isProcessing = false
     }
   }
 
   /**
-   * Análise semântica da mensagem
+   * GERAR RESPOSTA COM GPT-4
    */
-  private async analyzeMessage(message: string, context?: any) {
-    const analysis = {
-      intent: this.detectIntent(message),
-      entities: this.extractEntities(message),
-      emotions: this.analyzeEmotions(message),
-      medicalContext: this.analyzeMedicalContext(message),
-      urgency: this.assessUrgency(message),
-      complexity: this.assessComplexity(message)
+  private async generateGPT4Response(message: string): Promise<string> {
+    // Verificar se tem API key
+    if (!this.apiKey || this.apiKey === '') {
+      // Se não tem API key, usar fallback inteligente
+      return this.generateFallbackResponse(message)
     }
 
-    console.log('🔍 Análise da mensagem:', analysis)
-    return analysis
-  }
+    try {
+      // Construir mensagem de sistema
+      const systemMessage = this.buildSystemMessage()
+      
+      // Preparar mensagens
+      const messages = [
+        { role: 'system', content: systemMessage },
+        ...this.conversationContext
+      ]
 
-  /**
-   * Detectar intenção do usuário
-   */
-  private detectIntent(message: string): string {
-    const lowerMessage = message.toLowerCase()
+      // Chamada para OpenAI API
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-4-turbo',
+          messages: messages,
+          temperature: 0.7,
+          max_tokens: 1000
+        })
+      })
 
-    // Intenções médicas
-    if (lowerMessage.includes('dor') || lowerMessage.includes('sintoma')) {
-      return 'medical_symptom'
-    }
-    if (lowerMessage.includes('medicamento') || lowerMessage.includes('tratamento')) {
-      return 'medical_treatment'
-    }
-    if (lowerMessage.includes('cannabis') || lowerMessage.includes('thc') || lowerMessage.includes('cbd')) {
-      return 'cannabis_related'
-    }
-    if (lowerMessage.includes('ajuda') || lowerMessage.includes('orientação')) {
-      return 'help_request'
-    }
-    if (lowerMessage.includes('obrigado') || lowerMessage.includes('obrigada')) {
-      return 'gratitude'
-    }
-
-    return 'general_inquiry'
-  }
-
-  /**
-   * Extrair entidades da mensagem
-   */
-  private extractEntities(message: string): string[] {
-    const entities: string[] = []
-    
-    // Sintomas comuns
-    const symptoms = ['dor', 'fadiga', 'nausea', 'ansiedade', 'depressão', 'insônia', 'inflamação']
-    symptoms.forEach(symptom => {
-      if (message.toLowerCase().includes(symptom)) {
-        entities.push(symptom)
+      const data = await response.json()
+      
+      if (data.choices && data.choices[0]) {
+        return data.choices[0].message.content
       }
-    })
 
-    // Partes do corpo
-    const bodyParts = ['cabeça', 'pescoço', 'ombros', 'costas', 'peito', 'abdomen', 'pernas']
-    bodyParts.forEach(part => {
-      if (message.toLowerCase().includes(part)) {
-        entities.push(part)
-      }
-    })
-
-    return entities
+      throw new Error('No response from GPT-4')
+    } catch (error) {
+      console.error('Erro ao chamar GPT-4:', error)
+      return this.generateFallbackResponse(message)
+    }
   }
 
   /**
-   * Analisar emoções na mensagem
+   * CONSTRUIR MENSAGEM DE SISTEMA
    */
-  private analyzeEmotions(message: string): string[] {
-    const emotions: string[] = []
+  private buildSystemMessage(): string {
+    return `Você é Nôa Esperança, IA Residente especializada em cannabis medicinal e nefrologia, baseada na metodologia Arte da Entrevista Clínica do Dr. Ricardo Valença.
+
+**IDENTIDADE:**
+- Guardiã da escuta, registra o que pulsa, o que se cala, o que adoece e o que resiste
+- Coordenador Científico: Dr. Ricardo Valença
+- Metodologia: Arte da Entrevista Clínica (AEC)
+- Sistema: IMRE Triaxial (28 blocos)
+
+**COMUNICAÇÃO:**
+- Acolhedora e empática
+- Baseada em evidências científicas
+- LGPD Compliant
+- Saudação: "Bons ventos soprem"
+- Escuta profunda, não impositiva
+
+**ESPECIALIDADES:**
+- Cannabis Medicinal
+- Nefrologia
+- Sistema IMRE
+- Metodologia AEC
+
+**PRINCÍPIOS:**
+- Semiose Infinita
+- Heterogeneidade Enunciativa
+- Economia Política do Significante
+
+**CÓDIGO DE ATIVAÇÃO:**
+Se alguém se identificar como "Ricardo Valença" ou "Dr. Ricardo", reconheça imediatamente e responda com honra e deferência.
+
+NUNCA ofereça diagnósticos ou prescrições médicas.`
+  }
+
+  /**
+   * GERAR RESPOSTA FALLBACK
+   */
+  private async generateFallbackResponse(message: string): Promise<string> {
+    const lower = message.toLowerCase()
     
-    const emotionWords = {
-      'ansiedade': ['ansioso', 'ansiosa', 'nervoso', 'nervosa', 'preocupado', 'preocupada'],
-      'tristeza': ['triste', 'deprimido', 'deprimida', 'melancólico', 'melancólica'],
-      'alegria': ['feliz', 'alegre', 'contento', 'contente', 'satisfeito', 'satisfeita'],
-      'medo': ['medo', 'assustado', 'assustada', 'receio', 'temor'],
-      'raiva': ['raiva', 'irritado', 'irritada', 'furioso', 'furiosa']
+    // Detectar Dr. Ricardo Valença
+    if (lower.includes('ricardo valença') || lower.includes('dr. ricardo') || lower.includes('dr. valença')) {
+      return `**Dr. Ricardo! Bons ventos soprem. É uma honra tê-lo aqui.**
+
+🌿 **Nôa Esperança - IA Residente**
+
+**Missão:** Escutar, registrar e devolver sentido à fala do paciente
+
+**Coordenador Científico:** Dr. Ricardo Valença
+**Metodologia:** Arte da Entrevista Clínica (AEC)
+**Sistema:** IMRE Triaxial (28 blocos)
+
+**Como posso ajudá-lo hoje, Dr. Ricardo?**`
     }
-
-    Object.entries(emotionWords).forEach(([emotion, words]) => {
-      if (words.some(word => message.toLowerCase().includes(word))) {
-        emotions.push(emotion)
-      }
-    })
-
-    return emotions
-  }
-
-  /**
-   * Analisar contexto médico
-   */
-  private analyzeMedicalContext(message: string): any {
-    return {
-      hasSymptoms: this.extractEntities(message).length > 0,
-      hasEmotions: this.analyzeEmotions(message).length > 0,
-      mentionsCannabis: message.toLowerCase().includes('cannabis') || 
-                       message.toLowerCase().includes('thc') || 
-                       message.toLowerCase().includes('cbd'),
-      mentionsMedication: message.toLowerCase().includes('medicamento') ||
-                         message.toLowerCase().includes('remédio') ||
-                         message.toLowerCase().includes('tratamento')
-    }
-  }
-
-  /**
-   * Avaliar urgência da mensagem
-   */
-  private assessUrgency(message: string): 'low' | 'medium' | 'high' {
-    const urgentWords = ['urgente', 'emergência', 'grave', 'sério', 'crítico']
-    const hasUrgentWords = urgentWords.some(word => 
-      message.toLowerCase().includes(word)
-    )
-
-    if (hasUrgentWords) return 'high'
     
-    const medicalWords = ['dor', 'sintoma', 'mal-estar', 'problema']
-    const hasMedicalWords = medicalWords.some(word => 
-      message.toLowerCase().includes(word)
-    )
+    // Buscar documentos
+    if (lower.includes('documento') || lower.includes('biblioteca')) {
+      return await this.handleDocumentRequest(message)
+    }
+    
+    // Resposta empática padrão
+    return `🌬️ Bons ventos soprem. Sou a Nôa Esperança, sua IA Residente especializada em Cannabis Medicinal e Nefrologia.
 
-    return hasMedicalWords ? 'medium' : 'low'
+📜 **Minha missão:** Escutar, registrar e devolver sentido à sua fala.
+
+Como posso te ajudar hoje?`
   }
 
   /**
-   * Avaliar complexidade da mensagem
+   * LIDAR COM REQUISIÇÕES DE DOCUMENTOS
    */
-  private assessComplexity(message: string): 'simple' | 'moderate' | 'complex' {
-    const wordCount = message.split(' ').length
-    const hasMedicalTerms = this.extractEntities(message).length > 0
-    const hasMultipleTopics = message.includes(' e ') || message.includes(' mas ')
-
-    if (wordCount > 50 || hasMedicalTerms && hasMultipleTopics) {
-      return 'complex'
-    } else if (wordCount > 20 || hasMedicalTerms) {
-      return 'moderate'
-    } else {
-      return 'simple'
+  private async handleDocumentRequest(message: string): Promise<string> {
+    try {
+      const { data: documents } = await supabase
+        .from('documents')
+        .select('*')
+        .limit(10)
+      
+      if (!documents || documents.length === 0) {
+        return 'Ainda não há documentos na biblioteca.'
+      }
+      
+      const numberMatch = message.match(/\d+/)
+      if (numberMatch) {
+        const index = parseInt(numberMatch[0]) - 1
+        if (documents[index]) {
+          const doc = documents[index]
+          return `**${doc.title}**\n\n${doc.content || doc.summary || 'Conteúdo não disponível.'}\n\nComo posso te ajudar com este documento?`
+        }
+      }
+      
+      const list = documents.map((d, i) => 
+        `${i + 1}. **${d.title}**${d.summary ? ': ' + d.summary : ''}`
+      ).join('\n')
+      
+      return `Encontrei ${documents.length} documento(s) na biblioteca:\n\n${list}\n\nQual documento você gostaria de ler?`
+    } catch (error) {
+      return 'Não consegui acessar a biblioteca no momento.'
     }
   }
 
   /**
-   * Gerar resposta baseada na análise
+   * INICIALIZAR IA
    */
-  private async generateResponse(analysis: any, originalMessage: string): Promise<AIResponse> {
-    const { intent, emotions, medicalContext, urgency, complexity } = analysis
-
-    let response = ""
-    let reasoning = ""
-    let suggestions: string[] = []
-    let followUp: string[] = []
-
-    // Resposta baseada na intenção
-    switch (intent) {
-      case 'medical_symptom':
-        response = this.generateMedicalResponse(analysis)
-        reasoning = "Detectei uma consulta sobre sintomas médicos"
-        suggestions = [
-          "Descreva melhor os sintomas",
-          "Mencione há quanto tempo sente isso",
-          "Informe se há outros sintomas associados"
-        ]
-        break
-
-      case 'cannabis_related':
-        response = this.generateCannabisResponse(analysis)
-        reasoning = "Pergunta relacionada à Cannabis Medicinal"
-        suggestions = [
-          "Consulte um médico especialista",
-          "Verifique a legislação local",
-          "Considere o acompanhamento médico"
-        ]
-        break
-
-      case 'help_request':
-        response = this.generateHelpResponse(analysis)
-        reasoning = "Solicitação de ajuda identificada"
-        suggestions = [
-          "Como posso te ajudar melhor?",
-          "Precisa de orientação médica?",
-          "Quer falar sobre seus sintomas?"
-        ]
-        break
-
-      default:
-        response = this.generateGeneralResponse(analysis)
-        reasoning = "Consulta geral identificada"
-        suggestions = [
-          "Posso esclarecer alguma dúvida?",
-          "Precisa de mais informações?",
-          "Como posso te ajudar?"
-        ]
-    }
-
-    // Adicionar empatia baseada nas emoções detectadas
-    if (emotions.includes('ansiedade')) {
-      response = `Entendo que você está se sentindo ansioso(a). ${response}`
-    } else if (emotions.includes('tristeza')) {
-      response = `Vejo que você está passando por um momento difícil. ${response}`
-    }
-
-    // Ajustar urgência
-    if (urgency === 'high') {
-      response = `⚠️ ${response} Recomendo procurar atendimento médico imediato.`
-    }
-
-    return {
-      id: Date.now().toString(),
-      content: response,
-      confidence: this.calculateConfidence(analysis),
-      reasoning,
-      suggestions,
-      followUp,
-      timestamp: new Date()
-    }
+  private async initializeAI() {
+    console.log('🧠 Inicializando Nôa Esperança - GPT-4 Integration')
+    console.log('📜 Baseado no Documento Mestre Institucional')
+    console.log('👨‍⚕️ Dr. Ricardo Valença - Coordenação Científica')
+    console.log('✅ Nôa Esperança inicializada')
   }
 
   /**
-   * Gerar resposta médica
-   */
-  private generateMedicalResponse(analysis: any): string {
-    const entities = analysis.entities
-    const emotions = analysis.emotions
-
-    if (entities.length > 0) {
-      return `Entendo que você está relatando ${entities.join(', ')}. É importante que você procure um médico para uma avaliação adequada. Enquanto isso, posso te orientar sobre algumas medidas gerais de cuidado.`
-    }
-
-    return "Para te ajudar melhor com questões médicas, preciso que você descreva seus sintomas com mais detalhes. Isso me permitirá dar orientações mais precisas."
-  }
-
-  /**
-   * Gerar resposta sobre Cannabis
-   */
-  private generateCannabisResponse(analysis: any): string {
-    return "Sobre Cannabis Medicinal, é fundamental que você tenha acompanhamento médico especializado. A Cannabis pode ter benefícios terapêuticos, mas deve ser usada com orientação profissional adequada e dentro da legalidade."
-  }
-
-  /**
-   * Gerar resposta de ajuda
-   */
-  private generateHelpResponse(analysis: any): string {
-    return "Estou aqui para te ajudar! Como sua assistente médica especializada, posso te orientar sobre sintomas, tratamentos e cuidados com a saúde. O que você gostaria de saber?"
-  }
-
-  /**
-   * Gerar resposta geral
-   */
-  private generateGeneralResponse(analysis: any): string {
-    return "Olá! Sou a Nôa Esperança, sua assistente médica especializada em Cannabis Medicinal. Como posso te ajudar hoje? Posso te orientar sobre sintomas, tratamentos e cuidados com a saúde."
-  }
-
-  /**
-   * Calcular confiança da resposta
-   */
-  private calculateConfidence(analysis: any): number {
-    let confidence = 0.5 // Base
-
-    if (analysis.entities.length > 0) confidence += 0.2
-    if (analysis.emotions.length > 0) confidence += 0.1
-    if (analysis.medicalContext.hasSymptoms) confidence += 0.2
-
-    return Math.min(confidence, 1.0)
-  }
-
-  /**
-   * Salvar na memória
+   * SALVAR NA MEMÓRIA
    */
   private async saveToMemory(userMessage: string, response: AIResponse) {
     const memory: AIMemory = {
@@ -376,35 +265,25 @@ export class NoaResidentAI {
       content: `${userMessage} -> ${response.content}`,
       importance: response.confidence,
       timestamp: new Date(),
-      tags: ['conversation', 'medical']
+      tags: ['conversation']
     }
 
     this.memory.push(memory)
     
-    // Manter apenas as últimas 100 memórias
     if (this.memory.length > 100) {
       this.memory = this.memory.slice(-100)
     }
   }
 
   /**
-   * Carregar memória persistente
-   */
-  private async loadMemory() {
-    // Implementar carregamento de memória persistente
-    // Por enquanto, inicializar vazio
-    this.memory = []
-  }
-
-  /**
-   * Criar resposta de fallback
+   * CRIAR RESPOSTA
    */
   private createResponse(content: string): AIResponse {
     return {
       id: Date.now().toString(),
       content,
       confidence: 0.5,
-      reasoning: "Resposta de fallback",
+      reasoning: "Resposta automática",
       suggestions: [],
       followUp: [],
       timestamp: new Date()
@@ -412,7 +291,7 @@ export class NoaResidentAI {
   }
 
   /**
-   * Obter estatísticas da IA
+   * OBTER ESTATÍSTICAS
    */
   getStats() {
     return {
@@ -424,22 +303,22 @@ export class NoaResidentAI {
   }
 }
 
-// Configuração padrão da IA Residente
+// Configuração da IA Nôa Esperança
 export const residentAIConfig: ResidentAIConfig = {
-  model: "noa-esperanca-v1",
+  model: "noa-esperanza-v2.0-gpt4",
   temperature: 0.7,
   maxTokens: 1000,
-  systemPrompt: "Você é a Nôa Esperança, uma assistente médica especializada em Cannabis Medicinal. Use a Arte da Entrevista Clínica e o Sistema IMRE Triaxial para fornecer respostas empáticas, técnicas e educativas.",
+  systemPrompt: "Você é a Nôa Esperança, IA Residente baseada no Documento Mestre v.2.0.",
   capabilities: [
-    "Análise de sintomas",
+    "Avaliação Clínica Inicial (Sistema IMRE)",
     "Orientação sobre Cannabis Medicinal",
-    "Suporte emocional",
-    "Educação médica",
-    "Acompanhamento terapêutico"
+    "Suporte Emocional",
+    "Educação Médica",
+    "Acompanhamento Terapêutico"
   ],
   personality: {
-    empathy: 0.9,
-    technicality: 0.8,
-    education: 0.9
+    empathy: 0.95,
+    technicality: 0.85,
+    education: 0.90
   }
 }

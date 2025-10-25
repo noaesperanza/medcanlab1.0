@@ -6,7 +6,7 @@ import {
   ChevronDown,
   Users,
   BookOpen,
-  Microscope,
+  FlaskConical,
   Heart,
   Brain,
   MessageCircle
@@ -58,7 +58,7 @@ const UserTypeNavigation: React.FC<UserTypeNavigationProps> = ({
       id: 'pesquisa',
       name: 'Pesquisa',
       description: 'Área de Pesquisa',
-      icon: Microscope,
+      icon: FlaskConical,
       color: 'text-pink-400',
       bgColor: 'bg-pink-500/10',
       borderColor: 'border-pink-500/20',
@@ -96,7 +96,7 @@ const UserTypeNavigation: React.FC<UserTypeNavigationProps> = ({
         ]
       case 'pesquisa':
         return [
-          { name: 'Dashboard Pesquisa', icon: Microscope, href: '/app/pesquisa-dashboard' },
+          { name: 'Dashboard Pesquisa', icon: FlaskConical, href: '/app/pesquisa-dashboard' },
           { name: 'Meus Pacientes', icon: Users, href: '/app/pesquisa-patients' },
           { name: 'Avaliações', icon: Heart, href: '/app/pesquisa-assessments' },
           { name: 'Chat Global + Fórum', icon: MessageCircle, href: '/app/pesquisa-chat' },

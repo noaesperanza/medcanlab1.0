@@ -7,9 +7,9 @@ import {
   Brain, 
   ArrowRight,
   FileText,
-  UserCheck,
+  User,
   Award,
-  Sparkles
+  Zap
 } from 'lucide-react'
 import { useNoa } from '../contexts/NoaContext'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'

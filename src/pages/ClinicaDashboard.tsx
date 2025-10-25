@@ -22,7 +22,7 @@ import {
   Activity,
   Brain,
   BookOpen,
-  Microscope
+  FlaskConical
 } from 'lucide-react'
 import { useNoa } from '../contexts/NoaContext'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'

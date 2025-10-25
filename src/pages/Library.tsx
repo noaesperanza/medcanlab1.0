@@ -3,13 +3,30 @@ import {
   Search, 
   Eye, 
   FileText, 
-  Star
+  Star,
+  Upload,
+  X,
+  Image as ImageIcon,
+  BookOpen,
+  FileText as ReportIcon,
+  Brain,
+  Users,
+  GraduationCap,
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 const Library: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedType, setSelectedType] = useState('all')
+  const [showUploadModal, setShowUploadModal] = useState(false)
+  const [uploadCategory, setUploadCategory] = useState('ai-residente')
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadSuccess, setUploadSuccess] = useState(false)
 
   const categories = [
     { id: 'all', name: 'Todos', count: 1247 },
@@ -37,7 +54,7 @@ const Library: React.FC = () => {
       type: 'pdf',
       size: '2.4 MB',
       uploadDate: '2025-01-10',
-      author: 'Dr. João Silva',
+      author: 'Dr. Eduardo Faveret',
       downloads: 1247,
       rating: 4.9,
       tags: ['AEC', 'Entrevista', 'Humanização'],
@@ -150,6 +167,123 @@ const Library: React.FC = () => {
     return date.toLocaleDateString('pt-BR')
   }
 
+  const handleUpload = async () => {
+    if (!uploadedFile) return
+
+    setIsUploading(true)
+    setUploadProgress(0)
+
+    try {
+      // Simular progresso de upload
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval)
+            return 90
+          }
+          return prev + 10
+        })
+      }, 200)
+
+      // Aqui você pode adicionar a lógica de upload para Supabase Storage
+      // Por exemplo, upload para bucket específico baseado na categoria
+      const fileExt = uploadedFile.name.split('.').pop()
+      const fileName = `${Date.now()}.${fileExt}`
+      const bucketName = uploadCategory === 'ai-avatar' ? 'avatar' : 'documents'
+
+      // Upload para Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(bucketName)
+        .upload(fileName, uploadedFile)
+
+      if (uploadError) throw uploadError
+
+      // Se for o avatar da IA, atualizar a referência e emitir evento
+      if (uploadCategory === 'ai-avatar') {
+        const { data: { publicUrl } } = supabase.storage
+          .from('avatar')
+          .getPublicUrl(fileName)
+        
+        console.log('✅ Avatar enviado com sucesso!')
+        console.log('Nome do arquivo:', fileName)
+        console.log('URL pública:', publicUrl)
+        
+        // Emitir evento personalizado para notificar outros componentes
+        const event = new CustomEvent('avatarUpdated', { 
+          detail: { url: publicUrl } 
+        })
+        console.log('📢 Disparando evento avatarUpdated com URL:', publicUrl)
+        window.dispatchEvent(event)
+        
+        // Aviso visual
+        setTimeout(() => {
+          alert('Avatar atualizado! A página de chat será atualizada automaticamente.')
+        }, 500)
+      }
+
+      clearInterval(progressInterval)
+      setUploadProgress(100)
+      setUploadSuccess(true)
+
+      setTimeout(() => {
+        setShowUploadModal(false)
+        setUploadedFile(null)
+        setUploadProgress(0)
+        setUploadSuccess(false)
+      }, 2000)
+    } catch (error) {
+      console.error('Erro ao fazer upload:', error)
+      alert('Erro ao fazer upload. Tente novamente.')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const uploadCategories = [
+    {
+      id: 'ai-avatar',
+      name: 'Avatar IA Residente',
+      description: 'Imagem do avatar da Nôa Esperança',
+      icon: <Brain className="w-5 h-5" />,
+      color: 'from-purple-500 to-pink-500'
+    },
+    {
+      id: 'ai-documents',
+      name: 'Documentos IA Residente',
+      description: 'Documentos vinculados à base de conhecimento da IA',
+      icon: <Brain className="w-5 h-5" />,
+      color: 'from-blue-500 to-cyan-500'
+    },
+    {
+      id: 'student',
+      name: 'Materiais para Alunos',
+      description: 'Aulas, cursos e material didático',
+      icon: <GraduationCap className="w-5 h-5" />,
+      color: 'from-green-500 to-emerald-500'
+    },
+    {
+      id: 'professional',
+      name: 'Prescrições e Protocolos',
+      description: 'Documentos para profissionais de saúde',
+      icon: <FileText className="w-5 h-5" />,
+      color: 'from-orange-500 to-red-500'
+    },
+    {
+      id: 'reports',
+      name: 'Relatórios e Análises',
+      description: 'Relatórios clínicos e análises',
+      icon: <ReportIcon className="w-5 h-5" />,
+      color: 'from-indigo-500 to-purple-500'
+    },
+    {
+      id: 'research',
+      name: 'Artigos Científicos',
+      description: 'Pesquisas e evidências científicas',
+      icon: <BookOpen className="w-5 h-5" />,
+      color: 'from-amber-500 to-yellow-500'
+    }
+  ]
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -211,92 +345,82 @@ const Library: React.FC = () => {
             </div>
 
             {/* Upload Button */}
-            <button className="btn-primary flex items-center justify-center">
-              <span className="mr-2">➕</span>
+            <button 
+              onClick={() => setShowUploadModal(true)}
+              className="btn-primary flex items-center justify-center"
+            >
+              <Upload className="w-5 h-5 mr-2" />
               Upload
             </button>
           </div>
         </div>
 
-        {/* Documents Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Documents Grid - Compact Version */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {filteredDocuments.map((doc) => (
             <div key={doc.id} className="card card-hover overflow-hidden">
-              {/* Document Thumbnail */}
-              <div className="relative h-48 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
+              {/* Document Thumbnail - Compact */}
+              <div className="relative h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {getTypeIcon(doc.type)}
+                  <div className="text-3xl">
+                    {getTypeIcon(doc.type)}
+                  </div>
                 </div>
                 {doc.isLinkedToAI && (
-                  <div className="absolute top-2 right-2">
-                    <div className="bg-primary-500 text-slate-900 dark:text-white px-2 py-1 rounded-full text-xs font-medium">
+                  <div className="absolute top-1 right-1">
+                    <div className="bg-primary-500 text-slate-900 dark:text-white px-1.5 py-0.5 rounded-full text-xs font-medium">
                       IA
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Document Content */}
-              <div className="p-6">
-                {/* Title and Description */}
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white dark:text-slate-100 mb-2 line-clamp-2">
+              {/* Document Content - Compact */}
+              <div className="p-3 bg-white dark:bg-slate-800">
+                {/* Title - Single line */}
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 line-clamp-1">
                   {doc.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
-                  {doc.description}
-                </p>
+                
+                {/* Author and Date in one line */}
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
+                  <span>{doc.author}</span>
+                  <span>{formatDate(doc.uploadDate)}</span>
+                </div>
 
-                {/* Tags */}
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {doc.tags.map((tag, index) => (
+                {/* Tags - Compact */}
+                <div className="flex flex-wrap gap-1 mb-2">
+                  {doc.tags.slice(0, 2).map((tag, index) => (
                     <span
                       key={index}
-                      className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded-full"
+                      className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
 
-                {/* Document Info */}
-                <div className="space-y-2 mb-4 text-sm text-gray-500 dark:text-gray-400">
-                  <div className="flex items-center justify-between">
-                    <span className="flex items-center">
-                      <span className="mr-1">👤</span>
-                      {doc.author}
-                    </span>
-                    <span className="flex items-center">
-                      <span className="mr-1">🕒</span>
-                      {formatDate(doc.uploadDate)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>{doc.size}</span>
-                    <span className="flex items-center">
-                      <span className="mr-1">⬇️</span>
-                      {doc.downloads}
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 mr-1 text-yellow-500" />
-                    <span>{doc.rating}</span>
-                  </div>
+                {/* Stats - Compact */}
+                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
+                  <span>{doc.size}</span>
+                  <span className="flex items-center">
+                    <span className="mr-1">⬇️</span>
+                    {doc.downloads}
+                  </span>
+                  <span className="flex items-center">
+                    <Star className="w-3 h-3 mr-0.5 text-yellow-500 fill-yellow-500" />
+                    {doc.rating}
+                  </span>
                 </div>
 
-                {/* Actions */}
-                <div className="flex space-x-2">
-                  <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-slate-900 dark:text-white py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                    <span className="mr-2">⬇️</span>
+                {/* Actions - Compact */}
+                <div className="flex space-x-1">
+                  <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-slate-900 dark:text-white py-1.5 px-2 rounded text-xs transition-colors duration-200">
                     Baixar
                   </button>
-                  <button className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg transition-colors duration-200">
-                    <Eye className="w-4 h-4" />
+                  <button className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-1.5 px-2 rounded transition-colors duration-200">
+                    <Eye className="w-3 h-3" />
                   </button>
-                  {doc.isLinkedToAI && (
-                    <button className="bg-accent-600 hover:bg-accent-700 text-slate-900 dark:text-white py-2 px-4 rounded-lg transition-colors duration-200">
-                      <span>#</span>
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
@@ -340,6 +464,158 @@ const Library: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-slate-800 rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-slate-700">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">Upload de Documentos</h2>
+                <button
+                  onClick={() => setShowUploadModal(false)}
+                  className="text-slate-400 hover:text-white transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6">
+              {/* Upload Categories */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-slate-300 mb-3">
+                  Selecione a Categoria do Upload
+                </label>
+                <div className="grid grid-cols-2 gap-3">
+                  {uploadCategories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => setUploadCategory(category.id)}
+                      className={`p-4 rounded-lg border-2 transition-all ${
+                        uploadCategory === category.id
+                          ? 'border-purple-500 bg-purple-500/10'
+                          : 'border-slate-600 hover:border-slate-500 bg-slate-700/50'
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${category.color} flex items-center justify-center mb-3 text-white`}>
+                        {category.icon}
+                      </div>
+                      <h3 className="font-semibold text-white text-sm mb-1">
+                        {category.name}
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        {category.description}
+                      </p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* File Upload Area */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-slate-300 mb-3">
+                  Selecione o Arquivo
+                </label>
+                <div className="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center hover:border-purple-500 transition-colors">
+                  <input
+                    type="file"
+                    id="file-upload"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) setUploadedFile(file)
+                    }}
+                    accept={uploadCategory === 'ai-avatar' ? 'image/*' : '*'}
+                  />
+                  {uploadedFile ? (
+                    <div className="space-y-3">
+                      <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
+                      <div>
+                        <p className="text-white font-medium">{uploadedFile.name}</p>
+                        <p className="text-sm text-slate-400">
+                          {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setUploadedFile(null)}
+                        className="text-sm text-red-400 hover:text-red-300"
+                      >
+                        Remover arquivo
+                      </button>
+                    </div>
+                  ) : (
+                    <label
+                      htmlFor="file-upload"
+                      className="cursor-pointer"
+                    >
+                      <Upload className="w-16 h-16 text-slate-400 mx-auto mb-3" />
+                      <p className="text-white font-medium mb-1">
+                        Clique para selecionar ou arraste o arquivo
+                      </p>
+                      <p className="text-sm text-slate-400">
+                        {uploadCategory === 'ai-avatar' ? 'PNG, JPG ou SVG (recomendado: PNG, 512x512px)' : 'PDF, DOCX, MP4, Imagens, etc.'}
+                      </p>
+                    </label>
+                  )}
+                </div>
+              </div>
+
+              {/* Upload Progress */}
+              {isUploading && (
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-slate-300">Enviando...</span>
+                    <span className="text-sm text-slate-300">{uploadProgress}%</span>
+                  </div>
+                  <div className="w-full bg-slate-700 rounded-full h-2">
+                    <div
+                      className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${uploadProgress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Success Message */}
+              {uploadSuccess && (
+                <div className="mb-6 p-4 bg-green-500/10 border border-green-500 rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle className="w-6 h-6 text-green-500" />
+                    <div>
+                      <p className="font-medium text-green-400">Upload concluído com sucesso!</p>
+                      <p className="text-sm text-slate-300">
+                        {uploadCategory === 'ai-avatar' 
+                          ? 'O avatar da IA residente foi atualizado.' 
+                          : 'O documento foi adicionado à biblioteca.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Modal Actions */}
+              <div className="flex space-x-3">
+                <button
+                  onClick={() => setShowUploadModal(false)}
+                  className="flex-1 px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleUpload}
+                  disabled={!uploadedFile || isUploading}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isUploading ? 'Enviando...' : 'Fazer Upload'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

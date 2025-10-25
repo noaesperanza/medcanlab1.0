@@ -18,7 +18,7 @@ import {
   Target,
   Award,
   Brain,
-  Microscope,
+  FlaskConical,
   FileText,
   Users
 } from 'lucide-react'
@@ -173,7 +173,7 @@ const PesquisaDashboard: React.FC = () => {
               <div className="bg-slate-800 rounded-xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="p-3 bg-pink-500/10 rounded-lg">
-                    <Microscope className="w-6 h-6 text-pink-400" />
+                    <FlaskConical className="w-6 h-6 text-pink-400" />
                   </div>
                   <TrendingUp className="w-5 h-5 text-green-400" />
                 </div>

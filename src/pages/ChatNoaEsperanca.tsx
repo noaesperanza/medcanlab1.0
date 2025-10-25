@@ -6,7 +6,7 @@ import {
   Video, 
   VideoOff, 
   Send, 
-  Sparkles,
+  Zap,
   Heart,
   Brain,
   Users,
@@ -99,7 +99,7 @@ const ChatNoaEsperanca: React.FC = () => {
                   <span>Suporte Médico</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm text-slate-300">
-                  <Sparkles className="w-5 h-5 text-purple-400" />
+                  <Zap className="w-5 h-5 text-purple-400" />
                   <span>Memória Persistente</span>
                 </div>
               </div>

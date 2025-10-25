@@ -9,7 +9,7 @@ import {
   Heart,
   Brain,
   Users,
-  Sparkles,
+  Zap as SparklesIcon,
   Bot
 } from 'lucide-react'
 
@@ -103,7 +103,7 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
                 onClick={() => setShowPersonality(!showPersonality)}
                 className="text-white/80 hover:text-white transition-colors"
               >
-                <Sparkles className="w-5 h-5" />
+                <SparklesIcon className="w-5 h-5" />
               </button>
             </div>
             
@@ -125,7 +125,7 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
                     <span>Suporte Médico</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Sparkles className="w-3 h-3" />
+                    <SparklesIcon className="w-3 h-3" />
                     <span>Memória Persistente</span>
                   </div>
                 </div>
