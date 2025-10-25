@@ -12,24 +12,20 @@ import {
   AlertCircle,
   ChevronDown
 } from 'lucide-react'
+import { PROFESSIONALS_ARRAY } from '../constants/professionals'
 
 const PatientChat: React.FC = () => {
   const [message, setMessage] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [isVideoCall, setIsVideoCall] = useState(false)
-  const [selectedProfessional, setSelectedProfessional] = useState('dr-ricardo-valenca')
+  const [selectedProfessional, setSelectedProfessional] = useState('ricardo-valenca')
   const [showProfessionalSelect, setShowProfessionalSelect] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const professionals = [
-    { id: 'dr-ricardo-valenca', name: 'Dr. Ricardo Valença', specialty: 'Cannabis Medicinal & Nefrologia', avatar: 'RV', online: true, consultorio: 'Consultório Escola Ricardo Valença' },
-    { id: 'dr-eduardo-faveret', name: 'Dr. Eduardo Faveret', specialty: 'Cannabis Medicinal & Arte da Entrevista Clínica', avatar: 'EF', online: true, consultorio: 'Consultório Escola Eduardo Faveret' }
-  ]
-
-  const currentProfessional = professionals.find(p => p.id === selectedProfessional) || professionals[0]
+  const currentProfessional = PROFESSIONALS_ARRAY.find(p => p.id === selectedProfessional) || PROFESSIONALS_ARRAY[0]
 
   const getMessagesForProfessional = (professionalId: string) => {
-    const professional = professionals.find(p => p.id === professionalId)
+    const professional = PROFESSIONALS_ARRAY.find(p => p.id === professionalId)
     return [
       {
         id: 1,
@@ -140,7 +136,7 @@ const PatientChat: React.FC = () => {
             {showProfessionalSelect && (
               <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-10">
                 <div className="p-2">
-                  {professionals.map((professional) => (
+                  {PROFESSIONALS_ARRAY.map((professional) => (
                     <button
                       key={professional.id}
                       onClick={() => {
