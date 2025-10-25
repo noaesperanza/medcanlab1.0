@@ -54,6 +54,11 @@ const PatientDashboard: React.FC = () => {
     navigate('/app/chat-noa-esperanca')
   }
 
+  const handleOpenNoaChatInPage = () => {
+    // Open chat in current page
+    toggleChat()
+  }
+
   const handleViewReports = () => {
     navigate('/app/reports')
   }

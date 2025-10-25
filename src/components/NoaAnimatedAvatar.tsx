@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Bot, Sparkles } from 'lucide-react'
+import avatarNoaImage from '../assets/avatar-noa.jpg'
 
 interface NoaAnimatedAvatarProps {
   isSpeaking: boolean
@@ -92,19 +93,32 @@ const NoaAnimatedAvatar: React.FC<NoaAnimatedAvatarProps> = ({
           transform: `scale(${pulseIntensity})`
         }}
       >
-        {/* Avatar Content */}
-        <div className="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center relative">
-          {/* Avatar Image Placeholder - Aqui seria a imagem real do avatar-noa.jpg */}
-          <div className="relative">
-            <Bot className={`${iconSizes[size]} text-white`} />
-            
-            {/* Efeito de brilho quando falando */}
-            {isSpeaking && (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Sparkles className={`${iconSizes[size]} text-white/50 animate-spin`} />
-              </div>
-            )}
-          </div>
+        {/* Avatar Content - Usando imagem real da Nôa */}
+        <div className="w-full h-full flex items-center justify-center relative">
+          <img 
+            src={avatarNoaImage} 
+            alt="Nôa Esperança" 
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              // Fallback para ícone se a imagem não carregar
+              const target = e.target as HTMLImageElement
+              target.style.display = 'none'
+              target.parentElement!.innerHTML = `
+                <div class="w-full h-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+                  <svg class="${iconSizes[size]} text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                </div>
+              `
+            }}
+          />
+          
+          {/* Overlay com efeito de brilho quando falando */}
+          {isSpeaking && (
+            <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-sm">
+              <Sparkles className={`${iconSizes[size]} text-white/50 animate-pulse`} />
+            </div>
+          )}
         </div>
       </div>
       
