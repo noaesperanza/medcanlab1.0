@@ -1,18 +1,36 @@
 import React, { useState } from 'react'
 import { 
   User, Stethoscope, MessageCircle, FileText, Share2, 
-  Heart, Brain, Users, ChevronRight, Download, Send
+  Heart, Brain, Users, ChevronRight, Download, Send,
+  BookOpen, Award, Clock, Star, Play, CheckCircle
 } from 'lucide-react'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
 import { useNoa } from '../contexts/NoaContext'
 
 interface Page {
-  id: 'patient' | 'professional'
+  id: 'patient' | 'professional' | 'courses'
   name: string
   description: string
   icon: React.ElementType
   color: string
   bgColor: string
+}
+
+interface Course {
+  id: string
+  title: string
+  description: string
+  instructor: string
+  duration: string
+  level: string
+  price: string
+  originalPrice?: string
+  rating: number
+  students: number
+  progress?: number
+  isCompleted?: boolean
+  badges: string[]
+  category: string
 }
 
 const AdminDashboard: React.FC = () => {
@@ -71,6 +89,97 @@ const AdminDashboard: React.FC = () => {
       color: 'from-green-600 to-teal-500',
       bgColor: 'bg-green-500/10',
     },
+    {
+      id: 'courses',
+      name: 'Cursos',
+      description: 'MedCannLab - Cursos de Cannabis Medicinal',
+      icon: BookOpen,
+      color: 'from-purple-600 to-pink-500',
+      bgColor: 'bg-purple-500/10',
+    },
+  ]
+
+  const courses: Course[] = [
+    {
+      id: '1',
+      title: 'Pós-Graduação Cannabis Medicinal',
+      description: 'Especialização completa de 520 horas em cannabis medicinal e terapêutica com Dr. Eduardo Faveret',
+      instructor: 'Dr. Eduardo Faveret',
+      duration: '520h',
+      level: 'Avançado',
+      price: 'R$ 2.999',
+      originalPrice: 'R$ 3.999',
+      rating: 4.8,
+      students: 856,
+      progress: 75,
+      isCompleted: false,
+      badges: ['Cannabis', 'Pós-Graduação', 'Certificação'],
+      category: 'Especialização'
+    },
+    {
+      id: '2',
+      title: 'Arte da Entrevista Clínica (AEC)',
+      description: 'Metodologia AEC completa para entrevistas clínicas humanizadas em Cannabis Medicinal',
+      instructor: 'Dr. Eduardo Faveret',
+      duration: '40h',
+      level: 'Intermediário',
+      price: 'R$ 299',
+      originalPrice: 'R$ 399',
+      rating: 4.9,
+      students: 1247,
+      progress: 100,
+      isCompleted: true,
+      badges: ['AEC', 'Entrevista', 'Humanização'],
+      category: 'Metodologia'
+    },
+    {
+      id: '3',
+      title: 'Sistema IMRE Triaxial',
+      description: 'Avaliação clínica com 28 blocos semânticos para Cannabis Medicinal',
+      instructor: 'Dr. Eduardo Faveret',
+      duration: '20h',
+      level: 'Iniciante',
+      price: 'R$ 199',
+      originalPrice: 'R$ 299',
+      rating: 4.7,
+      students: 634,
+      progress: 80,
+      isCompleted: false,
+      badges: ['IMRE', 'Avaliação', 'Clínica'],
+      category: 'Avaliação'
+    },
+    {
+      id: '4',
+      title: 'Neurofarmacologia da Cannabis',
+      description: 'Fundamentos neurofarmacológicos dos canabinoides e sistema endocanabinoide',
+      instructor: 'Dr. Eduardo Faveret',
+      duration: '30h',
+      level: 'Avançado',
+      price: 'R$ 399',
+      originalPrice: 'R$ 499',
+      rating: 4.6,
+      students: 423,
+      progress: 40,
+      isCompleted: false,
+      badges: ['Neurofarmacologia', 'Cannabis', 'Farmacologia'],
+      category: 'Farmacologia'
+    },
+    {
+      id: '5',
+      title: 'LGPD na Medicina',
+      description: 'Privacidade e proteção de dados na prática médica com Cannabis',
+      instructor: 'Dr. Eduardo Faveret',
+      duration: '15h',
+      level: 'Iniciante',
+      price: 'R$ 149',
+      originalPrice: 'R$ 199',
+      rating: 4.5,
+      students: 312,
+      progress: 0,
+      isCompleted: false,
+      badges: ['LGPD', 'Privacidade', 'Direito'],
+      category: 'Direito'
+    }
   ]
 
   const currentPage = pages.find(page => page.id === activePage) || pages[0]
@@ -372,6 +481,145 @@ const AdminDashboard: React.FC = () => {
                         <Download className="w-4 h-4" />
                         <span>Baixar Relatório</span>
                       </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activePage === 'courses' && (
+              <div className="space-y-6">
+                {/* Courses Header */}
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <BookOpen className="w-8 h-8 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-semibold text-white">MedCannLab - Cursos</h4>
+                        <p className="text-sm text-slate-400">Cursos de Cannabis Medicinal</p>
+                        <p className="text-xs text-slate-500">Dr. Eduardo Faveret - Pós-Graduação</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-purple-400">5</div>
+                      <div className="text-sm text-slate-400">Cursos Disponíveis</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Courses Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {courses.map((course) => (
+                    <div key={course.id} className="bg-slate-800 rounded-xl p-6 hover:bg-slate-700 transition-colors">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <h5 className="text-lg font-semibold text-white mb-2">{course.title}</h5>
+                          <p className="text-sm text-slate-400 mb-3">{course.description}</p>
+                          <div className="flex items-center space-x-4 text-sm text-slate-500 mb-4">
+                            <span className="flex items-center space-x-1">
+                              <Clock className="w-4 h-4" />
+                              <span>{course.duration}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <Users className="w-4 h-4" />
+                              <span>{course.students}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <Star className="w-4 h-4 text-yellow-400" />
+                              <span>{course.rating}</span>
+                            </span>
+                          </div>
+                        </div>
+                        {course.isCompleted && (
+                          <CheckCircle className="w-6 h-6 text-green-400" />
+                        )}
+                      </div>
+
+                      {/* Progress Bar */}
+                      {course.progress !== undefined && course.progress > 0 && (
+                        <div className="mb-4">
+                          <div className="flex justify-between text-sm text-slate-400 mb-1">
+                            <span>Progresso</span>
+                            <span>{course.progress}%</span>
+                          </div>
+                          <div className="w-full bg-slate-600 rounded-full h-2">
+                            <div 
+                              className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" 
+                              style={{ width: `${course.progress}%` }}
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Badges */}
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {course.badges.map((badge, index) => (
+                          <span key={index} className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full">
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Price and Action */}
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-lg font-bold text-white">{course.price}</div>
+                          {course.originalPrice && (
+                            <div className="text-sm text-slate-400 line-through">{course.originalPrice}</div>
+                          )}
+                        </div>
+                        <button className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-semibold transition-colors ${
+                          course.isCompleted 
+                            ? 'bg-green-600 text-white hover:bg-green-700' 
+                            : 'bg-purple-600 text-white hover:bg-purple-700'
+                        }`}>
+                          {course.isCompleted ? (
+                            <>
+                              <CheckCircle className="w-4 h-4" />
+                              <span>Concluído</span>
+                            </>
+                          ) : (
+                            <>
+                              <Play className="w-4 h-4" />
+                              <span>Iniciar</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Course Categories */}
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <h5 className="text-lg font-semibold text-white mb-4">📚 Categorias de Cursos</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="bg-slate-700 rounded-lg p-4">
+                      <h6 className="font-semibold text-white mb-2">Especialização</h6>
+                      <p className="text-sm text-slate-400 mb-2">Pós-Graduação Cannabis Medicinal</p>
+                      <div className="text-xs text-slate-500">520h • Avançado</div>
+                    </div>
+                    <div className="bg-slate-700 rounded-lg p-4">
+                      <h6 className="font-semibold text-white mb-2">Metodologia</h6>
+                      <p className="text-sm text-slate-400 mb-2">Arte da Entrevista Clínica (AEC)</p>
+                      <div className="text-xs text-slate-500">40h • Intermediário</div>
+                    </div>
+                    <div className="bg-slate-700 rounded-lg p-4">
+                      <h6 className="font-semibold text-white mb-2">Avaliação</h6>
+                      <p className="text-sm text-slate-400 mb-2">Sistema IMRE Triaxial</p>
+                      <div className="text-xs text-slate-500">20h • Iniciante</div>
+                    </div>
+                    <div className="bg-slate-700 rounded-lg p-4">
+                      <h6 className="font-semibold text-white mb-2">Farmacologia</h6>
+                      <p className="text-sm text-slate-400 mb-2">Neurofarmacologia da Cannabis</p>
+                      <div className="text-xs text-slate-500">30h • Avançado</div>
+                    </div>
+                    <div className="bg-slate-700 rounded-lg p-4">
+                      <h6 className="font-semibold text-white mb-2">Direito</h6>
+                      <p className="text-sm text-slate-400 mb-2">LGPD na Medicina</p>
+                      <div className="text-xs text-slate-500">15h • Iniciante</div>
                     </div>
                   </div>
                 </div>
