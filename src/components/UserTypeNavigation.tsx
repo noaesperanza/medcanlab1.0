@@ -13,8 +13,8 @@ import {
 } from 'lucide-react'
 
 interface UserTypeNavigationProps {
-  currentUserType: 'professional' | 'student' | 'patient' | 'admin'
-  onUserTypeChange: (userType: 'professional' | 'student' | 'patient' | 'admin') => void
+  currentUserType: 'professional' | 'student' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa'
+  onUserTypeChange: (userType: 'professional' | 'student' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa') => void
 }
 
 const UserTypeNavigation: React.FC<UserTypeNavigationProps> = ({
@@ -25,36 +25,6 @@ const UserTypeNavigation: React.FC<UserTypeNavigationProps> = ({
 
   const userTypes = [
     {
-      id: 'professional',
-      name: 'Profissional',
-      description: 'Área Clínica',
-      icon: Stethoscope,
-      color: 'text-blue-400',
-      bgColor: 'bg-blue-500/10',
-      borderColor: 'border-blue-500/20',
-      href: '/app/professional-dashboard'
-    },
-    {
-      id: 'student',
-      name: 'Aluno',
-      description: 'Área de Ensino',
-      icon: GraduationCap,
-      color: 'text-green-400',
-      bgColor: 'bg-green-500/10',
-      borderColor: 'border-green-500/20',
-      href: '/app/student-dashboard'
-    },
-    {
-      id: 'patient',
-      name: 'Paciente',
-      description: 'Área de Pesquisa',
-      icon: User,
-      color: 'text-purple-400',
-      bgColor: 'bg-purple-500/10',
-      borderColor: 'border-purple-500/20',
-      href: '/app/patient-dashboard'
-    },
-    {
       id: 'admin',
       name: 'Administrador',
       description: 'Gestão da Plataforma',
@@ -63,6 +33,36 @@ const UserTypeNavigation: React.FC<UserTypeNavigationProps> = ({
       bgColor: 'bg-orange-500/10',
       borderColor: 'border-orange-500/20',
       href: '/app/dashboard'
+    },
+    {
+      id: 'clinica',
+      name: 'Clínica',
+      description: 'Área Clínica',
+      icon: Stethoscope,
+      color: 'text-blue-400',
+      bgColor: 'bg-blue-500/10',
+      borderColor: 'border-blue-500/20',
+      href: '/app/clinica-dashboard'
+    },
+    {
+      id: 'ensino',
+      name: 'Ensino',
+      description: 'Área de Ensino',
+      icon: BookOpen,
+      color: 'text-green-400',
+      bgColor: 'bg-green-500/10',
+      borderColor: 'border-green-500/20',
+      href: '/app/ensino-dashboard'
+    },
+    {
+      id: 'pesquisa',
+      name: 'Pesquisa',
+      description: 'Área de Pesquisa',
+      icon: Microscope,
+      color: 'text-pink-400',
+      bgColor: 'bg-pink-500/10',
+      borderColor: 'border-pink-500/20',
+      href: '/app/pesquisa-dashboard'
     }
   ]
 
@@ -70,29 +70,37 @@ const UserTypeNavigation: React.FC<UserTypeNavigationProps> = ({
 
   const getServiceAreas = (userType: string) => {
     switch (userType) {
-      case 'professional':
+      case 'admin':
         return [
-          { name: 'Dashboard Clínico', icon: Stethoscope, href: '/app/professional-dashboard' },
-          { name: 'Pacientes', icon: Users, href: '/app/professional-patients' },
-          { name: 'Avaliações', icon: Heart, href: '/app/professional-assessments' },
-          { name: 'Chat com Pacientes', icon: MessageCircle, href: '/app/professional-chat' },
-          { name: 'Relatórios', icon: BookOpen, href: '/app/professional-reports' }
+          { name: 'Dashboard Administrativo', icon: Users, href: '/app/dashboard' },
+          { name: 'Gestão de Usuários', icon: User, href: '/app/admin-users' },
+          { name: 'Relatórios Gerais', icon: BookOpen, href: '/app/admin-reports' },
+          { name: 'Configurações', icon: Stethoscope, href: '/app/admin-settings' }
         ]
-      case 'student':
+      case 'clinica':
         return [
-          { name: 'Dashboard Acadêmico', icon: GraduationCap, href: '/app/student-dashboard' },
-          { name: 'Cursos', icon: BookOpen, href: '/app/student-courses' },
-          { name: 'Arte da Entrevista Clínica', icon: Heart, href: '/app/arte-entrevista-clinica' },
-          { name: 'Cannabis Medicinal', icon: Brain, href: '/app/cannabis-course' },
-          { name: 'Avaliações', icon: Stethoscope, href: '/app/student-assessments' }
+          { name: 'Dashboard Clínica', icon: Stethoscope, href: '/app/clinica-dashboard' },
+          { name: 'Meus Pacientes', icon: Users, href: '/app/clinica-patients' },
+          { name: 'Avaliações', icon: Heart, href: '/app/clinica-assessments' },
+          { name: 'Chat Global + Fórum', icon: MessageCircle, href: '/app/clinica-chat' },
+          { name: 'Relatórios', icon: BookOpen, href: '/app/clinica-reports' }
         ]
-      case 'patient':
+      case 'ensino':
         return [
-          { name: 'Dashboard do Paciente', icon: User, href: '/app/patient-dashboard' },
-          { name: 'Minha Saúde', icon: Heart, href: '/app/patient-health' },
-          { name: 'Chat com Nôa', icon: MessageCircle, href: '/app/chat-noa-esperanca' },
-          { name: 'Relatórios', icon: BookOpen, href: '/app/patient-reports' },
-          { name: 'Compartilhamento', icon: Users, href: '/app/patient-sharing' }
+          { name: 'Dashboard Ensino', icon: BookOpen, href: '/app/ensino-dashboard' },
+          { name: 'Biblioteca Médica', icon: BookOpen, href: '/app/ensino-library' },
+          { name: 'Arte da Entrevista', icon: Heart, href: '/app/ensino-arte-entrevista' },
+          { name: 'Cannabis Medicinal', icon: Brain, href: '/app/ensino-cannabis' },
+          { name: 'Chat Global + Fórum', icon: MessageCircle, href: '/app/ensino-chat' },
+          { name: 'Relatórios', icon: BookOpen, href: '/app/ensino-reports' }
+        ]
+      case 'pesquisa':
+        return [
+          { name: 'Dashboard Pesquisa', icon: Microscope, href: '/app/pesquisa-dashboard' },
+          { name: 'Meus Pacientes', icon: Users, href: '/app/pesquisa-patients' },
+          { name: 'Avaliações', icon: Heart, href: '/app/pesquisa-assessments' },
+          { name: 'Chat Global + Fórum', icon: MessageCircle, href: '/app/pesquisa-chat' },
+          { name: 'Relatórios', icon: BookOpen, href: '/app/pesquisa-reports' }
         ]
       default:
         return []

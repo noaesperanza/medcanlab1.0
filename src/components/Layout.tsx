@@ -10,7 +10,7 @@ import UserTypeNavigation from './UserTypeNavigation'
 
 const Layout: React.FC = () => {
   const { user, isLoading } = useAuth()
-  const [currentUserType, setCurrentUserType] = useState<'professional' | 'student' | 'patient' | 'admin'>('admin')
+  const [currentUserType, setCurrentUserType] = useState<'professional' | 'student' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa'>('admin')
 
   if (isLoading) {
     return (

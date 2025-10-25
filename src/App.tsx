@@ -42,6 +42,9 @@ import PatientAgenda from './pages/PatientAgenda'
 import PatientKPIs from './pages/PatientKPIs'
 import ProfessionalDashboard from './pages/ProfessionalDashboard'
 import StudentDashboard from './pages/StudentDashboard'
+import ClinicaDashboard from './pages/ClinicaDashboard'
+import EnsinoDashboard from './pages/EnsinoDashboard'
+import PesquisaDashboard from './pages/PesquisaDashboard'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -67,11 +70,14 @@ function App() {
                 <Route path="clinical-assessment" element={<ClinicalAssessment />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
                 <Route path="chat-noa-esperanca" element={<ChatNoaEsperanca />} />
-                <Route path="patient-dashboard" element={<PatientDashboard />} />
-                <Route path="patient-agenda" element={<PatientAgenda />} />
-                <Route path="patient-kpis" element={<PatientKPIs />} />
-                <Route path="professional-dashboard" element={<ProfessionalDashboard />} />
-                <Route path="student-dashboard" element={<StudentDashboard />} />
+            <Route path="patient-dashboard" element={<PatientDashboard />} />
+            <Route path="patient-agenda" element={<PatientAgenda />} />
+            <Route path="patient-kpis" element={<PatientKPIs />} />
+            <Route path="professional-dashboard" element={<ProfessionalDashboard />} />
+            <Route path="student-dashboard" element={<StudentDashboard />} />
+            <Route path="clinica-dashboard" element={<ClinicaDashboard />} />
+            <Route path="ensino-dashboard" element={<EnsinoDashboard />} />
+            <Route path="pesquisa-dashboard" element={<PesquisaDashboard />} />
                 <Route path="library" element={<Library />} />
                     <Route path="chat" element={<ChatGlobal />} />
                     <Route path="patient-chat" element={<PatientChat />} />
