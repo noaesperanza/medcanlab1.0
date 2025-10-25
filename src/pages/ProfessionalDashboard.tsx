@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   ArrowLeft, 
   Stethoscope, 
@@ -25,6 +26,7 @@ import { useNoa } from '../contexts/NoaContext'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
 
 const ProfessionalDashboard: React.FC = () => {
+  const navigate = useNavigate()
   const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
   const [inputMessage, setInputMessage] = useState('')
 
@@ -40,6 +42,23 @@ const ProfessionalDashboard: React.FC = () => {
       e.preventDefault()
       handleSendMessage()
     }
+  }
+
+  // Navigation handlers
+  const handleNavigate = (path: string) => {
+    navigate(path)
+  }
+
+  const handleViewPatient = (patientId: number) => {
+    navigate(`/app/patients/${patientId}`)
+  }
+
+  const handleAnalyzeCase = () => {
+    sendMessage('Quero analisar um caso clínico')
+  }
+
+  const handleInterviewTechnique = () => {
+    navigate('/app/arte-entrevista-clinica')
   }
 
   const patients = [
@@ -130,30 +149,30 @@ const ProfessionalDashboard: React.FC = () => {
         <div className="w-64 bg-slate-800 border-r border-slate-700 min-h-screen">
           <div className="p-6">
             <nav className="space-y-2">
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white">
+              <button onClick={() => handleNavigate('/app/professional-dashboard')} className="w-full flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white">
                 <BarChart3 className="w-5 h-5" />
                 <span>Dashboard</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={() => handleNavigate('/app/patients')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <Users className="w-5 h-5" />
                 <span>Pacientes</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={() => handleNavigate('/app/evaluations')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <Heart className="w-5 h-5" />
                 <span>Avaliações</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={() => handleNavigate('/app/patient-chat')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <MessageCircle className="w-5 h-5" />
                 <span>Chat com Pacientes</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={() => handleNavigate('/app/scheduling')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <Calendar className="w-5 h-5" />
                 <span>Agenda</span>
-              </a>
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              </button>
+              <button onClick={() => handleNavigate('/app/reports')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <FileText className="w-5 h-5" />
                 <span>Relatórios</span>
-              </a>
+              </button>
             </nav>
           </div>
         </div>
@@ -251,13 +270,13 @@ const ProfessionalDashboard: React.FC = () => {
                           </div>
                           
                           <div className="flex items-center space-x-1">
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
+                            <button onClick={() => handleNavigate('/app/patient-chat')} className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors" title="Chat com paciente">
                               <MessageCircle className="w-4 h-4" />
                             </button>
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
+                            <button onClick={() => handleViewPatient(patient.id)} className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors" title="Ver prontuário">
                               <Eye className="w-4 h-4" />
                             </button>
-                            <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
+                            <button onClick={() => alert(`Compartilhar prontuário de ${patient.name}`)} className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors" title="Compartilhar">
                               <Share2 className="w-4 h-4" />
                             </button>
                           </div>
@@ -328,10 +347,10 @@ const ProfessionalDashboard: React.FC = () => {
 
                   {/* Quick Actions */}
                   <div className="space-y-3 mb-6">
-                    <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-600 transition-colors">
+                    <button onClick={handleAnalyzeCase} className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-600 hover:to-cyan-600 transition-colors">
                       Analisar Caso Clínico
                     </button>
-                    <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-colors">
+                    <button onClick={handleInterviewTechnique} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-colors">
                       Arte da Entrevista Clínica
                     </button>
                   </div>
