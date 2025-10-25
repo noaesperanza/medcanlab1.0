@@ -40,6 +40,8 @@ import ChatNoaEsperanca from './pages/ChatNoaEsperanca'
 import PatientDashboard from './pages/PatientDashboard'
 import PatientAgenda from './pages/PatientAgenda'
 import PatientKPIs from './pages/PatientKPIs'
+import ProfessionalDashboard from './pages/ProfessionalDashboard'
+import StudentDashboard from './pages/StudentDashboard'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -68,6 +70,8 @@ function App() {
                 <Route path="patient-dashboard" element={<PatientDashboard />} />
                 <Route path="patient-agenda" element={<PatientAgenda />} />
                 <Route path="patient-kpis" element={<PatientKPIs />} />
+                <Route path="professional-dashboard" element={<ProfessionalDashboard />} />
+                <Route path="student-dashboard" element={<StudentDashboard />} />
                 <Route path="library" element={<Library />} />
                     <Route path="chat" element={<ChatGlobal />} />
                     <Route path="patient-chat" element={<PatientChat />} />
