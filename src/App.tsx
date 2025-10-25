@@ -45,6 +45,7 @@ import ClinicaDashboard from './pages/ClinicaDashboard'
 import EnsinoDashboard from './pages/EnsinoDashboard'
 import PesquisaDashboard from './pages/PesquisaDashboard'
 import AdminDashboard from './pages/AdminDashboard'
+import MedCannLabStructure from './pages/MedCannLabStructure'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -65,7 +66,7 @@ function App() {
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="home" element={<Dashboard />} />
                 <Route path="test" element={<TestPage />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="dashboard" element={<MedCannLabStructure />} />
                 <Route path="courses" element={<Courses />} />
                 <Route path="clinical-assessment" element={<ClinicalAssessment />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
