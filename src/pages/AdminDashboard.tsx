@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { 
   User, Stethoscope, MessageCircle, FileText, Share2, 
   Heart, Brain, Users, ChevronRight, Download, Send,
-  BookOpen, Award, Clock, Star, Play, CheckCircle
+  BookOpen, Award, Clock, Star, Play, CheckCircle,
+  DollarSign, CreditCard, TrendingUp, PieChart, Wallet
 } from 'lucide-react'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
 import { useNoa } from '../contexts/NoaContext'
 
 interface Page {
-  id: 'patient' | 'professional' | 'courses'
+  id: 'patient' | 'professional' | 'courses' | 'users' | 'financial'
   name: string
   description: string
   icon: React.ElementType
@@ -97,6 +98,22 @@ const AdminDashboard: React.FC = () => {
       color: 'from-purple-600 to-pink-500',
       bgColor: 'bg-purple-500/10',
     },
+    {
+      id: 'users',
+      name: 'Usuários',
+      description: 'Gestão de Usuários e Perfis',
+      icon: Users,
+      color: 'from-orange-600 to-red-500',
+      bgColor: 'bg-orange-500/10',
+    },
+    {
+      id: 'financial',
+      name: 'Financeiro',
+      description: 'Controle Financeiro e Pagamentos',
+      icon: DollarSign,
+      color: 'from-emerald-600 to-green-500',
+      bgColor: 'bg-emerald-500/10',
+    },
   ]
 
   const courses: Course[] = [
@@ -181,6 +198,66 @@ const AdminDashboard: React.FC = () => {
       category: 'Direito'
     }
   ]
+
+  const users = [
+    {
+      id: '1',
+      name: 'Dr. Eduardo Faveret',
+      email: 'eduardo.faveret@medcannlab.com',
+      type: 'professional',
+      status: 'active',
+      lastLogin: 'Hoje',
+      courses: 5,
+      patients: 24,
+      avatar: 'EF'
+    },
+    {
+      id: '2',
+      name: 'Dr. Ricardo Valença',
+      email: 'ricardo.valenca@medcannlab.com',
+      type: 'patient',
+      status: 'active',
+      lastLogin: '2 horas atrás',
+      courses: 0,
+      patients: 0,
+      avatar: 'RV'
+    },
+    {
+      id: '3',
+      name: 'Dra. Maria Santos',
+      email: 'maria.santos@medcannlab.com',
+      type: 'professional',
+      status: 'active',
+      lastLogin: 'Ontem',
+      courses: 3,
+      patients: 18,
+      avatar: 'MS'
+    },
+    {
+      id: '4',
+      name: 'João Silva',
+      email: 'joao.silva@medcannlab.com',
+      type: 'student',
+      status: 'active',
+      lastLogin: '3 dias atrás',
+      courses: 2,
+      patients: 0,
+      avatar: 'JS'
+    }
+  ]
+
+  const financialData = {
+    totalRevenue: 125000,
+    monthlyRevenue: 25000,
+    activeSubscriptions: 156,
+    pendingPayments: 12,
+    transactions: [
+      { id: 1, user: 'Dr. Eduardo Faveret', amount: 2999, type: 'course', status: 'completed', date: '2025-01-15' },
+      { id: 2, user: 'Dra. Maria Santos', amount: 299, type: 'course', status: 'completed', date: '2025-01-14' },
+      { id: 3, user: 'João Silva', amount: 199, type: 'course', status: 'pending', date: '2025-01-13' },
+      { id: 4, user: 'Dr. Pedro Costa', amount: 399, type: 'course', status: 'completed', date: '2025-01-12' }
+    ]
+  }
 
   const currentPage = pages.find(page => page.id === activePage) || pages[0]
 
@@ -620,6 +697,270 @@ const AdminDashboard: React.FC = () => {
                       <h6 className="font-semibold text-white mb-2">Direito</h6>
                       <p className="text-sm text-slate-400 mb-2">LGPD na Medicina</p>
                       <div className="text-xs text-slate-500">15h • Iniciante</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activePage === 'users' && (
+              <div className="space-y-6">
+                {/* Users Header */}
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                        <Users className="w-8 h-8 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-semibold text-white">Gestão de Usuários</h4>
+                        <p className="text-sm text-slate-400">MedCannLab - Usuários e Perfis</p>
+                        <p className="text-xs text-slate-500">Dr. Eduardo Faveret - Administração</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-orange-400">4</div>
+                      <div className="text-sm text-slate-400">Usuários Ativos</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Users Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-orange-500/10 rounded-lg">
+                        <Users className="w-6 h-6 text-orange-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">4</h3>
+                    <p className="text-sm text-slate-400">Total de Usuários</p>
+                    <p className="text-xs text-green-400 mt-1">+1 este mês</p>
+                  </div>
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-green-500/10 rounded-lg">
+                        <Stethoscope className="w-6 h-6 text-green-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">2</h3>
+                    <p className="text-sm text-slate-400">Profissionais</p>
+                    <p className="text-xs text-green-400 mt-1">Ativos</p>
+                  </div>
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-blue-500/10 rounded-lg">
+                        <User className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">1</h3>
+                    <p className="text-sm text-slate-400">Pacientes</p>
+                    <p className="text-xs text-green-400 mt-1">Ativos</p>
+                  </div>
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-purple-500/10 rounded-lg">
+                        <BookOpen className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">1</h3>
+                    <p className="text-sm text-slate-400">Estudantes</p>
+                    <p className="text-xs text-green-400 mt-1">Ativos</p>
+                  </div>
+                </div>
+
+                {/* Users List */}
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <h5 className="text-lg font-semibold text-white mb-4">👥 Lista de Usuários</h5>
+                  <div className="space-y-4">
+                    {users.map((user) => (
+                      <div key={user.id} className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">{user.avatar}</span>
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-white">{user.name}</h4>
+                            <p className="text-sm text-slate-400">{user.email}</p>
+                            <div className="flex items-center space-x-4 text-xs text-slate-500 mt-1">
+                              <span className={`px-2 py-1 rounded-full ${
+                                user.type === 'professional' ? 'bg-green-500/20 text-green-300' :
+                                user.type === 'patient' ? 'bg-blue-500/20 text-blue-300' :
+                                'bg-purple-500/20 text-purple-300'
+                              }`}>
+                                {user.type === 'professional' ? 'Profissional' :
+                                 user.type === 'patient' ? 'Paciente' : 'Estudante'}
+                              </span>
+                              <span>Último login: {user.lastLogin}</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-4">
+                          <div className="text-right">
+                            <div className="text-sm text-slate-400">
+                              {user.courses > 0 && `${user.courses} cursos`}
+                              {user.patients > 0 && ` • ${user.patients} pacientes`}
+                            </div>
+                            <div className={`text-xs ${
+                              user.status === 'active' ? 'text-green-400' : 'text-red-400'
+                            }`}>
+                              {user.status === 'active' ? 'Ativo' : 'Inativo'}
+                            </div>
+                          </div>
+                          <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {activePage === 'financial' && (
+              <div className="space-y-6">
+                {/* Financial Header */}
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full flex items-center justify-center">
+                        <DollarSign className="w-8 h-8 text-white" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-semibold text-white">Controle Financeiro</h4>
+                        <p className="text-sm text-slate-400">MedCannLab - Receitas e Pagamentos</p>
+                        <p className="text-xs text-slate-500">Dr. Eduardo Faveret - Administração</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-emerald-400">R$ 125.000</div>
+                      <div className="text-sm text-slate-400">Receita Total</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Financial Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-emerald-500/10 rounded-lg">
+                        <DollarSign className="w-6 h-6 text-emerald-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">R$ 25.000</h3>
+                    <p className="text-sm text-slate-400">Receita Mensal</p>
+                    <p className="text-xs text-green-400 mt-1">+15% este mês</p>
+                  </div>
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-blue-500/10 rounded-lg">
+                        <CreditCard className="w-6 h-6 text-blue-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">156</h3>
+                    <p className="text-sm text-slate-400">Assinaturas Ativas</p>
+                    <p className="text-xs text-green-400 mt-1">+8 este mês</p>
+                  </div>
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-yellow-500/10 rounded-lg">
+                        <Clock className="w-6 h-6 text-yellow-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">12</h3>
+                    <p className="text-sm text-slate-400">Pagamentos Pendentes</p>
+                    <p className="text-xs text-yellow-400 mt-1">R$ 2.400</p>
+                  </div>
+                  <div className="bg-slate-800 rounded-xl p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="p-3 bg-purple-500/10 rounded-lg">
+                        <PieChart className="w-6 h-6 text-purple-400" />
+                      </div>
+                      <TrendingUp className="w-5 h-5 text-green-400" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-1">85%</h3>
+                    <p className="text-sm text-slate-400">Taxa de Conversão</p>
+                    <p className="text-xs text-green-400 mt-1">+5% este mês</p>
+                  </div>
+                </div>
+
+                {/* Recent Transactions */}
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <h5 className="text-lg font-semibold text-white mb-4">💰 Transações Recentes</h5>
+                  <div className="space-y-4">
+                    {financialData.transactions.map((transaction) => (
+                      <div key={transaction.id} className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            transaction.status === 'completed' ? 'bg-green-500' : 'bg-yellow-500'
+                          }`}>
+                            <CreditCard className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-white">{transaction.user}</h4>
+                            <p className="text-sm text-slate-400">
+                              {transaction.type === 'course' ? 'Curso' : 'Assinatura'} • {transaction.date}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-white">R$ {transaction.amount.toLocaleString()}</div>
+                          <div className={`text-xs ${
+                            transaction.status === 'completed' ? 'text-green-400' : 'text-yellow-400'
+                          }`}>
+                            {transaction.status === 'completed' ? 'Concluído' : 'Pendente'}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Financial Charts Placeholder */}
+                <div className="bg-slate-800 rounded-xl p-6">
+                  <h5 className="text-lg font-semibold text-white mb-4">📊 Análise Financeira</h5>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-slate-700 rounded-lg p-4">
+                      <h6 className="font-semibold text-white mb-2">Receita por Categoria</h6>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Cursos</span>
+                          <span className="text-white">R$ 18.000</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Assinaturas</span>
+                          <span className="text-white">R$ 5.000</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Consultorias</span>
+                          <span className="text-white">R$ 2.000</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-slate-700 rounded-lg p-4">
+                      <h6 className="font-semibold text-white mb-2">Crescimento Mensal</h6>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Janeiro 2025</span>
+                          <span className="text-green-400">+15%</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Dezembro 2024</span>
+                          <span className="text-green-400">+8%</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Novembro 2024</span>
+                          <span className="text-green-400">+12%</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
