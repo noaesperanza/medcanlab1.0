@@ -81,9 +81,15 @@ const PatientChat: React.FC = () => {
     setIsVideoCall(!isVideoCall)
   }
 
+  // Scroll para o topo quando carrega a página
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages])
+    window.scrollTo(0, 0)
+  }, [])
+
+  // Scroll para o topo quando muda o profissional
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [selectedProfessional])
 
   // Close dropdown when clicking outside
   useEffect(() => {
