@@ -135,175 +135,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('🔍 [loadUserProfile] Iniciando busca de perfil para userId:', userId)
       
-      // Teste rápido de conectividade com Supabase
-      console.log('🔍 [loadUserProfile] Testando conectividade com Supabase...')
-      const { data: testData, error: testError } = await supabase.auth.getUser()
-      console.log('🔍 [loadUserProfile] Teste de conectividade - data:', testData, 'error:', testError)
+      // Pegar usuário diretamente (mais rápido e simples)
+      console.log('🔍 [loadUserProfile] Obtendo usuário do auth...')
+      const { data: { user: authUser }, error: userError } = await supabase.auth.getUser()
       
-      // Se o teste falhar, não criar usuário de emergência
-      if (testError) {
-        console.log('🚨 [loadUserProfile] Erro de conectividade detectado - NÃO criando usuário de emergência')
+      if (userError) {
+        console.log('❌ [loadUserProfile] Erro ao obter usuário:', userError)
         setIsLoading(false)
         setIsLoadingProfile(false)
         return
       }
       
-      // Usar dados diretamente do Supabase Auth com timeout mais longo
-      console.log('🔍 [loadUserProfile] Carregando dados do usuário do Supabase Auth...')
+      console.log('✅ [loadUserProfile] Usuário obtido:', authUser.id, authUser.email)
       
-      // Primeiro, tentar sem timeout para ver se funciona rapidamente
-      let session, authUser
-      try {
-        console.log('🔍 [loadUserProfile] Tentando getSession sem timeout...')
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
-        console.log('🔍 [loadUserProfile] Session data:', sessionData)
-        console.log('🔍 [loadUserProfile] Session error:', sessionError)
-        session = sessionData.session
-        authUser = session?.user
-        console.log('✅ [loadUserProfile] Sessão obtida rapidamente:', authUser?.id)
-      } catch (quickError) {
-        console.log('⚠️ [loadUserProfile] Erro rápido, tentando com timeout...', quickError)
-        
-        // Se falhar rapidamente, tentar com timeout
-        const sessionPromise = supabase.auth.getSession()
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Timeout')), 15000)
-        )
-        
-        console.log('🔍 [loadUserProfile] Tentando getSession com timeout...')
-        const { data: { session: sessionData } } = await Promise.race([sessionPromise, timeoutPromise]) as any
-        session = sessionData
-        authUser = session?.user
-        console.log('✅ [loadUserProfile] Sessão obtida com timeout:', authUser?.id)
+      // Determinar tipo de usuário baseado nos metadados
+      let userType: 'patient' | 'professional' | 'student' | 'admin' = 'patient'
+      let userName = authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Usuário'
+      
+      // Verificar se há metadados que indiquem o tipo de usuário
+      if (authUser.user_metadata?.user_type) {
+        userType = authUser.user_metadata.user_type
+      } else if (authUser.user_metadata?.role) {
+        userType = authUser.user_metadata.role
+      } else if (authUser.email?.includes('admin') || authUser.email?.includes('philip')) {
+        userType = 'admin'
       }
       
-      if (!authUser) {
-        console.log('❌ [loadUserProfile] Nenhum usuário encontrado no Auth')
-        return
+      const userData = {
+        id: authUser.id,
+        email: authUser.email || '',
+        type: userType,
+        name: userName,
+        crm: authUser.user_metadata?.crm,
+        cro: authUser.user_metadata?.cro
       }
       
-      console.log('👤 [loadUserProfile] Auth user encontrado:', authUser.id, authUser.email)
-      console.log('📧 [loadUserProfile] Email confirmado:', authUser.email_confirmed_at)
-      
-      // Verificar se o email foi confirmado
-      if (!authUser.email_confirmed_at) {
-        console.log('⚠️ [loadUserProfile] Email não confirmado')
-        setUser({
-          id: authUser.id,
-          email: authUser.email || '',
-          type: 'unconfirmed' as any,
-          name: authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Usuário',
-          crm: authUser.user_metadata?.crm,
-          cro: authUser.user_metadata?.cro
-        })
-        return
-      }
-      
-      // Não consultar profiles - usar apenas dados do auth
-      console.log('✅ [loadUserProfile] Usando apenas dados do Auth (sem consultar profiles)')
-      
-      console.log('👤 [loadUserProfile] Auth user:', authUser)
-      console.log('📋 [loadUserProfile] User metadata:', authUser.user_metadata)
-      console.log('📧 [loadUserProfile] Email:', authUser.email)
-      console.log('🔍 [loadUserProfile] Metadata keys:', Object.keys(authUser.user_metadata || {}))
-      console.log('🔍 [loadUserProfile] Metadata values:', JSON.stringify(authUser.user_metadata, null, 2))
-      
-      if (authUser) {
-        // Determinar tipo de usuário baseado nos metadados
-        let userType: 'patient' | 'professional' | 'student' | 'admin' = 'patient'
-        let userName = authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Usuário'
-        let userCrm = authUser.user_metadata?.crm
-        let userCro = authUser.user_metadata?.cro
-        
-        // Verificar se há metadados que indiquem o tipo de usuário (PRIORIDADE)
-        if (authUser.user_metadata?.user_type) {
-          userType = authUser.user_metadata.user_type
-          console.log('✅ [loadUserProfile] Usando user_type dos metadados:', userType)
-        } else if (authUser.user_metadata?.role) {
-          userType = authUser.user_metadata.role
-          console.log('✅ [loadUserProfile] Usando role dos metadados:', userType)
-        } else if (authUser.email === 'phpg69@gmail.com' || authUser.email?.includes('admin') || authUser.email?.includes('philip')) {
-          // Forçar admin apenas para emails específicos (APENAS se não houver metadados)
-          userType = 'admin'
-          console.log('✅ [loadUserProfile] Forçando admin por email:', userType)
-        } else {
-          // Default para patient
-          userType = 'patient'
-          console.log('✅ [loadUserProfile] Default patient:', userType)
-        }
-        
-        console.log('🎯 [loadUserProfile] Tipo de usuário determinado:', userType)
-        
-        const userData = {
-          id: authUser.id,
-          email: authUser.email || '',
-          type: userType,
-          name: userName,
-          crm: userCrm,
-          cro: userCro
-        }
-        
-        console.log('📋 [loadUserProfile] Dados do usuário a serem definidos:', userData)
-        setUser(userData)
-        console.log('✅ [loadUserProfile] Usuário configurado com sucesso!')
-        console.log('🔄 [loadUserProfile] Finalizando loadUserProfile com sucesso')
-        
-        // Debug será feito via useEffect que observa mudanças no user
-      } else {
-        console.log('❌ Nenhum usuário encontrado no Auth')
-        // Fallback: criar usuário básico com dados do auth
-        console.log('🔄 [loadUserProfile] Criando usuário de fallback...')
-        const fallbackUser = {
-          id: userId,
-          email: 'usuario@medcannlab.com',
-          type: 'admin' as any,
-          name: 'Usuário Admin',
-          crm: undefined,
-          cro: undefined
-        }
-        setUser(fallbackUser)
-        console.log('✅ [loadUserProfile] Usuário de fallback criado')
-      }
+      console.log('✅ [loadUserProfile] Usuário configurado:', userData)
+      setUser(userData)
     } catch (error) {
-      console.error('❌ [loadUserProfile] Erro ao carregar perfil do usuário:', error)
-      
-      // Se for timeout, tentar uma abordagem alternativa
-      if (error instanceof Error && error.message === 'Timeout') {
-        console.log('⏰ Timeout detectado, tentando abordagem alternativa...')
-        
-        // Tentar usar o userId diretamente para criar um usuário básico
-        try {
-          const { data: { session } } = await supabase.auth.getSession()
-          if (session?.user) {
-            console.log('✅ Sessão encontrada após timeout, criando usuário básico')
-            const userData = {
-              id: session.user.id,
-              email: session.user.email || '',
-              type: 'admin' as any, // Assumir admin para evitar problemas de acesso
-              name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Usuário',
-              crm: session.user.user_metadata?.crm,
-              cro: session.user.user_metadata?.cro
-            }
-            setUser(userData)
-            console.log('✅ Usuário básico criado após timeout')
-            return
-          }
-        } catch (fallbackError) {
-          console.error('Erro no fallback:', fallbackError)
-          
-          // Não criar usuário de emergência
-          console.log('🚨 Erro no fallback - NÃO criando usuário de emergência')
-          setIsLoading(false)
-          setIsLoadingProfile(false)
-          return
-        }
-      }
-      
-      // Apenas definir como não carregando, mas NÃO definir usuário como null
-      // para evitar logout desnecessário
-      console.log('⚠️ Erro no carregamento, mas mantendo estado atual do usuário')
-    } finally {
-      console.log('🔄 Finalizando carregamento - definindo isLoading como false')
+      console.error('❌ [loadUserProfile] Erro ao carregar perfil:', error)
       setIsLoading(false)
       setIsLoadingProfile(false)
     }
