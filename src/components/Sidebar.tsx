@@ -12,7 +12,8 @@ import {
   Clock,
   Award,
   Menu,
-  Heart
+  Heart,
+  MessageCircle
 } from 'lucide-react'
 
 interface SidebarProps {
