@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Bot, Sparkles } from 'lucide-react'
-import avatarNoaImage from '../assets/noa-avatar.png'
+import { Bot } from 'lucide-react'
+
+// Usar imagem do diretório public
+const avatarNoaImage = '/noa-avatar.png'
 
 interface NoaAnimatedAvatarProps {
   isSpeaking: boolean
@@ -116,7 +118,7 @@ const NoaAnimatedAvatar: React.FC<NoaAnimatedAvatarProps> = ({
           {/* Overlay com efeito de brilho quando falando */}
           {isSpeaking && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/20 backdrop-blur-sm">
-              <Sparkles className={`${iconSizes[size]} text-white/50 animate-pulse`} />
+              <Bot className={`${iconSizes[size]} text-white/50 animate-pulse`} />
             </div>
           )}
         </div>
