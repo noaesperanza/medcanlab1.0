@@ -61,41 +61,8 @@ const ProfessionalDashboard: React.FC = () => {
     navigate('/app/arte-entrevista-clinica')
   }
 
-  const patients = [
-    {
-      id: 1,
-      name: 'Dr. Ricardo Valença',
-      condition: 'Insuficiência Renal Crônica',
-      lastVisit: '2024-12-10',
-      nextAppointment: '2024-12-17',
-      status: 'Em Tratamento',
-      score: 85,
-      avatar: 'RV',
-      priority: 'high'
-    },
-    {
-      id: 2,
-      name: 'Maria Silva',
-      condition: 'Dor Crônica',
-      lastVisit: '2024-12-08',
-      nextAppointment: '2024-12-15',
-      status: 'Melhorando',
-      score: 78,
-      avatar: 'MS',
-      priority: 'medium'
-    },
-    {
-      id: 3,
-      name: 'João Santos',
-      condition: 'Ansiedade',
-      lastVisit: '2024-12-05',
-      nextAppointment: '2024-12-12',
-      status: 'Estável',
-      score: 92,
-      avatar: 'JS',
-      priority: 'low'
-    }
-  ]
+  // Array vazio para receber dados reais do banco de dados
+  const patients: any[] = []
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
