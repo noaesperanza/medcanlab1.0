@@ -36,6 +36,7 @@ import ProfessionalScheduling from './pages/ProfessionalScheduling'
 import PatientAppointments from './pages/PatientAppointments'
 import PatientNOAChat from './pages/PatientNOAChat'
 import ArteEntrevistaClinica from './pages/ArteEntrevistaClinica'
+import ChatNoaEsperanca from './pages/ChatNoaEsperanca'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -60,6 +61,7 @@ function App() {
                 <Route path="courses" element={<Courses />} />
                 <Route path="clinical-assessment" element={<ClinicalAssessment />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
+                <Route path="chat-noa-esperanca" element={<ChatNoaEsperanca />} />
                 <Route path="library" element={<Library />} />
                     <Route path="chat" element={<ChatGlobal />} />
                     <Route path="patient-chat" element={<PatientChat />} />

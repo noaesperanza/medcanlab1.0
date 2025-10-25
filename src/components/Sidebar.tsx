@@ -94,6 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
     { name: 'Nova Avaliação', href: '/app/clinical-assessment', icon: Stethoscope, color: 'bg-blue-500' },
     { name: 'Arte da Entrevista', href: '/app/arte-entrevista-clinica', icon: Heart, color: 'bg-pink-500' },
     { name: 'Chat Nôa', href: '/app/chat', icon: Brain, color: 'bg-purple-500' },
+    { name: 'Chat Nôa Esperança', href: '/app/chat-noa-esperanca', icon: MessageCircle, color: 'bg-purple-600' },
     { name: 'Biblioteca', href: '/app/library', icon: BookOpen, color: 'bg-green-500' },
     { name: 'Relatórios', href: '/app/reports', icon: FileText, color: 'bg-orange-500' },
   ]
