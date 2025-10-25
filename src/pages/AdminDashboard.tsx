@@ -1,269 +1,151 @@
 import React from 'react'
-import { useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { 
-  Users, ChevronRight,
-  BookOpen
+  User, Stethoscope, GraduationCap, ChevronRight
 } from 'lucide-react'
 
-interface Course {
-  id: string
-  title: string
-  description: string
-  instructor: string
-  duration: string
-  level: string
-  price: string
-  originalPrice?: string
-  rating: number
-  students: number
-  progress?: number
-  isCompleted?: boolean
-  badges: string[]
-  category: string
-}
-
 const AdminDashboard: React.FC = () => {
-  const location = useLocation()
+  const navigate = useNavigate()
 
-  const courses: Course[] = [
+  const areas = [
     {
-      id: '1',
-      title: 'Pós-Graduação Cannabis Medicinal',
-      description: 'Especialização completa de 520 horas em cannabis medicinal e terapêutica com Dr. Eduardo Faveret',
-      instructor: 'Dr. Eduardo Faveret',
-      duration: '520h',
-      level: 'Avançado',
-      price: 'R$ 2.999',
-      originalPrice: 'R$ 3.999',
-      rating: 4.8,
-      students: 856,
-      progress: 75,
-      isCompleted: false,
-      badges: ['Cannabis', 'Pós-Graduação', 'Certificação'],
-      category: 'Especialização'
+      id: 'paciente',
+      nome: 'Área do Paciente',
+      descricao: 'Visualize e gerencie a experiência do paciente, incluindo avaliação clínica inicial com AEC e interação com o profissional',
+      cor: 'from-blue-600 to-cyan-500',
+      icone: User,
+      rota: '/app/patient-dashboard',
+      funcionalidades: [
+        'Avaliação Clínica Inicial (AEC)',
+        'Chat com Nôa Esperanza IA',
+        'Interação com Profissional',
+        'Compartilhamento de Documentos',
+        'Relatórios Clínicos'
+      ]
     },
     {
-      id: '2',
-      title: 'Arte da Entrevista Clínica (AEC)',
-      description: 'Metodologia AEC completa para entrevistas clínicas humanizadas em Cannabis Medicinal',
-      instructor: 'Dr. Eduardo Faveret',
-      duration: '40h',
-      level: 'Intermediário',
-      price: 'R$ 299',
-      originalPrice: 'R$ 399',
-      rating: 4.9,
-      students: 1247,
-      progress: 100,
-      isCompleted: true,
-      badges: ['AEC', 'Entrevista', 'Humanização'],
-      category: 'Metodologia'
+      id: 'profissional',
+      nome: 'Área do Profissional',
+      descricao: 'Gerencie prontuários, avaliacões clínicas e interações com pacientes utilizando a metodologia Arte da Entrevista Clínica',
+      cor: 'from-green-600 to-teal-500',
+      icone: Stethoscope,
+      rota: '/app/professional-dashboard',
+      funcionalidades: [
+        'Prontuário do Paciente',
+        'Avaliações Clínicas',
+        'Chat com Pacientes',
+        'Arte da Entrevista Clínica',
+        'Análise de Casos'
+      ]
     },
     {
-      id: '3',
-      title: 'Sistema IMRE Triaxial',
-      description: 'Avaliação clínica com 28 blocos semânticos para Cannabis Medicinal',
-      instructor: 'Dr. Eduardo Faveret',
-      duration: '20h',
-      level: 'Iniciante',
-      price: 'R$ 199',
-      originalPrice: 'R$ 299',
-      rating: 4.7,
-      students: 634,
-      progress: 80,
-      isCompleted: false,
-      badges: ['IMRE', 'Avaliação', 'Clínica'],
-      category: 'Avaliação'
-    },
-    {
-      id: '4',
-      title: 'Neurofarmacologia da Cannabis',
-      description: 'Fundamentos neurofarmacológicos dos canabinoides e sistema endocanabinoide',
-      instructor: 'Dr. Eduardo Faveret',
-      duration: '30h',
-      level: 'Avançado',
-      price: 'R$ 399',
-      originalPrice: 'R$ 499',
-      rating: 4.6,
-      students: 423,
-      progress: 40,
-      isCompleted: false,
-      badges: ['Neurofarmacologia', 'Cannabis', 'Farmacologia'],
-      category: 'Farmacologia'
-    },
-    {
-      id: '5',
-      title: 'LGPD na Medicina',
-      description: 'Privacidade e proteção de dados na prática médica com Cannabis',
-      instructor: 'Dr. Eduardo Faveret',
-      duration: '15h',
-      level: 'Iniciante',
-      price: 'R$ 149',
-      originalPrice: 'R$ 199',
-      rating: 4.5,
-      students: 312,
-      progress: 0,
-      isCompleted: false,
-      badges: ['LGPD', 'Privacidade', 'Direito'],
-      category: 'Direito'
+      id: 'aluno',
+      nome: 'Área do Aluno',
+      descricao: 'Acesse cursos, incluindo Pós-Graduação em Cannabis Medicinal e Arte da Entrevista Clínica - Dr. Eduardo Faveret',
+      cor: 'from-purple-600 to-pink-500',
+      icone: GraduationCap,
+      rota: '/app/student-dashboard',
+      funcionalidades: [
+        'Pós-Graduação Cannabis Medicinal',
+        'Arte da Entrevista Clínica (AEC)',
+        'Sistema IMRE Triaxial',
+        'Biblioteca Médica',
+        'Gamificação e Certificados'
+      ]
     }
   ]
-
-  const users = [
-    {
-      id: '1',
-      name: 'Dr. Eduardo Faveret',
-      email: 'eduardo.faveret@medcannlab.com',
-      type: 'professional',
-      status: 'active',
-      lastLogin: 'Hoje',
-      courses: 5,
-      patients: 24,
-      avatar: 'EF'
-    },
-    {
-      id: '2',
-      name: 'Dr. Ricardo Valença',
-      email: 'ricardo.valenca@medcannlab.com',
-      type: 'patient',
-      status: 'active',
-      lastLogin: '2 horas atrás',
-      courses: 0,
-      patients: 0,
-      avatar: 'RV'
-    },
-    {
-      id: '3',
-      name: 'Dra. Maria Santos',
-      email: 'maria.santos@medcannlab.com',
-      type: 'professional',
-      status: 'active',
-      lastLogin: 'Ontem',
-      courses: 3,
-      patients: 18,
-      avatar: 'MS'
-    },
-    {
-      id: '4',
-      name: 'João Silva',
-      email: 'joao.silva@medcannlab.com',
-      type: 'student',
-      status: 'active',
-      lastLogin: '3 dias atrás',
-      courses: 2,
-      patients: 0,
-      avatar: 'JS'
-    }
-  ]
-
-  const financialData = {
-    totalRevenue: 125000,
-    monthlyRevenue: 25000,
-    activeSubscriptions: 156,
-    pendingPayments: 12,
-    transactions: [
-      { id: 1, user: 'Dr. Eduardo Faveret', amount: 2999, type: 'course', status: 'completed', date: '2025-01-15' },
-      { id: 2, user: 'Dra. Maria Santos', amount: 299, type: 'course', status: 'completed', date: '2025-01-14' },
-      { id: 3, user: 'João Silva', amount: 199, type: 'course', status: 'pending', date: '2025-01-13' },
-      { id: 4, user: 'Dr. Pedro Costa', amount: 399, type: 'course', status: 'completed', date: '2025-01-12' }
-    ]
-  }
-
-  // Determine which content to show based on current route
-  const getCurrentPageContent = () => {
-    const path = location.pathname
-
-    if (path.includes('users')) {
-      return (
-        <div className="space-y-6">
-          <div className="bg-slate-800 rounded-xl p-6">
-            <h5 className="text-lg font-semibold text-white mb-4">👥 Gestão de Usuários</h5>
-            <div className="space-y-4">
-              {users.map((user) => (
-                <div key={user.id} className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">{user.avatar}</span>
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-white">{user.name}</h4>
-                      <p className="text-sm text-slate-400">{user.email}</p>
-                    </div>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-slate-400" />
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    if (path.includes('courses')) {
-      return (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {courses.map((course) => (
-              <div key={course.id} className="bg-slate-800 rounded-xl p-6">
-                <h5 className="text-lg font-semibold text-white mb-2">{course.title}</h5>
-                <p className="text-sm text-slate-400 mb-4">{course.description}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-white font-bold">{course.price}</span>
-                  <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors text-sm">
-                    Ver Curso
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )
-    }
-
-    if (path.includes('financial')) {
-      return (
-        <div className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="bg-slate-800 rounded-xl p-6">
-              <h3 className="text-2xl font-bold text-white mb-1">R$ 125k</h3>
-              <p className="text-sm text-slate-400">Receita Total</p>
-            </div>
-            <div className="bg-slate-800 rounded-xl p-6">
-              <h3 className="text-2xl font-bold text-white mb-1">R$ 25k</h3>
-              <p className="text-sm text-slate-400">Receita Mensal</p>
-            </div>
-            <div className="bg-slate-800 rounded-xl p-6">
-              <h3 className="text-2xl font-bold text-white mb-1">156</h3>
-              <p className="text-sm text-slate-400">Assinaturas</p>
-            </div>
-            <div className="bg-slate-800 rounded-xl p-6">
-              <h3 className="text-2xl font-bold text-white mb-1">85%</h3>
-              <p className="text-sm text-slate-400">Conversão</p>
-            </div>
-          </div>
-        </div>
-      )
-    }
-
-    // Default dashboard view
-    return (
-      <div className="space-y-6">
-        <div className="bg-slate-800 rounded-xl p-6">
-          <h5 className="text-lg font-semibold text-white mb-4">🏥 MedCannLab 3.0 - Dashboard Administrativo</h5>
-          <p className="text-slate-300 mb-4">
-            Sistema Integrado - Cidade Amiga dos Rins & Cannabis Medicinal
-          </p>
-          <p className="text-slate-400 text-sm">
-            Use o menu lateral para navegar entre as diferentes áreas do sistema.
-          </p>
-        </div>
-      </div>
-    )
-  }
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white">
-      <div className="flex-1 p-6 overflow-y-auto">
-        {getCurrentPageContent()}
+    <div className="min-h-screen bg-slate-900 text-white p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2">🏥 MedCannLab 3.0</h1>
+          <p className="text-xl text-slate-300">Sistema Integrado - Cidade Amiga dos Rins & Cannabis Medicinal</p>
+          <p className="text-slate-400 mt-2">
+            <strong>Espinha Dorsal:</strong> Arte da Entrevista Clínica (AEC) - Dr. Eduardo Faveret
+          </p>
+        </div>
+
+        {/* Admin Profile */}
+        <div className="flex items-center space-x-3 bg-slate-800 p-4 rounded-lg mb-8 w-fit">
+          <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+            <span className="text-white font-bold">👑</span>
+          </div>
+          <div>
+            <p className="font-semibold text-white">Administrador</p>
+            <p className="text-sm text-slate-400">Visão completa do sistema</p>
+          </div>
+        </div>
+
+        {/* Description */}
+        <div className="bg-slate-800 rounded-xl p-6 mb-8">
+          <h2 className="text-2xl font-semibold mb-3">Visão Administrativa Completa</h2>
+          <p className="text-slate-300 mb-4">
+            Como administrador, você tem acesso a todas as áreas do sistema. Use os cards abaixo para visualizar cada área:
+          </p>
+          <div className="bg-slate-700 rounded-lg p-4">
+            <p className="text-sm text-slate-300">
+              <strong>💡 Como funciona:</strong> Cada área (Paciente, Profissional, Aluno) possui seu próprio dashboard 
+              com funcionalidades específicas. A <strong>Arte da Entrevista Clínica (AEC)</strong> é a metodologia que 
+              permeia toda a plataforma, garantindo uma abordagem humanizada e ética no cuidado com Cannabis Medicinal.
+            </p>
+          </div>
+        </div>
+
+        {/* Areas Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {areas.map((area) => {
+            const Icon = area.icone
+            return (
+              <div
+                key={area.id}
+                onClick={() => navigate(area.rota)}
+                className="bg-slate-800 rounded-xl p-6 hover:bg-slate-700 transition-all cursor-pointer group border-2 border-slate-700 hover:border-slate-600"
+              >
+                <div className={`w-16 h-16 rounded-xl bg-gradient-to-r ${area.cor} flex items-center justify-center mb-4`}>
+                  <Icon className="w-8 h-8 text-white" />
+                </div>
+                
+                <h3 className="text-xl font-bold mb-2">{area.nome}</h3>
+                <p className="text-slate-400 text-sm mb-4">{area.descricao}</p>
+                
+                <div className="mb-4">
+                  <p className="text-xs text-slate-500 mb-2">Funcionalidades:</p>
+                  <ul className="space-y-1">
+                    {area.funcionalidades.map((func, idx) => (
+                      <li key={idx} className="text-xs text-slate-300 flex items-center">
+                        <span className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2" />
+                        {func}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="flex items-center text-blue-400 group-hover:text-blue-300 font-semibold">
+                  <span>Ver área</span>
+                  <ChevronRight className="w-5 h-5 ml-1 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </div>
+            )
+          })}
+        </div>
+
+        {/* System Info */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-slate-800 rounded-lg p-4">
+            <p className="text-sm text-slate-400 mb-1">Sistema Online</p>
+            <p className="text-2xl font-bold text-green-400">99.9%</p>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4">
+            <p className="text-sm text-slate-400 mb-1">Usuários Ativos</p>
+            <p className="text-2xl font-bold text-blue-400">1,234</p>
+          </div>
+          <div className="bg-slate-800 rounded-lg p-4">
+            <p className="text-sm text-slate-400 mb-1">Avaliações Hoje</p>
+            <p className="text-2xl font-bold text-purple-400">156</p>
+          </div>
+        </div>
       </div>
     </div>
   )
