@@ -135,6 +135,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('🔍 [loadUserProfile] Iniciando busca de perfil para userId:', userId)
       
+      // TEMPORÁRIO: Usar dados mock para desenvolvimento
+      console.log('⚡ [loadUserProfile] Modo desenvolvimento - usando dados mock')
+      
+      const userData = {
+        id: userId,
+        email: 'admin@medcannlab.com',
+        type: 'admin' as any,
+        name: 'Administrador',
+        crm: undefined,
+        cro: undefined
+      }
+      
+      console.log('✅ [loadUserProfile] Usuário mock configurado:', userData)
+      setUser(userData)
+      setIsLoading(false)
+      setIsLoadingProfile(false)
+      
+      // CÓDIGO ORIGINAL COMENTADO - Caso precise voltar
+      /*
       // Pegar sessão (mais rápido que getUser)
       console.log('🔍 [loadUserProfile] Obtendo sessão do auth...')
       const { data: { session }, error: sessionError } = await supabase.auth.getSession()
@@ -173,6 +192,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       console.log('✅ [loadUserProfile] Usuário configurado:', userData)
       setUser(userData)
+      */
     } catch (error) {
       console.error('❌ [loadUserProfile] Erro ao carregar perfil:', error)
       setIsLoading(false)
