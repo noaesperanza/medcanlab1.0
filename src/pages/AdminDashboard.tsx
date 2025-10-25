@@ -227,36 +227,132 @@ const AdminDashboard: React.FC = () => {
             <div className="bg-slate-800 rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-white">
-                  {activeArea === 'clinica' && '👥 Meus Pacientes'}
+                  {activeArea === 'clinica' && '👤 Prontuário do Paciente - Dr. Ricardo Valença'}
                   {activeArea === 'ensino' && '📚 Meus Cursos'}
                   {activeArea === 'pesquisa' && '🔬 Meus Estudos'}
                 </h3>
                 <button className={`bg-gradient-to-r ${currentArea.color} text-white px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity`}>
-                  Ver Todos
+                  {activeArea === 'clinica' && 'Ver Prontuário Completo'}
+                  {activeArea === 'ensino' && 'Ver Todos'}
+                  {activeArea === 'pesquisa' && 'Ver Todos'}
                 </button>
               </div>
 
               <div className="space-y-4">
                 {activeArea === 'clinica' && (
                   <>
-                    <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                          <span className="text-white font-bold text-sm">RV</span>
+                    {/* Patient Header */}
+                    <div className="bg-slate-700 rounded-lg p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-4">
+                          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                            <span className="text-white font-bold text-lg">RV</span>
+                          </div>
+                          <div>
+                            <h4 className="text-xl font-semibold text-white">Dr. Ricardo Valença</h4>
+                            <p className="text-sm text-slate-400">Paciente - Insuficiência Renal Crônica</p>
+                            <p className="text-xs text-slate-500">ID: #12345 | Última atualização: Hoje</p>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="font-semibold text-white">Dr. Ricardo Valença</h4>
-                          <p className="text-sm text-slate-400">Insuficiência Renal Crônica</p>
-                          <p className="text-xs text-slate-500">Score: 85/100</p>
+                        <div className="text-right">
+                          <div className="text-2xl font-bold text-green-400">85/100</div>
+                          <div className="text-sm text-slate-400">Score Clínico</div>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-2">
-                        <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                          <MessageCircle className="w-4 h-4" />
+                    </div>
+
+                    {/* Clinical Assessment Section */}
+                    <div className="bg-slate-700 rounded-lg p-6">
+                      <h5 className="text-lg font-semibold text-white mb-4">📊 Avaliação Clínica Inicial</h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="bg-slate-600 rounded-lg p-4">
+                          <h6 className="font-semibold text-white mb-2">Sintomas Principais</h6>
+                          <ul className="text-sm text-slate-300 space-y-1">
+                            <li>• Dor crônica (8/10)</li>
+                            <li>• Insônia persistente</li>
+                            <li>• Ansiedade moderada</li>
+                            <li>• Fadiga crônica</li>
+                          </ul>
+                        </div>
+                        <div className="bg-slate-600 rounded-lg p-4">
+                          <h6 className="font-semibold text-white mb-2">Histórico Médico</h6>
+                          <ul className="text-sm text-slate-300 space-y-1">
+                            <li>• Insuficiência Renal Crônica</li>
+                            <li>• Hipertensão arterial</li>
+                            <li>• Diabetes tipo 2</li>
+                            <li>• Sem alergias conhecidas</li>
+                          </ul>
+                        </div>
+                      </div>
+                      <button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white py-3 px-4 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                        Iniciar Nova Avaliação Clínica
+                      </button>
+                    </div>
+
+                    {/* Patient-Professional Interaction */}
+                    <div className="bg-slate-700 rounded-lg p-6">
+                      <h5 className="text-lg font-semibold text-white mb-4">💬 Interação Paciente-Profissional</h5>
+                      <div className="space-y-3">
+                        <div className="flex items-start space-x-3">
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">P</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="bg-slate-600 rounded-lg p-3">
+                              <p className="text-sm text-white">"Estou sentindo uma melhora significativa na dor após iniciar o tratamento com CBD. A qualidade do sono também melhorou."</p>
+                              <p className="text-xs text-slate-400 mt-1">Dr. Ricardo Valença • 2 horas atrás</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-start space-x-3">
+                          <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">M</span>
+                          </div>
+                          <div className="flex-1">
+                            <div className="bg-slate-600 rounded-lg p-3">
+                              <p className="text-sm text-white">"Excelente! Continue com a dosagem atual. Vamos agendar uma reavaliação em 2 semanas para ajustar se necessário."</p>
+                              <p className="text-xs text-slate-400 mt-1">Dr. Profissional • 1 hora atrás</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex space-x-2">
+                        <input
+                          type="text"
+                          placeholder="Digite sua mensagem..."
+                          className="flex-1 px-3 py-2 bg-slate-600 border border-slate-500 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                        />
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                          Enviar
                         </button>
-                        <button className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors">
-                          <Eye className="w-4 h-4" />
-                        </button>
+                      </div>
+                    </div>
+
+                    {/* IA Residente Integration */}
+                    <div className="bg-slate-700 rounded-lg p-6">
+                      <h5 className="text-lg font-semibold text-white mb-4">🤖 IA Residente - Análise do Caso</h5>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div className="bg-slate-600 rounded-lg p-4 text-center">
+                          <div className="text-2xl font-bold text-green-400 mb-1">94%</div>
+                          <div className="text-sm text-slate-400">Precisão do Diagnóstico</div>
+                        </div>
+                        <div className="bg-slate-600 rounded-lg p-4 text-center">
+                          <div className="text-2xl font-bold text-blue-400 mb-1">87%</div>
+                          <div className="text-sm text-slate-400">Eficácia do Tratamento</div>
+                        </div>
+                        <div className="bg-slate-600 rounded-lg p-4 text-center">
+                          <div className="text-2xl font-bold text-purple-400 mb-1">92%</div>
+                          <div className="text-sm text-slate-400">Satisfação do Paciente</div>
+                        </div>
+                      </div>
+                      <div className="bg-slate-600 rounded-lg p-4">
+                        <h6 className="font-semibold text-white mb-2">Recomendações da IA:</h6>
+                        <ul className="text-sm text-slate-300 space-y-1">
+                          <li>• Manter dosagem atual de CBD (25mg/dia)</li>
+                          <li>• Monitorar função renal semanalmente</li>
+                          <li>• Considerar ajuste de medicação em 2 semanas</li>
+                          <li>• Continuar acompanhamento psicológico</li>
+                        </ul>
                       </div>
                     </div>
                   </>
