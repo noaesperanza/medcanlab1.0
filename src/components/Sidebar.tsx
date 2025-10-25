@@ -55,19 +55,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
     ]
 
     const adminItems = [
-      { name: '🏠 Dashboard', href: '/app/admin', icon: BarChart3 },
-      { name: '👥 Usuários', href: '/app/admin/users', icon: Users },
-      { name: '🎓 Cursos', href: '/app/admin/courses', icon: BookOpen },
-      { name: '💰 Financeiro', href: '/app/admin/financial', icon: BarChart3 },
-      { name: '💬 Chat Global + Moderação', href: '/app/chat', icon: Users },
-      { name: '🏛️ Moderação Fórum', href: '/app/admin/forum', icon: BookOpen },
-      { name: '🏆 Ranking & Gamificação', href: '/app/admin/gamification', icon: Award },
-      { name: '📁 Upload', href: '/app/admin/upload', icon: FileText },
-      { name: '📊 Analytics', href: '/app/admin/analytics', icon: BarChart3 },
-      { name: '🫀 Função Renal', href: '/app/admin/renal', icon: Stethoscope },
-      { name: '⚙️ Sistema', href: '/app/admin/system', icon: Clock },
-      { name: '📚 Biblioteca', href: '/app/library', icon: BookOpen },
-      { name: '🤖 Chat IA Documentos', href: '/app/ai-documents', icon: Brain },
+      { name: '🏠 Dashboard', href: '/app/dashboard', icon: Home },
+      { name: '👤 Meu Perfil', href: '/app/profile', icon: User },
     ]
 
     let specificItems = []
