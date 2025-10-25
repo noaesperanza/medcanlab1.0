@@ -37,6 +37,9 @@ import PatientAppointments from './pages/PatientAppointments'
 import PatientNOAChat from './pages/PatientNOAChat'
 import ArteEntrevistaClinica from './pages/ArteEntrevistaClinica'
 import ChatNoaEsperanca from './pages/ChatNoaEsperanca'
+import PatientDashboard from './pages/PatientDashboard'
+import PatientAgenda from './pages/PatientAgenda'
+import PatientKPIs from './pages/PatientKPIs'
 import NotFound from './pages/NotFound'
 
 function App() {
@@ -62,6 +65,9 @@ function App() {
                 <Route path="clinical-assessment" element={<ClinicalAssessment />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
                 <Route path="chat-noa-esperanca" element={<ChatNoaEsperanca />} />
+                <Route path="patient-dashboard" element={<PatientDashboard />} />
+                <Route path="patient-agenda" element={<PatientAgenda />} />
+                <Route path="patient-kpis" element={<PatientKPIs />} />
                 <Route path="library" element={<Library />} />
                     <Route path="chat" element={<ChatGlobal />} />
                     <Route path="patient-chat" element={<PatientChat />} />
