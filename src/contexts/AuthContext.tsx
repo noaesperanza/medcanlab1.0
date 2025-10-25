@@ -199,49 +199,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return
       }
       
-      // Consultar tabela profiles para dados adicionais
-      console.log('🔍 [loadUserProfile] Consultando tabela profiles...')
-      let { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .maybeSingle()
-      
-      console.log('📋 [loadUserProfile] Profile data:', profileData)
-      console.log('⚠️ [loadUserProfile] Profile error:', profileError)
-      
-      // Se não existir perfil, criar um automaticamente
-      if (!profileData && !profileError) {
-        console.log('➕ [loadUserProfile] Perfil não encontrado, criando automaticamente...')
-        
-        const newProfile = {
-          id: userId,
-          name: authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Usuário',
-          email: authUser.email,
-          user_type: authUser.user_metadata?.user_type || 'admin',
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        }
-        
-        const { data: insertData, error: insertError } = await supabase
-          .from('profiles')
-          .insert([newProfile])
-          .select()
-          .single()
-        
-        if (insertError) {
-          console.log('❌ [loadUserProfile] Erro ao criar perfil:', insertError)
-        } else {
-          console.log('✅ [loadUserProfile] Perfil criado com sucesso:', insertData)
-          // Usar os dados do perfil recém-criado
-          profileData = insertData
-        }
-      }
-      
-      if (profileError) {
-        console.log('❌ [loadUserProfile] Erro ao consultar profiles:', profileError)
-        // Continuar com dados do auth mesmo com erro na tabela profiles
-      }
+      // Não consultar profiles - usar apenas dados do auth
+      console.log('✅ [loadUserProfile] Usando apenas dados do Auth (sem consultar profiles)')
       
       console.log('👤 [loadUserProfile] Auth user:', authUser)
       console.log('📋 [loadUserProfile] User metadata:', authUser.user_metadata)
@@ -255,14 +214,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         let userName = authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Usuário'
         let userCrm = authUser.user_metadata?.crm
         let userCro = authUser.user_metadata?.cro
-        
-        // Se temos dados da tabela profiles, usar eles
-        if (profileData) {
-          console.log('✅ [loadUserProfile] Usando dados da tabela profiles')
-          userName = profileData.name || userName
-          userCrm = profileData.crm || userCrm
-          userCro = profileData.cro || userCro
-        }
         
         // Verificar se há metadados que indiquem o tipo de usuário (PRIORIDADE)
         if (authUser.user_metadata?.user_type) {
