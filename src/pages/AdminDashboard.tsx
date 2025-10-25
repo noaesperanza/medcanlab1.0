@@ -3,7 +3,7 @@ import {
   User, Stethoscope, MessageCircle, FileText, Share2, 
   Brain, Users, ChevronRight, Download, Send,
   BookOpen, Clock, Star, Play, CheckCircle,
-  TrendingUp, PieChart,
+  TrendingUp, PieChart, DollarSign,
   Home, Upload, BarChart3, Activity, Settings,
   Book
 } from 'lucide-react'
@@ -113,7 +113,7 @@ const AdminDashboard: React.FC = () => {
       id: 'financial',
       name: 'Financeiro',
       description: 'Controle Financeiro',
-      icon: TrendingUp,
+      icon: DollarSign,
       color: 'from-emerald-600 to-green-500',
       bgColor: 'bg-emerald-500/10',
     },
