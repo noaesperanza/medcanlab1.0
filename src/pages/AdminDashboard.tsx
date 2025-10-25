@@ -46,7 +46,7 @@ interface Course {
 }
 
 const AdminDashboard: React.FC = () => {
-  const [activeFunction, setActiveFunction] = useState<string>('dashboard')
+  const [activeFunction, setActiveFunction] = useState<string>('users')
   const { messages, sendMessage, isTyping, isListening, isSpeaking } = useNoa()
   const [inputMessage, setInputMessage] = useState('')
   const [chatMessages, setChatMessages] = useState([
@@ -86,16 +86,8 @@ const AdminDashboard: React.FC = () => {
 
   const functions: FunctionButton[] = [
     {
-      id: 'dashboard',
-      name: 'Dashboard',
-      description: 'Visão Geral do Sistema',
-      icon: Home,
-      color: 'from-purple-600 to-pink-500',
-      bgColor: 'bg-purple-500/10',
-    },
-    {
       id: 'users',
-      name: 'Usuários',
+      name: '👥 Usuários',
       description: 'Gestão de Usuários',
       icon: Users,
       color: 'from-blue-600 to-cyan-500',
@@ -103,7 +95,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'courses',
-      name: 'Cursos',
+      name: '🎓 Cursos',
       description: 'Cursos de Cannabis Medicinal',
       icon: BookOpen,
       color: 'from-green-600 to-teal-500',
@@ -111,7 +103,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'financial',
-      name: 'Financeiro',
+      name: '💰 Financeiro',
       description: 'Controle Financeiro',
       icon: DollarSign,
       color: 'from-emerald-600 to-green-500',
@@ -119,7 +111,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'chat',
-      name: 'Chat Global + Moderação',
+      name: '💬 Chat Global + Moderação',
       description: 'Chat e Moderação',
       icon: MessageCircle,
       color: 'from-cyan-600 to-blue-500',
@@ -127,7 +119,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'forum',
-      name: 'Moderação Fórum',
+      name: '🏛️ Moderação Fórum',
       description: 'Gestão do Fórum',
       icon: MessageCircle,
       color: 'from-orange-600 to-red-500',
@@ -135,7 +127,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'gamification',
-      name: 'Ranking & Gamificação',
+      name: '🏆 Ranking & Gamificação',
       description: 'Sistema de Pontos',
       icon: Star,
       color: 'from-yellow-600 to-orange-500',
@@ -143,7 +135,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'upload',
-      name: 'Upload',
+      name: '📁 Upload',
       description: 'Upload de Documentos',
       icon: Upload,
       color: 'from-indigo-600 to-purple-500',
@@ -151,7 +143,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'analytics',
-      name: 'Analytics',
+      name: '📊 Analytics',
       description: 'Análise de Dados',
       icon: BarChart3,
       color: 'from-pink-600 to-rose-500',
@@ -159,7 +151,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'renal',
-      name: 'Função Renal',
+      name: '🫀 Função Renal',
       description: 'Monitoramento Renal',
       icon: Activity,
       color: 'from-red-600 to-pink-500',
@@ -167,7 +159,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'settings',
-      name: 'Sistema',
+      name: '⚙️ Sistema',
       description: 'Configurações',
       icon: Settings,
       color: 'from-slate-600 to-gray-500',
@@ -175,7 +167,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'library',
-      name: 'Biblioteca',
+      name: '📚 Biblioteca',
       description: 'Biblioteca Médica',
       icon: Book,
       color: 'from-teal-600 to-cyan-500',
@@ -183,7 +175,7 @@ const AdminDashboard: React.FC = () => {
     },
     {
       id: 'ai-chat',
-      name: 'Chat IA Documentos',
+      name: '🤖 Chat IA Documentos',
       description: 'IA para Documentos',
       icon: Brain,
       color: 'from-violet-600 to-purple-500',
@@ -439,62 +431,6 @@ const AdminDashboard: React.FC = () => {
 
           {/* Main Content Area */}
           <div className="flex-1 p-6 overflow-y-auto">
-            {/* Dashboard Content */}
-            {activeFunction === 'dashboard' && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="bg-slate-800 rounded-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <Users className="w-8 h-8 text-blue-400" />
-                      <TrendingUp className="w-5 h-5 text-green-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-1">4</h3>
-                    <p className="text-sm text-slate-400">Usuários Ativos</p>
-                  </div>
-                  <div className="bg-slate-800 rounded-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <BookOpen className="w-8 h-8 text-purple-400" />
-                      <TrendingUp className="w-5 h-5 text-green-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-1">5</h3>
-                    <p className="text-sm text-slate-400">Cursos Disponíveis</p>
-                  </div>
-                  <div className="bg-slate-800 rounded-xl p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <DollarSign className="w-8 h-8 text-emerald-400" />
-                      <TrendingUp className="w-5 h-5 text-green-400" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-1">R$ 125k</h3>
-                    <p className="text-sm text-slate-400">Receita Total</p>
-                  </div>
-                </div>
-
-                <div className="bg-slate-800 rounded-xl p-6">
-                  <h5 className="text-lg font-semibold text-white mb-4">🎯 Área de Trabalho Principal</h5>
-                  <p className="text-slate-300 mb-4">
-                    Esta é sua área de trabalho central. Selecione qualquer função no menu lateral para trabalhar.
-                  </p>
-                  <p className="text-slate-400 text-sm">
-                    Todas as funções estão integradas e funcionais. Use os botões para navegar entre elas.
-                  </p>
-                </div>
-
-                <div className="bg-slate-800 rounded-xl p-6">
-                  <h5 className="text-lg font-semibold text-white mb-4">📋 Sistema IMRE & AEC</h5>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-slate-700 rounded-lg p-4">
-                      <h6 className="font-semibold text-white mb-2">Arte da Entrevista Clínica</h6>
-                      <p className="text-sm text-slate-300">Metodologia AEC aplicada à Cannabis Medicinal</p>
-                    </div>
-                    <div className="bg-slate-700 rounded-lg p-4">
-                      <h6 className="font-semibold text-white mb-2">Sistema IMRE Triaxial</h6>
-                      <p className="text-sm text-slate-300">28 blocos semânticos para avaliação clínica</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Users Content */}
             {activeFunction === 'users' && (
               <div className="space-y-6">
@@ -565,7 +501,7 @@ const AdminDashboard: React.FC = () => {
             )}
 
             {/* Other Functions - Placeholder */}
-            {!['dashboard', 'users', 'courses', 'financial'].includes(activeFunction) && (
+            {!['users', 'courses', 'financial'].includes(activeFunction) && (
               <div className="space-y-6">
                 <div className="bg-slate-800 rounded-xl p-6">
                   <h5 className="text-lg font-semibold text-white mb-4">{currentFunction.name}</h5>
