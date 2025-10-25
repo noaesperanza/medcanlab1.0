@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
@@ -6,11 +6,9 @@ import Header from './Header'
 import Footer from './Footer'
 import Sidebar from './Sidebar'
 import NoaEsperancaAvatar from './NoaEsperancaAvatar'
-import UserTypeNavigation from './UserTypeNavigation'
 
 const Layout: React.FC = () => {
   const { user, isLoading } = useAuth()
-  const [currentUserType, setCurrentUserType] = useState<'professional' | 'student' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa'>('admin')
 
   if (isLoading) {
     return (
@@ -77,15 +75,6 @@ const Layout: React.FC = () => {
         <div className="flex flex-col min-h-screen lg:ml-80">
           <Header />
           
-          {/* User Type Navigation */}
-          <div className="bg-slate-800 border-b border-slate-700 p-4">
-            <div className="max-w-6xl mx-auto">
-              <UserTypeNavigation 
-                currentUserType={currentUserType}
-                onUserTypeChange={setCurrentUserType}
-              />
-            </div>
-          </div>
           
           <main className="flex-1 bg-slate-900 lg:ml-4" style={{ marginLeft: '2%', marginRight: '2%' }}>
             <Outlet />

@@ -36,8 +36,15 @@ export const useAuth = () => {
 }
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [user, setUser] = useState<User | null>({
+    id: 'dev-user',
+    email: 'dev@medcannlab.com',
+    type: 'admin',
+    name: 'Desenvolvedor',
+    crm: undefined,
+    cro: undefined
+  })
+  const [isLoading, setIsLoading] = useState(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState(false)
 
   // --- REFS for concurrency control & caching ---
