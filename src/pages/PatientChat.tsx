@@ -17,17 +17,16 @@ const PatientChat: React.FC = () => {
   const [message, setMessage] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [isVideoCall, setIsVideoCall] = useState(false)
-  const [selectedProfessional, setSelectedProfessional] = useState('dr-joao-silva')
+  const [selectedProfessional, setSelectedProfessional] = useState('dr-ricardo-valenca')
   const [showProfessionalSelect, setShowProfessionalSelect] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const professionals = [
-    { id: 'dr-joao-silva', name: 'Dr. João Silva', specialty: 'Nefrologia', avatar: 'JS', online: true },
-    { id: 'dra-ana-costa', name: 'Dra. Ana Costa', specialty: 'Nutrição', avatar: 'AC', online: true },
-    { id: 'dr-carlos-santos', name: 'Dr. Carlos Santos', specialty: 'Clinica Geral', avatar: 'CS', online: false }
+    { id: 'dr-ricardo-valenca', name: 'Dr. Ricardo Valença', specialty: 'Cannabis Medicinal & Nefrologia', avatar: 'RV', online: true, consultorio: 'Consultório Escola Ricardo Valença' },
+    { id: 'dr-eduardo-faveret', name: 'Dr. Eduardo Faveret', specialty: 'Cannabis Medicinal & Arte da Entrevista Clínica', avatar: 'EF', online: true, consultorio: 'Consultório Escola Eduardo Faveret' }
   ]
 
-  const currentProfessional = professionals.find(p => p.id === selectedProfessional)
+  const currentProfessional = professionals.find(p => p.id === selectedProfessional) || professionals[0]
 
   const getMessagesForProfessional = (professionalId: string) => {
     const professional = professionals.find(p => p.id === professionalId)
