@@ -113,22 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoadingProfile(true)
     setIsLoading(true)
     
-    // Timeout de segurança para evitar loading infinito
-    const safetyTimeout = setTimeout(() => {
-      console.log('⏰ Timeout de segurança - criando usuário de emergência')
-      const emergencyUser = {
-        id: userId,
-        email: 'admin@medcannlab.com',
-        type: 'admin' as any,
-        name: 'Administrador',
-        crm: undefined,
-        cro: undefined
-      }
-      setUser(emergencyUser)
-      setIsLoading(false)
-      setIsLoadingProfile(false)
-      console.log('✅ Usuário de emergência criado por timeout')
-    }, 10000) // 10 segundos
+    // Removido timeout de segurança - sistema está configurado para sempre ter usuário
     
     // Timeout global REMOVIDO para evitar auto login
     // const globalTimeout = setTimeout(() => {
@@ -312,9 +297,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('✅ [loadUserProfile] Usuário configurado com sucesso!')
         console.log('🔄 [loadUserProfile] Finalizando loadUserProfile com sucesso')
         
-        // Limpar timeout de segurança
-        clearTimeout(safetyTimeout)
-        
         // Debug será feito via useEffect que observa mudanças no user
       } else {
         console.log('❌ Nenhum usuário encontrado no Auth')
@@ -330,7 +312,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         setUser(fallbackUser)
         console.log('✅ [loadUserProfile] Usuário de fallback criado')
-        clearTimeout(safetyTimeout)
       }
     } catch (error) {
       console.error('❌ [loadUserProfile] Erro ao carregar perfil do usuário:', error)
@@ -374,7 +355,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('🔄 Finalizando carregamento - definindo isLoading como false')
       setIsLoading(false)
       setIsLoadingProfile(false)
-      clearTimeout(safetyTimeout)
     }
   }
 
