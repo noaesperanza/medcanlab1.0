@@ -62,6 +62,8 @@ const PatientDoctorChat: React.FC = () => {
   const [showPatientInfo, setShowPatientInfo] = useState(false)
   const [selectedPatientId, setSelectedPatientId] = useState<string>(patientId || '1')
   const [showPatientSelect, setShowPatientSelect] = useState(false)
+  const [selectedUserType, setSelectedUserType] = useState<'patient' | 'student' | 'professional'>('patient')
+  const [showUserTypeSelect, setShowUserTypeSelect] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -155,6 +157,70 @@ const PatientDoctorChat: React.FC = () => {
 
   // Array de pacientes para o seletor
   const patientsList = Object.values(patients)
+
+  // Dados de Alunos
+  const students = {
+    1: {
+      id: 1,
+      name: 'Ana Costa',
+      course: 'Pós-Graduação Cannabis Medicinal',
+      progress: 75,
+      avatar: 'AC',
+      specialty: 'Estudante de Medicina'
+    },
+    2: {
+      id: 2,
+      name: 'Carlos Lima',
+      course: 'Arte da Entrevista Clínica',
+      progress: 90,
+      avatar: 'CL',
+      specialty: 'Residente em Clínica Geral'
+    }
+  }
+
+  // Dados de Profissionais
+  const professionals = {
+    1: {
+      id: 1,
+      name: 'Dr. Ricardo Silva',
+      crm: '12345-SP',
+      specialty: 'Nefrologia',
+      avatar: 'RS'
+    },
+    2: {
+      id: 2,
+      name: 'Dra. Fernanda Oliveira',
+      crm: '67890-RJ',
+      specialty: 'Psiquiatria',
+      avatar: 'FO'
+    }
+  }
+
+  const studentsList = Object.values(students)
+  const professionalsList = Object.values(professionals)
+
+  // Obter lista atual baseada no tipo de usuário selecionado
+  const getCurrentUserList = () => {
+    switch (selectedUserType) {
+      case 'patient':
+        return patientsList.map(p => ({ ...p, type: 'patient' as const }))
+      case 'student':
+        return studentsList.map(s => ({ ...s, type: 'student' as const }))
+      case 'professional':
+        return professionalsList.map(p => ({ ...p, type: 'professional' as const }))
+      default:
+        return patientsList.map(p => ({ ...p, type: 'patient' as const }))
+    }
+  }
+
+  const currentUserList = getCurrentUserList()
+
+  // Obter usuário selecionado atualmente
+  const getCurrentSelectedUser = () => {
+    return currentUserList.find(u => u.id.toString() === selectedPatientId) || currentUserList[0]
+  }
+
+  const currentSelectedUser = getCurrentSelectedUser()
 
   // Mensagens do chat (simuladas) - baseadas no paciente
   const getMessagesForPatient = (patientId: number) => {
@@ -312,16 +378,44 @@ const PatientDoctorChat: React.FC = () => {
       if (showPatientSelect) {
         setShowPatientSelect(false)
       }
+      if (showUserTypeSelect) {
+        setShowUserTypeSelect(false)
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [showPatientSelect])
+  }, [showPatientSelect, showUserTypeSelect])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  // Função para salvar mensagem no histórico do paciente (integração com IA e prontuário)
+  const saveMessageToPatientRecord = async (message: any, currentSelectedUser: any) => {
+    if (selectedUserType === 'patient') {
+      console.log('📝 Salvando mensagem no prontuário do paciente:', {
+        patientId: currentSelectedUser.id,
+        patientName: currentSelectedUser.name,
+        message: message.message,
+        sender: message.senderName,
+        timestamp: message.timestamp,
+        metadata: {
+          chatType: 'professional-patient',
+          savedToRecord: true,
+          forIATraining: true,
+          integrationWithClinicalAssessment: true
+        }
+      })
+      
+      // TODO: Implementar integração real com banco de dados
+      // - Salvar no histórico do paciente
+      // - Adicionar à anamnese
+      // - Atualizar prontuário médico
+      // - Enviar para treinamento da IA residente do paciente
+    }
   }
 
   const handleSendMessage = () => {
@@ -339,6 +433,10 @@ const PatientDoctorChat: React.FC = () => {
         attachments: []
       }
       setMessages([...messages, newMessage])
+      
+      // Salvar mensagem no prontuário do paciente (se for paciente)
+      saveMessageToPatientRecord(newMessage, currentSelectedUser)
+      
       setMessage('')
       
       // Simular resposta do outro participante
@@ -436,18 +534,87 @@ const PatientDoctorChat: React.FC = () => {
               <ArrowLeft className="w-5 h-5" />
             </button>
             
-            {/* Seletor de Paciente */}
+            {/* Seletor de Tipo de Usuário */}
+            <div className="relative">
+              <button
+                onClick={() => setShowUserTypeSelect(!showUserTypeSelect)}
+                className="bg-slate-700/50 px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-2"
+              >
+                <span className="text-white font-semibold">
+                  {selectedUserType === 'patient' ? '👥 Pacientes' : selectedUserType === 'student' ? '🎓 Alunos' : '🩺 Profissionais'}
+                </span>
+                <ChevronDown className="w-4 h-4 text-slate-400" />
+              </button>
+
+              {/* Dropdown Tipo de Usuário */}
+              {showUserTypeSelect && (
+                <div className="absolute left-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-20">
+                  <div className="p-2">
+                    <button
+                      onClick={() => {
+                        setSelectedUserType('patient')
+                        setShowUserTypeSelect(false)
+                        setShowPatientSelect(false)
+                      }}
+                      className="w-full p-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-3"
+                    >
+                      <span className="text-2xl">👥</span>
+                      <span className="font-semibold text-white">Pacientes</span>
+                      {selectedUserType === 'patient' && (
+                        <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedUserType('student')
+                        setShowUserTypeSelect(false)
+                        setShowPatientSelect(false)
+                      }}
+                      className="w-full p-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-3"
+                    >
+                      <span className="text-2xl">🎓</span>
+                      <span className="font-semibold text-white">Alunos</span>
+                      {selectedUserType === 'student' && (
+                        <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
+                      )}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSelectedUserType('professional')
+                        setShowUserTypeSelect(false)
+                        setShowPatientSelect(false)
+                      }}
+                      className="w-full p-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-3"
+                    >
+                      <span className="text-2xl">🩺</span>
+                      <span className="font-semibold text-white">Profissionais</span>
+                      {selectedUserType === 'professional' && (
+                        <CheckCircle className="w-5 h-5 text-green-400 ml-auto" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Seletor de Usuário Específico */}
             <div className="relative">
               <button
                 onClick={() => setShowPatientSelect(!showPatientSelect)}
                 className="flex items-center space-x-3 bg-slate-700/50 px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors"
               >
                 <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">{patient.avatar}</span>
+                  <span className="text-white font-bold text-sm">{(currentSelectedUser as any).avatar || 'U'}</span>
                 </div>
                 <div className="text-left">
-                  <h1 className="text-lg font-bold text-white">{patient.name}</h1>
-                  <p className="text-slate-300 text-sm">{patient.diagnosis} • {patient.age} anos</p>
+                  <h1 className="text-lg font-bold text-white">{currentSelectedUser.name}</h1>
+                  <p className="text-slate-300 text-sm">
+                    {selectedUserType === 'patient' 
+                      ? `${(currentSelectedUser as any).diagnosis} • ${(currentSelectedUser as any).age} anos`
+                      : selectedUserType === 'student'
+                      ? (currentSelectedUser as any).course
+                      : (currentSelectedUser as any).specialty}
+                  </p>
                 </div>
                 <ChevronDown className="w-5 h-5 text-slate-400" />
               </button>
@@ -456,24 +623,27 @@ const PatientDoctorChat: React.FC = () => {
               {showPatientSelect && (
                 <div className="absolute left-0 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-10">
                   <div className="p-2">
-                    {patientsList.map((p) => (
+                    {currentUserList.map((u) => (
                       <button
-                        key={p.id}
+                        key={u.id}
                         onClick={() => {
-                          setSelectedPatientId(p.id.toString())
+                          setSelectedPatientId(u.id.toString())
                           setShowPatientSelect(false)
-                          navigate(`/app/patient-chat/${p.id}`)
                         }}
                         className="w-full p-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-3"
                       >
                         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                          <span className="text-white font-bold text-sm">{p.avatar}</span>
+                          <span className="text-white font-bold text-sm">{(u as any).avatar}</span>
                         </div>
                         <div className="flex-1 text-left">
-                          <p className="font-semibold text-white">{p.name}</p>
-                          <p className="text-sm text-slate-400">{p.diagnosis}</p>
+                          <p className="font-semibold text-white">{u.name}</p>
+                          <p className="text-sm text-slate-400">
+                            {selectedUserType === 'patient' ? (u as any).diagnosis : 
+                             selectedUserType === 'student' ? (u as any).course : 
+                             (u as any).specialty}
+                          </p>
                         </div>
-                        {selectedPatientId === p.id.toString() && (
+                        {selectedPatientId === u.id.toString() && (
                           <CheckCircle className="w-5 h-5 text-green-400" />
                         )}
                       </button>
