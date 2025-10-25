@@ -9,44 +9,60 @@ import {
   MicOff,
   Clock,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  ChevronDown
 } from 'lucide-react'
 
 const PatientChat: React.FC = () => {
   const [message, setMessage] = useState('')
   const [isRecording, setIsRecording] = useState(false)
   const [isVideoCall, setIsVideoCall] = useState(false)
+  const [selectedProfessional, setSelectedProfessional] = useState('dr-joao-silva')
+  const [showProfessionalSelect, setShowProfessionalSelect] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
-  const messages = [
-    {
-      id: 1,
-      user: 'Dr. João Silva',
-      avatar: 'JS',
-      message: 'Olá! Como você está se sentindo hoje?',
-      timestamp: '10:30',
-      isDoctor: true,
-      reactions: { heart: 0, thumbs: 0 }
-    },
-    {
-      id: 2,
-      user: 'Você',
-      avatar: 'V',
-      message: 'Olá doutor! Estou me sentindo melhor, mas ainda tenho algumas dores.',
-      timestamp: '10:32',
-      isDoctor: false,
-      reactions: { heart: 0, thumbs: 0 }
-    },
-    {
-      id: 3,
-      user: 'Dr. João Silva',
-      avatar: 'JS',
-      message: 'Entendo. Vamos agendar uma consulta para avaliar melhor. Que tal amanhã às 14h?',
-      timestamp: '10:35',
-      isDoctor: true,
-      reactions: { heart: 0, thumbs: 0 }
-    }
+  const professionals = [
+    { id: 'dr-joao-silva', name: 'Dr. João Silva', specialty: 'Nefrologia', avatar: 'JS', online: true },
+    { id: 'dra-ana-costa', name: 'Dra. Ana Costa', specialty: 'Nutrição', avatar: 'AC', online: true },
+    { id: 'dr-carlos-santos', name: 'Dr. Carlos Santos', specialty: 'Clinica Geral', avatar: 'CS', online: false }
   ]
+
+  const currentProfessional = professionals.find(p => p.id === selectedProfessional)
+
+  const getMessagesForProfessional = (professionalId: string) => {
+    const professional = professionals.find(p => p.id === professionalId)
+    return [
+      {
+        id: 1,
+        user: professional?.name || 'Profissional',
+        avatar: professional?.avatar || 'P',
+        message: 'Olá! Como você está se sentindo hoje?',
+        timestamp: '10:30',
+        isDoctor: true,
+        reactions: { heart: 0, thumbs: 0 }
+      },
+      {
+        id: 2,
+        user: 'Você',
+        avatar: 'V',
+        message: 'Olá! Estou me sentindo melhor, mas ainda tenho algumas dores.',
+        timestamp: '10:32',
+        isDoctor: false,
+        reactions: { heart: 0, thumbs: 0 }
+      },
+      {
+        id: 3,
+        user: professional?.name || 'Profissional',
+        avatar: professional?.avatar || 'P',
+        message: 'Entendo. Vamos agendar uma consulta para avaliar melhor. Que tal amanhã às 14h?',
+        timestamp: '10:35',
+        isDoctor: true,
+        reactions: { heart: 0, thumbs: 0 }
+      }
+    ]
+  }
+
+  const messages = getMessagesForProfessional(selectedProfessional)
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -74,17 +90,87 @@ const PatientChat: React.FC = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showProfessionalSelect) {
+        setShowProfessionalSelect(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showProfessionalSelect])
+
   return (
     <div className="min-h-screen bg-slate-900 p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <h1 className="text-4xl font-bold text-white mb-4">
-            Chat com Meu Médico
+            Chat com Profissional
           </h1>
-          <p className="text-slate-300 text-lg">
-            Converse diretamente com seu médico responsável
+          <p className="text-slate-300 text-lg mb-4">
+            Converse diretamente com seu profissional de saúde
           </p>
+          
+          {/* Professional Selector */}
+          <div className="relative">
+            <button
+              onClick={() => setShowProfessionalSelect(!showProfessionalSelect)}
+              className="bg-slate-800 border border-slate-700 rounded-lg px-6 py-3 flex items-center space-x-3 hover:bg-slate-700 transition-colors mx-auto"
+            >
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold">{currentProfessional?.avatar}</span>
+              </div>
+              <div className="text-left">
+                <div className="flex items-center space-x-2">
+                  <p className="font-semibold text-white">{currentProfessional?.name}</p>
+                  {currentProfessional?.online && (
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  )}
+                </div>
+                <p className="text-sm text-slate-400">{currentProfessional?.specialty}</p>
+              </div>
+              <ChevronDown className="w-5 h-5 text-slate-400" />
+            </button>
+
+            {/* Dropdown */}
+            {showProfessionalSelect && (
+              <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-10">
+                <div className="p-2">
+                  {professionals.map((professional) => (
+                    <button
+                      key={professional.id}
+                      onClick={() => {
+                        setSelectedProfessional(professional.id)
+                        setShowProfessionalSelect(false)
+                      }}
+                      className="w-full p-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-3"
+                    >
+                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold">{professional.avatar}</span>
+                      </div>
+                      <div className="flex-1 text-left">
+                        <div className="flex items-center space-x-2">
+                          <p className="font-semibold text-white">{professional.name}</p>
+                          {professional.online && (
+                            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                          )}
+                        </div>
+                        <p className="text-sm text-slate-400">{professional.specialty}</p>
+                      </div>
+                      {selectedProfessional === professional.id && (
+                        <CheckCircle className="w-5 h-5 text-green-400" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Status de Espera */}
@@ -107,11 +193,11 @@ const PatientChat: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center">
-                  <span className="text-sm font-medium text-white">JS</span>
+                  <span className="text-sm font-medium text-white">{currentProfessional?.avatar}</span>
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold text-white">Dr. João Silva</h2>
-                  <p className="text-slate-300 text-sm">Médico Responsável</p>
+                  <h2 className="text-lg font-semibold text-white">{currentProfessional?.name}</h2>
+                  <p className="text-slate-300 text-sm">{currentProfessional?.specialty}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-2">

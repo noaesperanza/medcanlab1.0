@@ -101,7 +101,7 @@ const PatientDashboard: React.FC = () => {
               </a>
               <a href="/app/patient-chat" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <Stethoscope className="w-5 h-5" />
-                <span>Chat com Meu Médico</span>
+                <span>Chat com Profissional</span>
               </a>
               <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <FileText className="w-5 h-5" />

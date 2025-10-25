@@ -270,7 +270,7 @@ const ProfessionalDashboard: React.FC = () => {
                           </div>
                           
                           <div className="flex items-center space-x-1">
-                            <button onClick={() => handleNavigate('/app/patient-chat')} className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors" title="Chat com paciente">
+                            <button onClick={() => handleNavigate(`/app/patient-chat/${patient.id}`)} className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors" title="Chat com paciente">
                               <MessageCircle className="w-4 h-4" />
                             </button>
                             <button onClick={() => handleViewPatient(patient.id)} className="p-2 bg-slate-600 rounded-lg hover:bg-slate-500 transition-colors" title="Ver prontuário">

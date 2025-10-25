@@ -43,7 +43,8 @@ import {
   Calendar,
   MapPin,
   Mail,
-  Phone as PhoneIcon
+  Phone as PhoneIcon,
+  ChevronDown
 } from 'lucide-react'
 
 const PatientDoctorChat: React.FC = () => {
@@ -59,6 +60,8 @@ const PatientDoctorChat: React.FC = () => {
   const [isMuted, setIsMuted] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [showPatientInfo, setShowPatientInfo] = useState(false)
+  const [selectedPatientId, setSelectedPatientId] = useState<string>(patientId || '1')
+  const [showPatientSelect, setShowPatientSelect] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -147,7 +150,11 @@ const PatientDoctorChat: React.FC = () => {
   }
 
   // Obter dados do paciente baseado no ID
-  const patient = patients[parseInt(patientId || '1') as keyof typeof patients] || patients[1]
+  const currentPatient = patients[parseInt(selectedPatientId) as keyof typeof patients] || patients[1]
+  const patient = currentPatient
+
+  // Array de pacientes para o seletor
+  const patientsList = Object.values(patients)
 
   // Mensagens do chat (simuladas) - baseadas no paciente
   const getMessagesForPatient = (patientId: number) => {
@@ -283,9 +290,35 @@ const PatientDoctorChat: React.FC = () => {
     }
   ])
 
+  // Atualizar selectedPatientId quando patientId da URL mudar
+  useEffect(() => {
+    if (patientId) {
+      setSelectedPatientId(patientId)
+    }
+  }, [patientId])
+
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Atualizar mensagens quando o paciente selecionado mudar
+  useEffect(() => {
+    setMessages(getMessagesForPatient(parseInt(selectedPatientId)))
+  }, [selectedPatientId])
+
+  // Fechar dropdown ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showPatientSelect) {
+        setShowPatientSelect(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showPatientSelect])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -402,18 +435,57 @@ const PatientDoctorChat: React.FC = () => {
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                <span className="text-white font-bold text-sm">{patient.avatar}</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-white">{patient.name}</h1>
-                <p className="text-slate-300">{patient.diagnosis} • {patient.age} anos</p>
-                <div className="flex items-center space-x-2 mt-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="text-green-400 text-sm">Online</span>
+            
+            {/* Seletor de Paciente */}
+            <div className="relative">
+              <button
+                onClick={() => setShowPatientSelect(!showPatientSelect)}
+                className="flex items-center space-x-3 bg-slate-700/50 px-4 py-2 rounded-lg hover:bg-slate-700 transition-colors"
+              >
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">{patient.avatar}</span>
                 </div>
-              </div>
+                <div className="text-left">
+                  <h1 className="text-lg font-bold text-white">{patient.name}</h1>
+                  <p className="text-slate-300 text-sm">{patient.diagnosis} • {patient.age} anos</p>
+                </div>
+                <ChevronDown className="w-5 h-5 text-slate-400" />
+              </button>
+
+              {/* Dropdown */}
+              {showPatientSelect && (
+                <div className="absolute left-0 mt-2 w-80 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-10">
+                  <div className="p-2">
+                    {patientsList.map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => {
+                          setSelectedPatientId(p.id.toString())
+                          setShowPatientSelect(false)
+                          navigate(`/app/patient-chat/${p.id}`)
+                        }}
+                        className="w-full p-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center space-x-3"
+                      >
+                        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold text-sm">{p.avatar}</span>
+                        </div>
+                        <div className="flex-1 text-left">
+                          <p className="font-semibold text-white">{p.name}</p>
+                          <p className="text-sm text-slate-400">{p.diagnosis}</p>
+                        </div>
+                        {selectedPatientId === p.id.toString() && (
+                          <CheckCircle className="w-5 h-5 text-green-400" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-green-400 text-sm">Online</span>
             </div>
           </div>
           <div className="flex items-center space-x-2">
