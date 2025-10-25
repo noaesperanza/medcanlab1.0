@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   ArrowLeft, 
   Calendar, 
@@ -23,6 +24,7 @@ import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
 const PatientDashboard: React.FC = () => {
   const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
   const [inputMessage, setInputMessage] = useState('')
+  const navigate = useNavigate()
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
@@ -36,6 +38,11 @@ const PatientDashboard: React.FC = () => {
       e.preventDefault()
       handleSendMessage()
     }
+  }
+
+  const handleStartAssessment = () => {
+    console.log('🚀 Iniciando Avaliação Clínica...')
+    navigate('/app/clinical-assessment')
   }
 
   return (
@@ -127,7 +134,10 @@ const PatientDashboard: React.FC = () => {
                 recomendamos realizar uma avaliação clínica inicial. Este processo leva cerca de 
                 10-15 minutos e ajudará nossos profissionais a entender melhor seu quadro de saúde.
               </p>
-              <button className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+              <button 
+                onClick={handleStartAssessment}
+                className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+              >
                 Iniciar Avaliação Clínica
               </button>
             </div>
@@ -259,7 +269,10 @@ const PatientDashboard: React.FC = () => {
 
                   {/* Quick Actions */}
                   <div className="space-y-3 mb-6">
-                    <button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-colors">
+                    <button 
+                      onClick={handleStartAssessment}
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-colors"
+                    >
                       Iniciar Avaliação Clínica IMRE Triaxial
                     </button>
                     <p className="text-xs text-slate-400 text-center">
