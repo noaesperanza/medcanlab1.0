@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Bot, Sparkles } from 'lucide-react'
-import avatarNoaImage from '../assets/avatar-noa.jpg'
+import avatarNoaImage from '../assets/noa-avatar.png'
 
 interface NoaAnimatedAvatarProps {
   isSpeaking: boolean
