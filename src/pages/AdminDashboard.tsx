@@ -106,8 +106,8 @@ const AdminDashboard: React.FC = () => {
       <div className="bg-slate-800 border-b border-slate-700 p-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-white">👑 Dashboard Administrativo</h1>
-            <p className="text-slate-400">Gestão Integrada - Clínica, Ensino e Pesquisa</p>
+            <h1 className="text-2xl font-bold text-white">👑 MedCannLab 3.0</h1>
+            <p className="text-slate-400">Sistema Integrado de Cannabis Medicinal</p>
           </div>
           
           {/* Admin Profile */}
@@ -124,11 +124,11 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="flex h-screen">
-        {/* Sidebar - Fixed Width */}
+        {/* Sidebar - Simple Navigation */}
         <div className="w-80 bg-slate-800 border-r border-slate-700 flex flex-col">
-          {/* Area Navigation */}
+          {/* Area Selection */}
           <div className="p-4 border-b border-slate-700">
-            <h3 className="text-lg font-semibold text-white mb-4">Áreas de Atuação</h3>
+            <h3 className="text-lg font-semibold text-white mb-4">Áreas Principais</h3>
             <div className="space-y-2">
               {areas.map((area) => {
                 const Icon = area.icon
@@ -147,93 +147,14 @@ const AdminDashboard: React.FC = () => {
                       <div className="font-semibold">{area.name}</div>
                       <div className="text-xs opacity-80">{area.description}</div>
                     </div>
-                    <ChevronRight className="w-4 h-4" />
                   </button>
                 )
               })}
             </div>
           </div>
 
-          {/* Sidebar Navigation */}
-          <div className="flex-1 p-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Navegação</h3>
-            <nav className="space-y-2">
-              <a href="#" className="flex items-center space-x-3 p-3 rounded-lg bg-slate-700 text-white">
-                <BarChart3 className="w-5 h-5" />
-                <span>📊 Dashboard {currentArea.name}</span>
-              </a>
-              
-              {activeArea === 'clinica' && (
-                <>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <Users className="w-5 h-5" />
-                    <span>👥 Meus Pacientes</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <Heart className="w-5 h-5" />
-                    <span>📊 Avaliações</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <MessageCircle className="w-5 h-5" />
-                    <span>💬 Chat Global + Fórum</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <FileText className="w-5 h-5" />
-                    <span>📈 Relatórios</span>
-                  </a>
-                </>
-              )}
-              
-              {activeArea === 'ensino' && (
-                <>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <BookOpen className="w-5 h-5" />
-                    <span>📚 Biblioteca Médica</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <Heart className="w-5 h-5" />
-                    <span>❤️ Arte da Entrevista</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <Brain className="w-5 h-5" />
-                    <span>🧠 Cannabis Medicinal</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <MessageCircle className="w-5 h-5" />
-                    <span>💬 Chat Global + Fórum</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <Award className="w-5 h-5" />
-                    <span>🏆 Certificados</span>
-                  </a>
-                </>
-              )}
-              
-              {activeArea === 'pesquisa' && (
-                <>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <Users className="w-5 h-5" />
-                    <span>👥 Meus Pacientes</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <Heart className="w-5 h-5" />
-                    <span>📊 Avaliações</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <MessageCircle className="w-5 h-5" />
-                    <span>💬 Chat Global + Fórum</span>
-                  </a>
-                  <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
-                    <FileText className="w-5 h-5" />
-                    <span>📈 Relatórios</span>
-                  </a>
-                </>
-              )}
-            </nav>
-          </div>
-
-          {/* Chat Nôa Esperança - Fixed at Bottom */}
-          <div className="p-4 border-t border-slate-700">
+          {/* Chat Nôa Esperança */}
+          <div className="flex-1 p-4 border-t border-slate-700">
             <div className="text-center mb-4">
               <h3 className="text-lg font-semibold text-white mb-2">Nôa Esperança</h3>
               <p className="text-sm text-slate-400">
@@ -248,21 +169,9 @@ const AdminDashboard: React.FC = () => {
               <NoaAnimatedAvatar
                 isSpeaking={isSpeaking}
                 isListening={isListening}
-                size="sm"
+                size="md"
                 showStatus={true}
               />
-            </div>
-
-            {/* Quick Actions */}
-            <div className="space-y-2 mb-4">
-              <button 
-                onClick={toggleChat}
-                className={`w-full bg-gradient-to-r ${currentArea.color} text-white py-2 px-3 rounded-lg font-semibold hover:opacity-90 transition-opacity text-sm`}
-              >
-                {activeArea === 'clinica' && 'Analisar Caso Clínico'}
-                {activeArea === 'ensino' && 'Arte da Entrevista Clínica'}
-                {activeArea === 'pesquisa' && 'Analisar Dados de Pesquisa'}
-              </button>
             </div>
 
             {/* Chat Input */}
@@ -282,19 +191,16 @@ const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* Main Content - Canvas Area */}
+        {/* Main Content - Direct Dashboard */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Welcome Section */}
           <div className={`bg-gradient-to-r ${currentArea.color} p-6`}>
             <h2 className="text-2xl font-bold text-white mb-2">
-              Bem-vindo à Área {currentArea.name}!
+              {currentArea.name}
             </h2>
             <p className="text-white/90 mb-4">
               {currentArea.description}
             </p>
-            <button className="bg-white text-slate-800 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              Explorar {currentArea.name}
-            </button>
           </div>
 
           {/* Stats Cards */}

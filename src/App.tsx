@@ -66,7 +66,7 @@ function App() {
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="home" element={<Dashboard />} />
                 <Route path="test" element={<TestPage />} />
-                <Route path="dashboard" element={<MedCannLabStructure />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="courses" element={<Courses />} />
                 <Route path="clinical-assessment" element={<ClinicalAssessment />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
