@@ -235,12 +235,12 @@ const PatientDashboard: React.FC = () => {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                          <Stethoscope className="w-5 h-5 text-white" />
+                        <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold">RV</span>
                         </div>
                         <div>
-                          <p className="font-semibold text-white">Dr. Ricardo Silva</p>
-                          <p className="text-sm text-slate-400">Nefrologia</p>
+                          <p className="font-semibold text-white">Dr. Ricardo Valença</p>
+                          <p className="text-sm text-slate-400">Cannabis Medicinal & Nefrologia</p>
                         </div>
                       </div>
                       <div className="text-right">
@@ -251,12 +251,12 @@ const PatientDashboard: React.FC = () => {
                     
                     <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                          <Heart className="w-5 h-5 text-white" />
+                        <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
+                          <span className="text-white font-bold">EF</span>
                         </div>
                         <div>
-                          <p className="font-semibold text-white">Dra. Ana Costa</p>
-                          <p className="text-sm text-slate-400">Nutrição</p>
+                          <p className="font-semibold text-white">Dr. Eduardo Faveret</p>
+                          <p className="text-sm text-slate-400">Cannabis Medicinal & AEC</p>
                         </div>
                       </div>
                       <div className="text-right">
