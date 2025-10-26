@@ -23,9 +23,14 @@ const ChatNoaEsperanca: React.FC = () => {
   const assistantIntegration = getNoaAssistantIntegration()
   
   useEffect(() => {
+    console.log('🎯 Componente ChatNoaEsperanca montado')
+    console.log('🔧 Assistant Integration:', assistantIntegration)
+    
     // Verificar se o Assistant está disponível
     const checkAvailability = async () => {
+      console.log('🔍 Verificando disponibilidade do Assistant...')
       const available = await assistantIntegration.checkAvailability()
+      console.log('✅ Assistant disponível:', available)
       setAssistantAvailable(available)
     }
     checkAvailability()
@@ -45,6 +50,9 @@ const ChatNoaEsperanca: React.FC = () => {
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return
 
+    console.log('💬 Enviando mensagem:', inputMessage)
+    console.log('🤖 Assistant disponível:', assistantAvailable)
+    
     // Adicionar mensagem do usuário
     const userMessage = {
       id: Date.now().toString(),
@@ -63,12 +71,15 @@ const ChatNoaEsperanca: React.FC = () => {
 
       // Tentar usar Assistant API se disponível
       if (assistantAvailable) {
+        console.log('🚀 Tentando usar Assistant API...')
         try {
           const assistantResponse = await assistantIntegration.sendMessage(messageText, {
             userCode: 'USER-001',
             userName: 'Usuário',
             currentRoute: location.pathname
           })
+          
+          console.log('✅ Resposta do Assistant:', assistantResponse)
           
           if (assistantResponse.source === 'assistant') {
             response = assistantResponse.message
@@ -78,16 +89,18 @@ const ChatNoaEsperanca: React.FC = () => {
             setCurrentMode('local')
           }
         } catch (error) {
-          console.error('Erro com Assistant API:', error)
+          console.error('❌ Erro com Assistant API:', error)
           // Fallback para sistema local
           const trainingSystem = getNoaTrainingSystem()
           response = await trainingSystem.generateContextualResponse(messageText)
           setCurrentMode('local')
         }
       } else {
+        console.log('📍 Usando sistema local...')
         // Usar sistema local
         const trainingSystem = getNoaTrainingSystem()
         response = await trainingSystem.generateContextualResponse(messageText)
+        console.log('✅ Resposta local:', response)
         setCurrentMode('local')
       }
 
