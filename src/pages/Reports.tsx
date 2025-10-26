@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { 
   FileText, 
@@ -19,13 +19,64 @@ import {
   Mail,
   Printer
 } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 
 const Reports: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [filterPeriod, setFilterPeriod] = useState('all')
+  const [reports, setReports] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const reports = [
+  // Buscar relatórios do Supabase
+  useEffect(() => {
+    loadReports()
+  }, [])
+
+  const loadReports = async () => {
+    try {
+      setLoading(true)
+      const { data: assessments, error } = await supabase
+        .from('clinical_assessments')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (error) {
+        console.error('Erro ao buscar relatórios:', error)
+        return
+      }
+
+      // Converter avaliações para formato de relatórios
+      const formattedReports = assessments?.map((assessment) => ({
+        id: assessment.id,
+        title: `Relatório ${assessment.assessment_type} - ${assessment.data?.name || 'Paciente'}`,
+        patientName: assessment.data?.name || 'Paciente',
+        patientId: assessment.patient_id,
+        type: assessment.assessment_type,
+        date: new Date(assessment.created_at).toLocaleDateString('pt-BR'),
+        status: assessment.status === 'completed' ? 'concluido' : 'em_andamento',
+        size: '2.5 MB',
+        pages: 10,
+        doctor: 'Dr. Ricardo Valença',
+        crm: 'CRM-RJ',
+        summary: assessment.clinical_report?.substring(0, 200) || 'Avaliação clínica completa.',
+        keyFindings: assessment.data?.complaintList || [],
+        recommendations: [],
+        nextSteps: [],
+        attachments: [],
+        clinicalReport: assessment.clinical_report
+      })) || []
+
+      setReports(formattedReports)
+    } catch (error) {
+      console.error('Erro ao carregar relatórios:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Dados mock (temporário)
+  const mockReports = [
     {
       id: 1,
       title: 'Relatório IMRE - Maria Silva',
@@ -100,7 +151,10 @@ const Reports: React.FC = () => {
     }
   ]
 
-  const filteredReports = reports.filter(report => {
+  // Combinar dados reais com dados mock
+  const allReports = [...reports, ...mockReports]
+
+  const filteredReports = allReports.filter(report => {
     const matchesSearch = report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          report.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          report.type.toLowerCase().includes(searchTerm.toLowerCase())

@@ -475,10 +475,7 @@ const ChatGlobal: React.FC = () => {
     }
   }
 
-  const friendRequests = [
-    { id: 1, name: 'Dr. Lucas Ferreira', avatar: 'LF', specialty: 'Dermatologia', crm: '66666-RS', message: 'Gostaria de conectar para discutir casos de dermatite atópica' },
-    { id: 2, name: 'Dra. Camila Alves', avatar: 'CA', specialty: 'Ginecologia', crm: '77777-BA', message: 'Interessada em trocar experiências sobre cannabis na ginecologia' }
-  ]
+  const friendRequests = []
 
   useEffect(() => {
     scrollToBottom()

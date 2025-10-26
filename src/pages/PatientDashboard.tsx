@@ -71,16 +71,12 @@ const PatientDashboard: React.FC = () => {
   }
 
   const handleViewAgenda = () => {
-    navigate('/app/patient-appointments')
+    navigate('/app/scheduling')
   }
 
   const handleViewKPIs = () => {
     // TODO: Implement KPIs page
     console.log('Ver KPIs')
-  }
-
-  const handleClinicalAssessment = () => {
-    navigate('/app/clinical-assessment')
   }
 
   return (
@@ -129,13 +125,13 @@ const PatientDashboard: React.FC = () => {
                 <TrendingUp className="w-5 h-5" />
                 <span>Meus KPIs</span>
               </button>
-              <button onClick={handleClinicalAssessment} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
-                <Heart className="w-5 h-5" />
-                <span>Avaliação Clínica</span>
-              </button>
               <button onClick={handleChatWithNoa} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <MessageCircle className="w-5 h-5" />
                 <span>Chat com Nôa</span>
+              </button>
+              <button onClick={() => navigate('/app/subscription-plans')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
+                <Heart className="w-5 h-5" />
+                <span>Planos e Finanças</span>
               </button>
               <button onClick={() => handleNavigate('/app/patient-chat')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <Stethoscope className="w-5 h-5" />
@@ -176,10 +172,12 @@ const PatientDashboard: React.FC = () => {
                 conversar com a IA residente e acessar seus relatórios clínicos.
               </p>
               <button 
-                onClick={() => handleNavigate('/patient-onboarding')}
+                onClick={() => {
+                  navigate('/app/chat-noa-esperanca')
+                }}
                 className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
               >
-                Nova Avaliação Clínica
+                Iniciar Chat com Nôa
               </button>
             </div>
 

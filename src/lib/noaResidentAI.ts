@@ -6,6 +6,7 @@
 
 import { supabase } from './supabase'
 import { noaKnowledgeBase } from './noaKnowledgeBase'
+import { ClinicalAssessmentService, ClinicalReport } from './clinicalAssessmentService'
 
 export interface ResidentAIConfig {
   model: string
@@ -45,6 +46,21 @@ export class NoaResidentAI {
   private conversationContext: any[] = []
   private isProcessing: boolean = false
   private apiKey: string = ''
+  private clinicalData: {
+    complaintList: string[]
+    complaintDetails: any
+    medications: string[]
+    allergies: string[]
+    familyHistory: string
+    lifestyle: any
+  } = {
+    complaintList: [],
+    complaintDetails: {},
+    medications: [],
+    allergies: [],
+    familyHistory: '',
+    lifestyle: {}
+  }
 
   constructor(config: ResidentAIConfig) {
     this.config = config
@@ -73,6 +89,12 @@ export class NoaResidentAI {
       // Adicionar resposta ao contexto
       this.conversationContext.push({ role: 'assistant', content: response })
 
+      // Detectar se a avaliação foi concluída
+      const lowerResponse = response.toLowerCase()
+      if (lowerResponse.includes('relatório') || lowerResponse.includes('concluído') || lowerResponse.includes('finalizado')) {
+        await this.saveClinicalReport()
+      }
+
       // Salvar na memória
       await this.saveToMemory(userMessage, { content: response } as AIResponse)
 
@@ -91,6 +113,40 @@ export class NoaResidentAI {
       return this.createResponse("Desculpe, ocorreu um erro. Pode repetir sua pergunta?")
     } finally {
       this.isProcessing = false
+    }
+  }
+
+  /**
+   * SALVAR RELATÓRIO CLÍNICO
+   */
+  private async saveClinicalReport() {
+    try {
+      const report: ClinicalReport = {
+        patientId: 'test-patient-001', // Substituir por ID real do paciente
+        assessmentType: 'IMRE',
+        clinicalNotes: JSON.stringify(this.conversationContext),
+        complaintList: this.clinicalData.complaintList,
+        complaintDetails: this.clinicalData.complaintDetails,
+        medications: this.clinicalData.medications,
+        allergies: this.clinicalData.allergies,
+        familyHistory: this.clinicalData.familyHistory,
+        lifestyle: this.clinicalData.lifestyle
+      }
+
+      const assessmentId = await ClinicalAssessmentService.saveClinicalAssessment(report)
+      console.log('✅ Relatório clínico salvo com sucesso:', assessmentId)
+      
+      // Limpar dados após salvar
+      this.clinicalData = {
+        complaintList: [],
+        complaintDetails: {},
+        medications: [],
+        allergies: [],
+        familyHistory: '',
+        lifestyle: {}
+      }
+    } catch (error) {
+      console.error('❌ Erro ao salvar relatório clínico:', error)
     }
   }
 

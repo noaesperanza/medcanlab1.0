@@ -222,9 +222,9 @@ const EnsinoDashboard: React.FC = () => {
                 <span>📚 Biblioteca Médica</span>
               </button>
 
-              <button onClick={() => handleNavigate('/app/chat')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
+              <button onClick={() => handleNavigate('/app/ensino-dashboard')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <Calendar className="w-5 h-5" />
-                <span>📅 Agenda</span>
+                <span>📅 Calendário do Curso</span>
               </button>
               <button onClick={() => handleNavigate('/app/library')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <Award className="w-5 h-5" />

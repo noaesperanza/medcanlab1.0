@@ -20,21 +20,14 @@ const Header: React.FC = () => {
     // Se for admin e estiver no modo admin, mostrar menu admin
     if (user.type === 'admin' && isAdminMode) {
       return [
-        { name: '👑 Dashboard Admin', href: '/app/admin' },
-        { name: '📚 Biblioteca', href: '/app/library' },
-        { name: '🤖 Chat IA Documentos', href: '/app/ai-documents' },
+        { name: '💬 Chat Global + Fórum', href: '/app/chat' },
       ]
     }
     
     // Se for admin mas estiver no modo profissional, mostrar menu profissional
     if (user.type === 'admin' && !isAdminMode) {
       return [
-        { name: '🏥 Dashboard Profissional', href: '/app/dashboard' },
-        { name: '👥 Meus Pacientes', href: '/app/patients' },
-        { name: '📊 Avaliações', href: '/app/evaluations' },
-        { name: '📚 Biblioteca Médica', href: '/app/library' },
         { name: '💬 Chat Global + Fórum', href: '/app/chat' },
-        { name: '📈 Relatórios', href: '/app/reports' },
       ]
     }
     
@@ -43,19 +36,13 @@ const Header: React.FC = () => {
         return [
           { name: '🏠 Dashboard', href: '/app/dashboard' },
           { name: '🤖 Avaliação com Nôa', href: '/pre-anamnese' },
-          { name: '📋 Avaliação Clínica', href: '/app/clinical-assessment' },
           { name: '📊 Meus Relatórios', href: '/app/reports' },
           { name: '💬 Chat com Médico', href: '/app/patient-chat' },
           { name: '👤 Meu Perfil', href: '/app/profile' },
         ]
       case 'professional':
         return [
-          { name: '🏥 Dashboard Profissional', href: '/app/dashboard' },
-          { name: '👥 Meus Pacientes', href: '/app/patients' },
-          { name: '📊 Avaliações', href: '/app/evaluations' },
-          { name: '📚 Biblioteca Médica', href: '/app/library' },
           { name: '💬 Chat Global + Fórum', href: '/app/chat' },
-          { name: '📈 Relatórios', href: '/app/reports' },
         ]
       case 'student':
         return [
@@ -79,72 +66,39 @@ const Header: React.FC = () => {
     <header className="bg-slate-800 shadow-lg border-b border-slate-700">
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center">
+          {/* Logo e Título */}
+          <div className="flex items-center space-x-3">
+            <Link to="/" className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-accent-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">M</span>
+              </div>
+              <div className="hidden md:block">
+                <div className="text-white font-bold text-lg">MedCannLab 3.0</div>
+                <div className="text-slate-400 text-xs">Consultório Escola Dr. Eduardo Faveret • Pós-graduação em Cannabis Medicinal</div>
               </div>
             </Link>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-6">
-            {/* Toggle Admin/Professional para admins */}
-            {user?.type === 'admin' && (
-              <div className="flex items-center space-x-2 bg-gradient-to-r from-blue-600/20 to-yellow-600/20 border border-blue-500/30 px-3 py-2 rounded-lg">
-                <button
-                  onClick={() => {
-                    console.log('🔄 Toggle clicked, current mode:', isAdminMode)
-                    setIsAdminMode(!isAdminMode)
-                    // Redirecionar para a página apropriada
-                    if (!isAdminMode) {
-                      navigate('/app/admin')
-                    } else {
-                      navigate('/app/dashboard')
-                    }
-                  }}
-                  className="flex items-center space-x-2 text-white hover:text-yellow-300 transition-colors"
-                >
-                  {isAdminMode ? (
-                    <ChevronRight className="w-4 h-4 text-yellow-400" />
-                  ) : (
-                    <ChevronLeft className="w-4 h-4 text-blue-400" />
-                  )}
-                  <span className="text-sm font-medium">
-                    {isAdminMode ? '👑 Admin' : '👨‍⚕️ Profissional'}
-                  </span>
-                </button>
-              </div>
-            )}
-            
-            {/* Indicador de Perfil */}
-            <div className="flex items-center space-x-2 bg-slate-700/50 px-3 py-1 rounded-full">
-              <div className={`w-2 h-2 rounded-full ${user?.type === 'admin' ? 'bg-yellow-400' : 'bg-green-400'}`}></div>
-              <span className="text-sm text-slate-300">
-                {user?.type === 'patient' && '👤 Paciente'}
-                {user?.type === 'professional' && '👨‍⚕️ Profissional'}
-                {user?.type === 'student' && '👨‍🎓 Estudante'}
-                {user?.type === 'admin' && '👑 Administrador'}
-              </span>
+          {navigation.length > 0 && (
+            <div className="hidden md:flex items-center space-x-6">
+              <nav className="flex space-x-4">
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+                      isActive(item.href)
+                        ? 'text-primary-400 bg-primary-900/30'
+                        : 'text-slate-200 hover:text-primary-400 hover:bg-slate-700/50'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </nav>
             </div>
-            
-            <nav className="flex space-x-4">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive(item.href)
-                      ? 'text-primary-400 bg-primary-900/30'
-                      : 'text-slate-200 hover:text-primary-400 hover:bg-slate-700/50'
-                  }`}
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
-          </div>
+          )}
 
           {/* User Menu */}
           <div className="flex items-center space-x-4">
@@ -174,9 +128,22 @@ const Header: React.FC = () => {
                       Configurações
                     </Link>
                     <button
-                      onClick={() => {
-                        logout()
+                      onClick={async () => {
+                        console.log('🚪 Botão Sair clicado')
                         setIsProfileOpen(false)
+                        try {
+                          await logout()
+                          console.log('✅ Logout concluído, redirecionando...')
+                          // Limpar storage
+                          localStorage.clear()
+                          sessionStorage.clear()
+                          // Redirecionar
+                          window.location.href = '/'
+                        } catch (error) {
+                          console.error('❌ Erro no logout:', error)
+                          // Forçar redirecionamento mesmo com erro
+                          window.location.href = '/'
+                        }
                       }}
                       className="flex items-center w-full px-4 py-2 text-sm text-slate-200 hover:bg-slate-700"
                     >
@@ -209,34 +176,6 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-slate-700">
-              {/* Toggle Admin/Professional para admins - Mobile */}
-              {user?.type === 'admin' && (
-                <div className="px-3 py-2 border-b border-slate-600">
-                  <button
-                    onClick={() => {
-                      setIsAdminMode(!isAdminMode)
-                      setIsMenuOpen(false)
-                      // Redirecionar para a página apropriada
-                      if (!isAdminMode) {
-                        navigate('/app/admin')
-                      } else {
-                        navigate('/app/dashboard')
-                      }
-                    }}
-                    className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors w-full"
-                  >
-                    {isAdminMode ? (
-                      <ChevronRight className="w-4 h-4 text-yellow-400" />
-                    ) : (
-                      <ChevronLeft className="w-4 h-4 text-blue-400" />
-                    )}
-                    <span className="text-sm">
-                      {isAdminMode ? '👑 Modo Admin' : '👨‍⚕️ Modo Profissional'}
-                    </span>
-                  </button>
-                </div>
-              )}
-              
               {navigation.map((item) => (
                 <Link
                   key={item.name}

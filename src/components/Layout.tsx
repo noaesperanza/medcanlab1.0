@@ -6,6 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 import Sidebar from './Sidebar'
 import NoaEsperancaAvatar from './NoaEsperancaAvatar'
+import { NoaPlatformChat } from './NoaPlatformChat'
 
 const Layout: React.FC = () => {
   const { user, isLoading } = useAuth()
@@ -84,6 +85,13 @@ const Layout: React.FC = () => {
         
         {/* Avatar Nôa Esperança */}
         <NoaEsperancaAvatar />
+        
+        {/* Chat da Plataforma - Nôa Esperança com contexto */}
+        <NoaPlatformChat 
+          userCode="DEV-001"
+          userName={user?.name || 'Usuário'}
+          position="bottom-right"
+        />
       </div>
     </ProtectedRoute>
   )

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { 
   Search, 
   Eye, 
@@ -27,14 +27,17 @@ const Library: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploadSuccess, setUploadSuccess] = useState(false)
+  const [realDocuments, setRealDocuments] = useState<any[]>([])
+  const [isLoadingDocuments, setIsLoadingDocuments] = useState(true)
+  const [totalDocs, setTotalDocs] = useState(0)
 
   const categories = [
-    { id: 'all', name: 'Todos', count: 1247 },
-    { id: 'methodology', name: 'Metodologia', count: 156 },
-    { id: 'research', name: 'Pesquisa', count: 423 },
-    { id: 'protocols', name: 'Protocolos', count: 89 },
-    { id: 'guidelines', name: 'Diretrizes', count: 234 },
-    { id: 'case-studies', name: 'Casos Clínicos', count: 345 }
+    { id: 'all', name: 'Todos', count: totalDocs },
+    { id: 'methodology', name: 'Metodologia', count: 0 },
+    { id: 'research', name: 'Pesquisa', count: 0 },
+    { id: 'protocols', name: 'Protocolos', count: 0 },
+    { id: 'guidelines', name: 'Diretrizes', count: 0 },
+    { id: 'case-studies', name: 'Casos Clínicos', count: 0 }
   ]
 
   const documentTypes = [
@@ -138,12 +141,22 @@ const Library: React.FC = () => {
     }
   ]
 
-  const filteredDocuments = documents.filter(doc => {
-    const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    const matchesCategory = selectedCategory === 'all' || doc.category === selectedCategory
-    const matchesType = selectedType === 'all' || doc.type === selectedType
+  // Usar documentos reais se existirem, senão usar mock data
+  const displayDocuments = realDocuments.length > 0 ? realDocuments : documents
+
+  const filteredDocuments = displayDocuments.filter((doc: any) => {
+    // Filtro de busca
+    const matchesSearch = searchTerm === '' || 
+                         doc.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.summary?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         doc.keywords?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    
+    // Filtro de categoria - documentos reais não têm category, então sempre retorna true se não for mock
+    const matchesCategory = selectedCategory === 'all' || !doc.category || doc.category === selectedCategory
+    
+    // Filtro de tipo
+    const matchesType = selectedType === 'all' || doc.file_type === selectedType || doc.type === selectedType
+    
     return matchesSearch && matchesCategory && matchesType
   })
 
@@ -163,8 +176,16 @@ const Library: React.FC = () => {
   }
 
   const formatDate = (dateString: string) => {
+    if (!dateString) return 'Data não disponível'
     const date = new Date(dateString)
     return date.toLocaleDateString('pt-BR')
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (!bytes) return 'Tamanho não disponível'
+    if (bytes < 1024) return bytes + ' B'
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + ' KB'
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB'
   }
 
   const handleUpload = async () => {
@@ -284,6 +305,41 @@ const Library: React.FC = () => {
     }
   ]
 
+  // Carregar documentos reais do Supabase
+  useEffect(() => {
+    const loadDocuments = async () => {
+      try {
+        const { data, error, count } = await supabase
+          .from('documents')
+          .select('*', { count: 'exact' })
+          .order('created_at', { ascending: false })
+        
+        if (error) {
+          console.error('Erro ao carregar documentos:', error)
+          return
+        }
+        
+        if (data && data.length > 0) {
+          // Remover duplicatas baseado no título
+          const uniqueDocuments = data.filter((doc, index, self) =>
+            index === self.findIndex(d => d.title === doc.title)
+          )
+          
+          setRealDocuments(uniqueDocuments)
+          setTotalDocs(uniqueDocuments.length)
+          const totalCount = count || data.length
+          console.log(`✅ ${uniqueDocuments.length} documentos únicos carregados do Supabase (${totalCount} totais, ${totalCount - uniqueDocuments.length} duplicatas removidas)`)
+        }
+      } catch (error) {
+        console.error('Erro:', error)
+      } finally {
+        setIsLoadingDocuments(false)
+      }
+    }
+    
+    loadDocuments()
+  }, [])
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -362,11 +418,11 @@ const Library: React.FC = () => {
               {/* Document Thumbnail - Compact */}
               <div className="relative h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-3xl">
-                    {getTypeIcon(doc.type)}
+                                    <div className="text-3xl">
+                    {getTypeIcon(doc.file_type || doc.type)}
                   </div>
                 </div>
-                {doc.isLinkedToAI && (
+                {doc.isLinkedToAI === true && (
                   <div className="absolute top-1 right-1">
                     <div className="bg-primary-500 text-slate-900 dark:text-white px-1.5 py-0.5 rounded-full text-xs font-medium">
                       IA
@@ -376,21 +432,21 @@ const Library: React.FC = () => {
               </div>
 
               {/* Document Content - Compact */}
-              <div className="p-3 bg-white dark:bg-slate-800">
+              <div className="p-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
                 {/* Title - Single line */}
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1 line-clamp-1">
+                <h3 className="text-sm font-semibold text-slate-800 dark:text-white mb-1 line-clamp-1">
                   {doc.title}
                 </h3>
                 
                 {/* Author and Date in one line */}
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
-                  <span>{doc.author}</span>
-                  <span>{formatDate(doc.uploadDate)}</span>
+                <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
+                  <span>{doc.author || 'Autor não disponível'}</span>
+                  <span>{formatDate(doc.created_at || doc.uploadDate)}</span>
                 </div>
 
                 {/* Tags - Compact */}
                 <div className="flex flex-wrap gap-1 mb-2">
-                  {doc.tags.slice(0, 2).map((tag, index) => (
+                  {(doc.tags || doc.keywords || []).slice(0, 2).map((tag: string, index: number) => (
                     <span
                       key={index}
                       className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded"
@@ -402,14 +458,14 @@ const Library: React.FC = () => {
 
                 {/* Stats - Compact */}
                 <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
-                  <span>{doc.size}</span>
+                  <span>{formatFileSize(doc.file_size || doc.size)}</span>
                   <span className="flex items-center">
                     <span className="mr-1">⬇️</span>
-                    {doc.downloads}
+                    {doc.downloads || '0'}
                   </span>
                   <span className="flex items-center">
                     <Star className="w-3 h-3 mr-0.5 text-yellow-500 fill-yellow-500" />
-                    {doc.rating}
+                    {doc.rating || '4.8'}
                   </span>
                 </div>
 
@@ -444,23 +500,31 @@ const Library: React.FC = () => {
         <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="card p-6 text-center">
             <FileText className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">1,247</div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">Documentos</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
+              {totalDocs > 0 ? totalDocs : '1,247'}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">
+              {totalDocs > 0 ? 'Documentos Reais' : 'Documentos (Fictício)'}
+            </div>
           </div>
           <div className="card p-6 text-center">
             <div className="w-8 h-8 text-green-600 mx-auto mb-2 text-2xl">⬇️</div>
             <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">15,234</div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">Downloads</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">Downloads (Fictício)</div>
           </div>
           <div className="card p-6 text-center">
             <div className="w-8 h-8 text-purple-600 mx-auto mb-2 text-2xl">#</div>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">89</div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">Vinculados à IA</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
+              {realDocuments.filter((d: any) => d.isLinkedToAI).length}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">
+              {realDocuments.length > 0 ? 'Vinculados à IA' : 'Vinculados à IA (Fictício)'}
+            </div>
           </div>
           <div className="card p-6 text-center">
             <Star className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
             <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">4.8</div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">Avaliação Média</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">Avaliação Média (Fictício)</div>
           </div>
         </div>
       </div>

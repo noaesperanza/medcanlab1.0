@@ -47,7 +47,7 @@ const Landing: React.FC = () => {
       
       if (error) {
         console.error('❌ Erro no login de emergência:', error)
-        error('Erro no login de emergência')
+        success('Erro no login de emergência')
       } else {
         console.log('✅ Login de emergência bem-sucedido')
         success('Login de emergência realizado')
@@ -62,15 +62,11 @@ const Landing: React.FC = () => {
     console.log('🔄 useEffect - user:', user, 'authLoading:', authLoading)
     if (user && !authLoading) {
       console.log('🔄 Usuário logado detectado, redirecionando...', user.type)
-      if (user.type === 'admin') {
-        navigate('/app/admin')
-      } else if (user.type === 'patient') {
-        navigate('/patient-onboarding')
-      } else {
-        navigate('/app/dashboard')
-      }
+      
+      // SEMPRE redirecionar para /app/dashboard que decide internamente qual dashboard mostrar
+      console.log('🚀 Redirecionando para /app/dashboard com tipo:', user.type)
+      navigate('/app/dashboard')
     }
-    // Removido o timeout que estava causando loop infinito
   }, [user, authLoading, navigate])
 
   // Debug adicional removido para evitar spam

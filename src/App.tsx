@@ -11,7 +11,6 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Courses from './pages/Courses'
-import ClinicalAssessment from './pages/ClinicalAssessment'
 import Library from './pages/Library'
 import ChatGlobal from './pages/ChatGlobal'
 import PatientChat from './pages/PatientChat'
@@ -48,6 +47,15 @@ import AdminDashboard from './pages/AdminDashboard'
 import MedCannLabStructure from './pages/MedCannLabStructure'
 import NotFound from './pages/NotFound'
 import PatientOnboarding from './pages/PatientOnboarding'
+import Scheduling from './pages/Scheduling'
+import Prescriptions from './pages/Prescriptions'
+import PatientsManagement from './pages/PatientsManagement'
+import NewPatientForm from './pages/NewPatientForm'
+import ProfessionalChat from './pages/ProfessionalChat'
+import { SubscriptionPlans } from './pages/SubscriptionPlans'
+import { PaymentCheckout } from './pages/PaymentCheckout'
+import { LessonPreparation } from './pages/LessonPreparation'
+import { ProfessionalFinancial } from './pages/ProfessionalFinancial'
 
 function App() {
   return (
@@ -70,7 +78,6 @@ function App() {
                 <Route path="test" element={<TestPage />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="courses" element={<Courses />} />
-                <Route path="clinical-assessment" element={<ClinicalAssessment />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
                 <Route path="chat-noa-esperanca" element={<ChatNoaEsperanca />} />
             <Route path="patient-dashboard" element={<PatientDashboard />} />
@@ -93,11 +100,6 @@ function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="ai-documents" element={<AIDocumentChat />} />
-                <Route path="patients" element={
-                  <ProtectedRoute requiredRole="professional">
-                    <Patients />
-                  </ProtectedRoute>
-                } />
                 <Route path="evaluations" element={<Evaluations />} />
                 <Route path="reports" element={<Reports />} />
                 <Route path="debate/:debateId" element={<DebateRoom />} />
@@ -108,7 +110,11 @@ function App() {
                 } />
                 <Route path="patient/:patientId" element={<PatientProfile />} />
                 <Route path="appointments" element={<Profile />} />
-                <Route path="scheduling" element={
+                <Route path="scheduling" element={<Scheduling />} />
+                <Route path="prescriptions" element={<Prescriptions />} />
+                <Route path="patients" element={<PatientsManagement />} />
+                <Route path="new-patient" element={<NewPatientForm />} />
+                <Route path="professional-scheduling" element={
                   <ProtectedRoute requiredRole="professional">
                     <ProfessionalScheduling />
                   </ProtectedRoute>
@@ -123,6 +129,15 @@ function App() {
                     <PatientNOAChat />
                   </ProtectedRoute>
                 } />
+                <Route path="professional-chat" element={
+                  <ProtectedRoute requiredRole="professional">
+                    <ProfessionalChat />
+                  </ProtectedRoute>
+                } />
+                <Route path="subscription-plans" element={<SubscriptionPlans />} />
+                <Route path="checkout" element={<PaymentCheckout />} />
+                <Route path="lesson-prep" element={<LessonPreparation />} />
+                <Route path="professional-financial" element={<ProfessionalFinancial />} />
                 <Route path="admin/users" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminDashboardWrapper />

@@ -293,6 +293,73 @@ const PatientDoctorChat: React.FC = () => {
     }
   }
 
+  const handleAudioUpload = async () => {
+    try {
+      // Solicitar acesso ao microfone
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mediaRecorder = new MediaRecorder(stream)
+      const audioChunks: Blob[] = []
+
+      // Iniciar gravação
+      setIsRecording(true)
+      mediaRecorder.start()
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data)
+      }
+
+      mediaRecorder.onstop = () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' })
+        const audioUrl = URL.createObjectURL(audioBlob)
+        
+        // Criar anexo de áudio
+        const newAttachment = {
+          id: attachments.length + 1,
+          name: `audio_${new Date().getTime()}.wav`,
+          type: 'audio',
+          size: `${(audioBlob.size / 1024 / 1024).toFixed(1)} MB`,
+          uploadedBy: user?.name || 'Usuário',
+          uploadedAt: new Date().toLocaleDateString('pt-BR'),
+          url: audioUrl
+        }
+        
+        setAttachments([...attachments, newAttachment])
+        
+        // Adicionar mensagem de áudio
+        const audioMessage = {
+          id: messages.length + 1,
+          sender: user?.type === 'professional' ? 'doctor' : 'patient',
+          senderName: user?.name || 'Usuário',
+          senderAvatar: user?.name?.split(' ').map(n => n[0]).join('') || 'U',
+          message: '🎤 Mensagem de voz',
+          timestamp: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          type: 'audio',
+          isRead: false,
+          reactions: { heart: 0, thumbs: 0 },
+          attachments: [newAttachment] as any[]
+        }
+        
+        setMessages([...messages, audioMessage] as any)
+        
+        // Parar todos os tracks
+        stream.getTracks().forEach(track => track.stop())
+        setIsRecording(false)
+      }
+
+      // Parar gravação após 60 segundos ou quando o usuário clicar novamente
+      setTimeout(() => {
+        if (isRecording) {
+          mediaRecorder.stop()
+        }
+      }, 60000)
+      
+    } catch (error) {
+      console.error('Erro ao gravar áudio:', error)
+      alert('Não foi possível acessar o microfone. Verifique as permissões.')
+      setIsRecording(false)
+    }
+  }
+
   const startRecording = () => {
     setIsRecording(true)
     setTimeout(() => {
@@ -304,6 +371,7 @@ const PatientDoctorChat: React.FC = () => {
     switch (type) {
       case 'pdf': return <FileText className="w-4 h-4" />
       case 'image': return <Image className="w-4 h-4" />
+      case 'audio': return <Mic className="w-4 h-4" />
       default: return <FileText className="w-4 h-4" />
     }
   }
@@ -312,6 +380,7 @@ const PatientDoctorChat: React.FC = () => {
     switch (type) {
       case 'pdf': return 'text-red-400'
       case 'image': return 'text-blue-400'
+      case 'audio': return 'text-purple-400'
       default: return 'text-slate-400'
     }
   }
@@ -525,10 +594,26 @@ const PatientDoctorChat: React.FC = () => {
                       {msg.attachments.length > 0 && (
                         <div className="space-y-2">
                           {msg.attachments.map((attachment: any) => (
-                            <div key={attachment.id} className="flex items-center space-x-2 p-2 bg-slate-600/50 rounded">
-                              {getFileIcon(attachment.type)}
-                              <span className="text-white text-sm">{attachment.name}</span>
-                              <span className="text-slate-400 text-xs">{attachment.size}</span>
+                            <div key={attachment.id} className={`p-2 bg-slate-600/50 rounded ${attachment.type === 'audio' ? 'space-y-2' : 'flex items-center space-x-2'}`}>
+                              {attachment.type === 'audio' ? (
+                                <>
+                                  <div className="flex items-center space-x-2">
+                                    {getFileIcon(attachment.type)}
+                                    <span className="text-white text-sm">{attachment.name}</span>
+                                    <span className="text-slate-400 text-xs">{attachment.size}</span>
+                                  </div>
+                                  <audio controls className="w-full">
+                                    <source src={attachment.url} type="audio/wav" />
+                                    Seu navegador não suporta o elemento de áudio.
+                                  </audio>
+                                </>
+                              ) : (
+                                <>
+                                  {getFileIcon(attachment.type)}
+                                  <span className="text-white text-sm">{attachment.name}</span>
+                                  <span className="text-slate-400 text-xs">{attachment.size}</span>
+                                </>
+                              )}
                             </div>
                           ))}
                         </div>
@@ -553,9 +638,48 @@ const PatientDoctorChat: React.FC = () => {
 
             {/* Message Input */}
             <div className="p-4 border-t border-slate-700">
+              {/* File Upload Menu */}
+              {showFileUpload && (
+                <div className="mb-3 p-3 bg-slate-700 rounded-lg flex items-center space-x-2">
+                  <button
+                    onClick={() => {
+                      const input = document.createElement('input')
+                      input.type = 'file'
+                      input.accept = 'image/*'
+                      input.onchange = (e) => handleFileUpload(e)
+                      input.click()
+                    }}
+                    className="flex items-center space-x-2 px-3 py-2 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-lg transition-colors"
+                  >
+                    <Image className="w-4 h-4" />
+                    <span className="text-sm">Imagem</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      const input = document.createElement('input')
+                      input.type = 'file'
+                      input.accept = '.pdf,.doc,.docx,.txt'
+                      input.onchange = (e) => handleFileUpload(e)
+                      input.click()
+                    }}
+                    className="flex items-center space-x-2 px-3 py-2 bg-green-500/20 hover:bg-green-500/30 text-green-400 rounded-lg transition-colors"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span className="text-sm">Documento</span>
+                  </button>
+                  <button
+                    onClick={() => handleAudioUpload()}
+                    className="flex items-center space-x-2 px-3 py-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-400 rounded-lg transition-colors"
+                  >
+                    <Mic className="w-4 h-4" />
+                    <span className="text-sm">Áudio</span>
+                  </button>
+                </div>
+              )}
+              
               <div className="flex items-center space-x-3">
                 <button 
-                  onClick={() => fileInputRef.current?.click()}
+                  onClick={() => setShowFileUpload(!showFileUpload)}
                   className="p-2 text-slate-400 hover:text-blue-400 transition-colors"
                 >
                   <Paperclip className="w-5 h-5" />
