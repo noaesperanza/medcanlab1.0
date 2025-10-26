@@ -17,7 +17,7 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
   position = 'bottom-right',
   hideButton = false
 }) => {
-  const [isOpen, setIsOpen] = useState(true) // Começa aberto por padrão
+  const [isOpen, setIsOpen] = useState(hideButton) // Se hideButton for true, começa aberto
   const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState<Array<{
     role: 'user' | 'noa'
