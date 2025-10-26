@@ -20,8 +20,9 @@ import {
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 
-// 🧪 TESTE DE CONTROLE DO DEPLOY: Este erro intencional vai falhar o build
-const ERRO_INTENCIONAL = undefined.toString() // ERRO ATIVO PARA TESTAR
+// 🧪 TESTE DE CONTROLE DO DEPLOY: Teste concluído com sucesso!
+// ✅ O Vercel detecta erros de build automaticamente
+// Comentado: const ERRO_INTENCIONAL = undefined.toString()
 
 const Library: React.FC = () => {
   const { user } = useAuth()
