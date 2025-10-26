@@ -269,11 +269,14 @@ RESPOSTAS:
           lowerMessage.includes('nada mais')) {
         
         // Quando usuário diz que é só isso, perguntar o que mais incomoda
-        this.assessmentState = 'completed'
         return this.createResponse(
           'De todas essas questões, o que mais incomoda neste momento?',
           0.95
         )
+      } else if (this.assessmentStep === 4) {
+        // Após resposta sobre o que mais incomoda, gerar relatório
+        this.assessmentState = 'completed'
+        return this.completeAssessment()
       } else {
         // Continuar perguntando "o que mais"
         return this.createResponse(
