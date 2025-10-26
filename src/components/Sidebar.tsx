@@ -89,12 +89,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
         section: 'quick'
       },
       { 
-        name: '🤖 IA Nôa Esperança', 
-        href: '/app/chat-noa-esperanca', 
-        icon: Brain,
-        section: 'quick'
-      },
-      { 
         name: '👤 Meu Perfil', 
         href: '/app/profile', 
         icon: User,
@@ -117,12 +111,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
         href: '/app/professional-dashboard', 
         icon: Home,
         section: 'main'
-      },
-      { 
-        name: '🤖 IA Nôa Esperança', 
-        href: '/app/chat-noa-esperanca', 
-        icon: Brain,
-        section: 'quick'
       },
       { 
         name: '📊 Meus Relatórios', 
