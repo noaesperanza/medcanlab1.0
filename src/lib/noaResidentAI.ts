@@ -203,7 +203,10 @@ RESPOSTAS:
     // Detectar intenções específicas
     if (lowerMessage.includes('avaliação clínica') || 
         lowerMessage.includes('avaliacao clinica') ||
-        lowerMessage.includes('imre triaxial')) {
+        lowerMessage.includes('imre triaxial') ||
+        lowerMessage.includes('imre') ||
+        lowerMessage.includes('avaliação') ||
+        lowerMessage.includes('avaliacao')) {
       return this.startClinicalAssessment()
     }
 
