@@ -8,14 +8,16 @@ interface NoaPlatformChatProps {
   userCode?: string
   userName?: string
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'
+  hideButton?: boolean // Nova prop para esconder o botão
 }
 
 export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
   userCode = 'DEV-001',
   userName = 'Dr. Ricardo Valença',
-  position = 'bottom-right'
+  position = 'bottom-right',
+  hideButton = false
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true) // Começa aberto por padrão
   const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState<Array<{
     role: 'user' | 'noa'
@@ -150,7 +152,7 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
   return (
     <>
       {/* Botão Flutuante */}
-      {!isOpen && (
+      {!hideButton && !isOpen && (
         <button
           onClick={() => setIsOpen(true)}
           className={`fixed ${getPositionClasses()} z-50 w-14 h-14 bg-gradient-to-r from-purple-600 to-pink-600 

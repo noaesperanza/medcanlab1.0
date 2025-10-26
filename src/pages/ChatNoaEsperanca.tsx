@@ -3,10 +3,12 @@ import { Brain, Sparkles, Database, Zap, Heart } from 'lucide-react'
 import { useLocation } from 'react-router-dom'
 import { getNoaTrainingSystem } from '../lib/noaTrainingSystem'
 import { getNoaAssistantIntegration } from '../lib/noaAssistantIntegration'
+import NoaPlatformChat from '../components/NoaPlatformChat'
+import { useAuth } from '../contexts/AuthContext'
 
 const ChatNoaEsperanca: React.FC = () => {
   const location = useLocation()
-  const [isOpen] = useState(true)
+  const { user } = useAuth()
   const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState<Array<{
     id: string
@@ -332,6 +334,14 @@ const ChatNoaEsperanca: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* Chat Flutuante - IA Residente Nôa Esperança */}
+      <NoaPlatformChat
+        userCode="USER-001"
+        userName={user?.name || 'Usuário'}
+        position="bottom-right"
+        hideButton={true}
+      />
     </div>
   )
 }
