@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Calendar, TrendingUp, TrendingDown, DollarSign, FileText, Download, Filter } from 'lucide-react'
+import { Calendar, TrendingUp, TrendingDown, FileText, Download, Filter, Banknote } from 'lucide-react'
 
 export function ProfessionalFinancial() {
   const [period, setPeriod] = useState<'month' | 'quarter' | 'year'>('month')
@@ -100,7 +100,7 @@ export function ProfessionalFinancial() {
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                <DollarSign className="text-orange-400" size={24} />
+                <Banknote className="text-orange-400" size={24} />
               </div>
             </div>
             <h3 className="text-gray-400 text-sm mb-2">Comissão da Plataforma</h3>
