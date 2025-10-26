@@ -20,6 +20,10 @@ import {
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
 
+// 🧪 TESTE DE CONTROLE DO DEPLOY: Este erro intencional vai falhar o build
+// const ERRO_INTENCIONAL = undefined.toString()
+// Para testar, descomente a linha acima
+
 const Library: React.FC = () => {
   const { user } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
