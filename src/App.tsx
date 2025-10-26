@@ -128,6 +128,11 @@ function App() {
                     <PatientNOAChat />
                   </ProtectedRoute>
                 } />
+                <Route path="clinical-assessment" element={
+                  <ProtectedRoute requiredRole="patient">
+                    <PatientOnboarding />
+                  </ProtectedRoute>
+                } />
                 <Route path="professional-chat" element={
                   <ProtectedRoute requiredRole="professional">
                     <ProfessionalChat />

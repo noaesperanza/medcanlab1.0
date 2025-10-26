@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { MessageCircle, X, Send, Loader2, Code, Route, Brain } from 'lucide-react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { getNoaTrainingSystem } from '../lib/noaTrainingSystem'
 import { getNoaAssistantIntegration } from '../lib/noaAssistantIntegration'
 
@@ -27,6 +27,7 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
   const [isTyping, setIsTyping] = useState(false)
   
   const location = useLocation()
+  const navigate = useNavigate()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const trainingSystem = getNoaTrainingSystem()
   const assistantIntegration = getNoaAssistantIntegration()
@@ -288,22 +289,22 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
             {/* Quick Commands */}
             <div className="mt-2 flex flex-wrap gap-2">
               <button
-                onClick={() => setInputMessage('Status da plataforma')}
-                className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors"
+                onClick={() => navigate('/app/clinical-assessment')}
+                className="text-xs px-2 py-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded transition-colors font-semibold"
               >
-                Status
+                🏥 Iniciar Avaliação Clínica
               </button>
               <button
-                onClick={() => setInputMessage('Simular paciente')}
+                onClick={() => navigate('/app/library')}
                 className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors"
               >
-                Simular
+                📚 Biblioteca
               </button>
               <button
-                onClick={() => setInputMessage('Avaliação clínica')}
+                onClick={() => navigate('/app/reports')}
                 className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors"
               >
-                Avaliação
+                📊 Relatórios
               </button>
             </div>
           </div>
