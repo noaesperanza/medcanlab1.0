@@ -54,19 +54,9 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
   const [noaCore] = useState(() => new NoaEsperancaCore(noaEsperancaConfig))
   
   // Inicializar IA Residente (apenas uma vez para manter o estado)
-  const [residentAI] = useState(() => new NoaResidentAI(residentAIConfig))
+  const [residentAI] = useState(() => new NoaResidentAI())
   
   console.log('🎯 NoaContext - residentAI instanciado:', residentAI)
-
-  // Função para iniciar condução da avaliação IMRE pela IA
-  const startIMREAssessment = async (): Promise<string> => {
-    console.log('🎯 Nôa Esperança iniciando Avaliação Clínica...')
-    
-    // Mensagem de boas-vindas conforme Documento Mestre Nôa Esperanza v.5.0
-    const welcomeMessage = `Olá! Eu sou a Nôa Esperanza. Por favor, apresente-se e diga em que posso ajudar hoje.`
-
-    return welcomeMessage
-  }
 
   const sendMessage = async (content: string) => {
     const userMessage: NoaMessage = {
@@ -80,7 +70,7 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
     setIsTyping(true)
 
     try {
-      // SEMPRE processar com IA Residente (ela já tem a lógica de avaliação clínica)
+      // Processar com IA Residente
       console.log('🧠 Processando mensagem com IA Residente...', content)
       const aiResponse = await residentAI.processMessage(content)
       

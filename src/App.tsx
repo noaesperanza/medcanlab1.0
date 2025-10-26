@@ -45,6 +45,7 @@ import PesquisaDashboard from './pages/PesquisaDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import MedCannLabStructure from './pages/MedCannLabStructure'
 import NotFound from './pages/NotFound'
+import ClinicalAssessment from './pages/ClinicalAssessment'
 import PatientOnboarding from './pages/PatientOnboarding'
 import Scheduling from './pages/Scheduling'
 import Prescriptions from './pages/Prescriptions'
@@ -55,7 +56,7 @@ import { SubscriptionPlans } from './pages/SubscriptionPlans'
 import { PaymentCheckout } from './pages/PaymentCheckout'
 import { LessonPreparation } from './pages/LessonPreparation'
 import { ProfessionalFinancial } from './pages/ProfessionalFinancial'
-import KnowledgeAnalytics from './pages/KnowledgeAnalytics'
+import TestMonitoringDashboard from './components/TestMonitoringDashboard'
 
 function App() {
   return (
@@ -88,8 +89,9 @@ function App() {
             <Route path="ensino-dashboard" element={<EnsinoDashboard />} />
             <Route path="pesquisa-dashboard" element={<PesquisaDashboard />} />
                 <Route path="library" element={<Library />} />
-                    <Route path="chat" element={<ChatGlobal />} />
-                    <Route path="patient-chat" element={<PatientChat />} />
+                <Route path="chat" element={<ChatGlobal />} />
+                <Route path="chat-noa-esperanca" element={<PatientNOAChat />} />
+                <Route path="patient-chat" element={<PatientChat />} />
                     <Route path="forum" element={<ForumCasosClinicos />} />
                 <Route path="gamificacao" element={<Gamificacao />} />
                 <Route path="profile" element={<Profile />} />
@@ -130,7 +132,7 @@ function App() {
                 } />
                 <Route path="clinical-assessment" element={
                   <ProtectedRoute requiredRole="patient">
-                    <PatientOnboarding />
+                    <ClinicalAssessment />
                   </ProtectedRoute>
                 } />
                 <Route path="professional-chat" element={
@@ -142,7 +144,7 @@ function App() {
                 <Route path="checkout" element={<PaymentCheckout />} />
                 <Route path="lesson-prep" element={<LessonPreparation />} />
                 <Route path="professional-financial" element={<ProfessionalFinancial />} />
-                <Route path="knowledge-analytics" element={<KnowledgeAnalytics />} />
+                <Route path="test-monitoring" element={<TestMonitoringDashboard />} />
                 <Route path="admin/users" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminDashboardWrapper />

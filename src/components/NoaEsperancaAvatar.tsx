@@ -12,6 +12,7 @@ import {
   Zap as SparklesIcon,
   Bot
 } from 'lucide-react'
+import ClinicalAssessmentChat from './ClinicalAssessmentChat'
 
 interface NoaEsperancaAvatarProps {
   className?: string
@@ -19,20 +20,21 @@ interface NoaEsperancaAvatarProps {
 
 const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' }) => {
   const { 
-    messages, 
-    isOpen, 
-    isTyping, 
-    isListening, 
+    messages,
+    isOpen,
+    isTyping,
+    isListening,
     isSpeaking,
-    sendMessage, 
-    toggleChat, 
-    startListening, 
+    sendMessage,
+    toggleChat,
+    startListening,
     stopListening,
-    clearMessages 
+    clearMessages
   } = useNoa()
   
   const [inputMessage, setInputMessage] = useState('')
   const [showPersonality, setShowPersonality] = useState(false)
+  const [showAssessmentChat, setShowAssessmentChat] = useState(false)
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,16 +97,20 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
                 </div>
                 <div>
                   <h3 className="font-semibold">Nôa Esperança</h3>
-                  <p className="text-sm opacity-90">IA Residente - Cannabis Medicinal</p>
+                  <p className="text-sm opacity-90">
+                    IA Residente - Cannabis Medicinal
+                  </p>
                 </div>
               </div>
               
-              <button
-                onClick={() => setShowPersonality(!showPersonality)}
-                className="text-white/80 hover:text-white transition-colors"
-              >
-                <SparklesIcon className="w-5 h-5" />
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setShowPersonality(!showPersonality)}
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  <SparklesIcon className="w-5 h-5" />
+                </button>
+              </div>
             </div>
             
             {/* Personalidade da Nôa */}
@@ -265,6 +271,11 @@ const NoaEsperancaAvatar: React.FC<NoaEsperancaAvatarProps> = ({ className = '' 
             </div>
           </div>
         </div>
+      )}
+      
+      {/* Chat de Avaliação Clínica */}
+      {showAssessmentChat && (
+        <ClinicalAssessmentChat onClose={() => setShowAssessmentChat(false)} />
       )}
     </div>
   )

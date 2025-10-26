@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import { 
   Stethoscope, 
   FileText, 
@@ -8,13 +10,23 @@ import {
   User,
   Heart,
   Brain,
-  Activity
+  Activity,
+  Download,
+  Share2,
+  Loader2
 } from 'lucide-react'
+import { supabase } from '../lib/supabase'
 import ShareAssessment from '../components/ShareAssessment'
 
 const ClinicalAssessment: React.FC = () => {
+  const { user } = useAuth()
+  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(0)
   const [showShareModal, setShowShareModal] = useState(false)
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false)
+  const [reportGenerated, setReportGenerated] = useState(false)
+  const [nftMinted, setNftMinted] = useState(false)
+  const [savedToRecords, setSavedToRecords] = useState(false)
 
   const imreBlocks = [
     {
@@ -117,6 +129,118 @@ const ClinicalAssessment: React.FC = () => {
       emerald: 'text-emerald-600'
     }
     return colors[color as keyof typeof colors] || colors.blue
+  }
+
+  const handleCompleteAssessment = async () => {
+    if (!user) return
+
+    setIsGeneratingReport(true)
+    
+    try {
+      console.log('🚀 Iniciando processo completo de relatório...')
+
+      // 1. GERAR RELATÓRIO CLÍNICO COMPLETO
+      console.log('📋 Gerando relatório clínico...')
+      const reportData = {
+        imreData: {
+          emotionalAxis: { intensity: 7, valence: 6, arousal: 5, stability: 8 },
+          cognitiveAxis: { attention: 7, memory: 6, executive: 7, processing: 6 },
+          behavioralAxis: { activity: 6, social: 7, adaptive: 8, regulatory: 7 }
+        },
+        clinicalData: {
+          renalFunction: { creatinine: 1.2, gfr: 85, stage: 'normal' },
+          cannabisMetabolism: { cyp2c9: 'normal', cyp3a4: 'normal', metabolismRate: 1.0 }
+        },
+        correlations: {
+          imreClinicalCorrelations: { emotionalRenalCorrelation: 0.7 },
+          riskAssessment: { overallRisk: 0.3, renalRisk: 0.2 }
+        },
+        recommendations: [
+          'Acompanhamento médico regular',
+          'Monitoramento de função renal',
+          'Avaliação de fatores de risco',
+          'Orientação sobre cannabis medicinal'
+        ]
+      }
+
+      // Salvar na tabela clinical_assessments
+      const { data: assessment, error: assessmentError } = await supabase
+        .from('clinical_assessments')
+        .insert({
+          patient_id: user.id,
+          doctor_id: user.id, // Simplificado para demo
+          assessment_type: 'IMRE_Triaxial',
+          data: reportData,
+          status: 'completed'
+        })
+        .select()
+        .single()
+
+      if (assessmentError) throw assessmentError
+      setReportGenerated(true)
+
+      // 2. MINTAR NFT DO RELATÓRIO
+      console.log('🎨 Mintando NFT do relatório...')
+      await new Promise(resolve => setTimeout(resolve, 1500)) // Simular mint NFT
+      
+      const nftData = {
+        tokenId: `#${Math.floor(Math.random() * 10000)}`,
+        contractAddress: '0x1234567890123456789012345678901234567890',
+        transactionHash: `0x${Math.random().toString(36).substring(2, 66)}`,
+        ipfsHash: `Qm${Math.random().toString(36).substring(2, 15)}`
+      }
+      setNftMinted(true)
+
+      // 3. SALVAR NO PRONTUÁRIO DO PACIENTE
+      console.log('📁 Salvando no prontuário do paciente...')
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // Salvar na tabela imre_assessments para o paciente
+      const { error: patientError } = await supabase
+        .from('imre_assessments')
+        .insert({
+          user_id: user.id,
+          patient_id: user.id,
+          assessment_type: 'triaxial',
+          triaxial_data: reportData.imreData,
+          semantic_context: reportData.correlations,
+          clinical_notes: 'Relatório clínico completo gerado',
+          completion_status: 'completed',
+          session_duration: 45
+        })
+
+      if (patientError) throw patientError
+
+      // 4. SALVAR NO PRONTUÁRIO DO PROFISSIONAL
+      console.log('📁 Salvando no prontuário do profissional...')
+      
+      // Salvar na tabela clinical_integration
+      const { error: professionalError } = await supabase
+        .from('clinical_integration')
+        .insert({
+          user_id: user.id,
+          assessment_id: assessment.id,
+          renal_function_data: reportData.clinicalData.renalFunction,
+          cannabis_metabolism_data: reportData.clinicalData.cannabisMetabolism,
+          imre_clinical_correlations: reportData.correlations.imreClinicalCorrelations,
+          risk_assessment: reportData.correlations.riskAssessment,
+          treatment_recommendations: reportData.recommendations,
+          clinical_significance: 'moderate'
+        })
+
+      if (professionalError) throw professionalError
+      setSavedToRecords(true)
+
+      console.log('🎉 Processo completo finalizado!')
+      console.log('📋 Relatório ID:', assessment.id)
+      console.log('🎨 NFT Token ID:', nftData.tokenId)
+      console.log('📁 Salvo nos prontuários do paciente e profissional')
+      
+    } catch (error) {
+      console.error('❌ Erro no processo:', error)
+    } finally {
+      setIsGeneratingReport(false)
+    }
   }
 
   return (
@@ -306,36 +430,83 @@ const ClinicalAssessment: React.FC = () => {
           </div>
         </div>
 
-        {/* Seção de Conclusão e Compartilhamento */}
+        {/* Seção de Conclusão e Processo Completo */}
         <div className="mt-8 bg-gradient-to-r from-green-600 to-blue-600 rounded-lg p-6 text-white">
           <div className="text-center mb-6">
             <CheckCircle className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Avaliação Concluída!</h2>
+            <h2 className="text-2xl font-bold mb-2">Finalizar Avaliação Clínica</h2>
             <p className="text-green-100">
-              Sua avaliação clínica foi finalizada com sucesso. 
-              Agora você pode compartilhar com seu médico ou baixar o relatório.
+              Complete o processo completo: Relatório → NFT → Prontuários
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Status do Processo */}
+          <div className="mb-6 space-y-3">
+            <div className={`flex items-center space-x-3 p-3 rounded-lg ${reportGenerated ? 'bg-green-500/30' : 'bg-white/10'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${reportGenerated ? 'bg-green-500' : 'bg-white/30'}`}>
+                {reportGenerated ? <CheckCircle className="w-4 h-4 text-white" /> : <span className="text-xs">1</span>}
+              </div>
+              <span className="text-sm">Relatório Clínico Gerado</span>
+            </div>
+            
+            <div className={`flex items-center space-x-3 p-3 rounded-lg ${nftMinted ? 'bg-green-500/30' : 'bg-white/10'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${nftMinted ? 'bg-green-500' : 'bg-white/30'}`}>
+                {nftMinted ? <CheckCircle className="w-4 h-4 text-white" /> : <span className="text-xs">2</span>}
+              </div>
+              <span className="text-sm">NFT Registrado</span>
+            </div>
+            
+            <div className={`flex items-center space-x-3 p-3 rounded-lg ${savedToRecords ? 'bg-green-500/30' : 'bg-white/10'}`}>
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center ${savedToRecords ? 'bg-green-500' : 'bg-white/30'}`}>
+                {savedToRecords ? <CheckCircle className="w-4 h-4 text-white" /> : <span className="text-xs">3</span>}
+              </div>
+              <span className="text-sm">Salvo nos Prontuários</span>
+            </div>
+          </div>
+          
+          {/* Botão Principal */}
+          <div className="text-center">
             <button
-              onClick={() => setShowShareModal(true)}
-              className="bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+              onClick={handleCompleteAssessment}
+              disabled={isGeneratingReport}
+              className="bg-white/20 hover:bg-white/30 disabled:bg-white/10 text-white py-4 px-8 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-3 mx-auto text-lg font-semibold"
             >
-              <Activity className="w-5 h-5" />
-              <span>Compartilhar com Médico</span>
-            </button>
-            
-            <button className="bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
-              <Activity className="w-5 h-5" />
-              <span>Baixar Relatório</span>
-            </button>
-            
-            <button className="bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
-              <Activity className="w-5 h-5" />
-              <span>Ver Detalhes</span>
+              {isGeneratingReport ? (
+                <>
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <span>Processando...</span>
+                </>
+              ) : (
+                <>
+                  <Stethoscope className="w-6 h-6" />
+                  <span>Finalizar Avaliação Completa</span>
+                </>
+              )}
             </button>
           </div>
+          
+          {/* Botões Secundários */}
+          {savedToRecords && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+              <button
+                onClick={() => setShowShareModal(true)}
+                className="bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2"
+              >
+                <Activity className="w-5 h-5" />
+                <span>Compartilhar</span>
+              </button>
+              
+              <button className="bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                <Download className="w-5 h-5" />
+                <span>Baixar PDF</span>
+              </button>
+              
+              <button className="bg-white/20 hover:bg-white/30 text-white py-3 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                <Share2 className="w-5 h-5" />
+                <span>Enviar Email</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

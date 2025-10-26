@@ -218,12 +218,6 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
                      <li>• Dúvidas sobre funcionalidades</li>
                      <li>• Orientações gerais de saúde</li>
                    </ul>
-                   <button
-                     onClick={() => navigate('/app/clinical-assessment')}
-                     className="mt-3 w-full px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded transition-colors font-semibold text-xs"
-                   >
-                     🏥 Iniciar Avaliação Clínica IMRE
-                   </button>
                  </div>
               </div>
             ) : (

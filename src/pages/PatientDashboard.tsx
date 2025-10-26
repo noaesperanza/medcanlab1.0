@@ -40,18 +40,6 @@ const PatientDashboard: React.FC = () => {
     }
   }
 
-  const handleStartAssessment = async () => {
-    console.log('🚀 Iniciando Avaliação Clínica com IA Residente...')
-    
-    // Enviar mensagem para IA residente iniciar a condução da avaliação IMRE
-    await sendMessage('Iniciar Avaliação Clínica Inicial IMRE Triaxial')
-    
-    // Abrir o chat da Nôa
-    if (!isOpen) {
-      toggleChat()
-    }
-  }
-
   // Navigation handlers
   const handleNavigate = (path: string) => {
     navigate(path)
@@ -311,10 +299,10 @@ const PatientDashboard: React.FC = () => {
                   {/* Quick Actions */}
                   <div className="space-y-3 mb-6">
                     <button 
-                      onClick={handleStartAssessment}
+                      onClick={handleChatWithNoa}
                       className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-colors"
                     >
-                      Iniciar Avaliação Clínica IMRE Triaxial
+                      Iniciar Chat com Nôa
                     </button>
                     <p className="text-xs text-slate-400 text-center">
                       Inclui avaliação de risco renal integrada
