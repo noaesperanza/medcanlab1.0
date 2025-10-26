@@ -33,8 +33,6 @@ const Landing: React.FC = () => {
     email: '',
     password: ''
   })
-  // Debug: verificar se o botão está sendo renderizado
-  console.log('🔍 Landing - User:', user)
   
   // Função de login de emergência para debug
   const handleEmergencyLogin = async () => {
@@ -59,15 +57,12 @@ const Landing: React.FC = () => {
 
   // Redirecionar quando o usuário fizer login
   useEffect(() => {
-    console.log('🔄 useEffect - user:', user, 'authLoading:', authLoading)
     if (user && !authLoading) {
       console.log('🔄 Usuário logado detectado, redirecionando...', user.type)
-      
-      // SEMPRE redirecionar para /app/dashboard que decide internamente qual dashboard mostrar
-      console.log('🚀 Redirecionando para /app/dashboard com tipo:', user.type)
       navigate('/app/dashboard')
     }
-  }, [user, authLoading, navigate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, authLoading])
 
   // Debug adicional removido para evitar spam
 

@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
       },
       { 
         name: '📚 Biblioteca', 
-        href: '/library', 
+        href: '/app/library', 
         icon: BookOpen,
         section: 'quick'
       },
@@ -150,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
       },
       { 
         name: '📚 Biblioteca', 
-        href: '/library', 
+        href: '/app/library', 
         icon: BookOpen,
         section: 'quick'
       },

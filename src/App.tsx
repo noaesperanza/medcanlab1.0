@@ -56,6 +56,7 @@ import { SubscriptionPlans } from './pages/SubscriptionPlans'
 import { PaymentCheckout } from './pages/PaymentCheckout'
 import { LessonPreparation } from './pages/LessonPreparation'
 import { ProfessionalFinancial } from './pages/ProfessionalFinancial'
+import KnowledgeAnalytics from './pages/KnowledgeAnalytics'
 
 function App() {
   return (
@@ -138,6 +139,7 @@ function App() {
                 <Route path="checkout" element={<PaymentCheckout />} />
                 <Route path="lesson-prep" element={<LessonPreparation />} />
                 <Route path="professional-financial" element={<ProfessionalFinancial />} />
+                <Route path="knowledge-analytics" element={<KnowledgeAnalytics />} />
                 <Route path="admin/users" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminDashboardWrapper />

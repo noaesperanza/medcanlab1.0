@@ -5,7 +5,7 @@
  */
 
 import { supabase } from './supabase'
-import { noaKnowledgeBase } from './noaKnowledgeBase'
+import { NoaKnowledgeBase } from '../services/noaKnowledgeBase'
 import { ClinicalAssessmentService, ClinicalReport } from './clinicalAssessmentService'
 
 export interface ResidentAIConfig {
@@ -82,6 +82,15 @@ export class NoaResidentAI {
     try {
       // Adicionar ao contexto
       this.conversationContext.push({ role: 'user', content: userMessage })
+
+      // 🔍 Buscar documentos relevantes na Base de Conhecimento
+      const relevantDocs = await NoaKnowledgeBase.searchRelevantDocuments(userMessage, 3)
+      if (relevantDocs.length > 0) {
+        console.log('📚 Documentos relevantes encontrados:', relevantDocs.length)
+        // Incluir contexto dos documentos na mensagem
+        const contextFromDocs = relevantDocs.map((doc: any) => `- ${doc.title}: ${doc.summary}`).join('\n')
+        userMessage = `${userMessage}\n\nContexto da Base de Conhecimento:\n${contextFromDocs}`
+      }
 
       // Gerar resposta com GPT-4
       const response = await this.generateGPT4Response(userMessage)

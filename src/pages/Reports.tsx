@@ -75,84 +75,8 @@ const Reports: React.FC = () => {
     }
   }
 
-  // Dados mock (temporário)
-  const mockReports = [
-    {
-      id: 1,
-      title: 'Relatório IMRE - Maria Silva',
-      patientName: 'Maria Silva',
-      patientId: 1,
-      type: 'IMRE',
-      date: '15/01/2024',
-      status: 'concluido',
-      size: '2.3 MB',
-      pages: 8,
-      doctor: 'Dr. Passos Mir',
-      crm: '12345-SP',
-      summary: 'Avaliação completa da paciente com hipertensão arterial sistêmica. Análise detalhada dos sintomas e recomendações terapêuticas.',
-      keyFindings: ['Pressão arterial elevada', 'Boa adesão ao tratamento', 'Necessidade de ajuste medicamentoso'],
-      recommendations: ['Continuar Losartana 50mg', 'Reduzir consumo de sal', 'Exercícios regulares'],
-      nextSteps: ['Retorno em 30 dias', 'Monitoramento da PA', 'Exames laboratoriais'],
-      attachments: ['Exames laboratoriais', 'Prescrição médica', 'Orientações nutricionais']
-    },
-    {
-      id: 2,
-      title: 'Relatório AEC - João Santos',
-      patientName: 'João Santos',
-      patientId: 2,
-      type: 'AEC',
-      date: '14/01/2024',
-      status: 'em_andamento',
-      size: '1.8 MB',
-      pages: 6,
-      doctor: 'Dr. Passos Mir',
-      crm: '12345-SP',
-      summary: 'Avaliação inicial do paciente com suspeita de diabetes mellitus tipo 2. Análise dos sintomas e solicitação de exames complementares.',
-      keyFindings: ['Glicemia elevada', 'Poliúria e polidipsia', 'Perda de peso inexplicada'],
-      recommendations: ['Exames laboratoriais urgentes', 'Consulta com endocrinologista', 'Dieta controlada'],
-      nextSteps: ['Aguardar resultados', 'Retorno em 7 dias', 'Início do tratamento'],
-      attachments: ['Solicitação de exames', 'Encaminhamento endocrinologia']
-    },
-    {
-      id: 3,
-      title: 'Relatório de Retorno - Ana Costa',
-      patientName: 'Ana Costa',
-      patientId: 3,
-      type: 'Retorno',
-      date: '13/01/2024',
-      status: 'concluido',
-      size: '1.5 MB',
-      pages: 4,
-      doctor: 'Dr. Passos Mir',
-      crm: '12345-SP',
-      summary: 'Consulta de retorno da paciente com transtorno de ansiedade. Avaliação da evolução e ajuste do tratamento.',
-      keyFindings: ['Melhora significativa da ansiedade', 'Boa resposta ao tratamento', 'Sono normalizado'],
-      recommendations: ['Continuar terapia atual', 'Técnicas de relaxamento', 'Acompanhamento psicológico'],
-      nextSteps: ['Retorno em 60 dias', 'Manutenção do tratamento', 'Monitoramento contínuo'],
-      attachments: ['Prescrição atualizada', 'Orientações terapêuticas']
-    },
-    {
-      id: 4,
-      title: 'Relatório IMRE - Carlos Lima',
-      patientName: 'Carlos Lima',
-      patientId: 4,
-      type: 'IMRE',
-      date: '12/01/2024',
-      status: 'pendente',
-      size: '3.2 MB',
-      pages: 12,
-      doctor: 'Dr. Passos Mir',
-      crm: '12345-SP',
-      summary: 'Avaliação completa do paciente oncológico. Análise multidisciplinar e plano de cuidados integrado.',
-      keyFindings: ['Câncer de próstata em tratamento', 'Boa resposta à quimioterapia', 'Suporte psicológico necessário'],
-      recommendations: ['Continuar tratamento oncológico', 'Suporte nutricional', 'Acompanhamento psicológico'],
-      nextSteps: ['Retorno oncológico', 'Exames de controle', 'Suporte familiar'],
-      attachments: ['Prontuário oncológico', 'Exames de imagem', 'Prescrições especializadas']
-    }
-  ]
-
-  // Combinar dados reais com dados mock
-  const allReports = [...reports, ...mockReports]
+  // Usar apenas dados reais
+  const allReports = reports
 
   const filteredReports = allReports.filter(report => {
     const matchesSearch = report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

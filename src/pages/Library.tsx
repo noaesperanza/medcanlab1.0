@@ -13,14 +13,19 @@ import {
   Users,
   GraduationCap,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  User,
+  Heart
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 
 const Library: React.FC = () => {
+  const { user } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedType, setSelectedType] = useState('all')
+  const [selectedUserType, setSelectedUserType] = useState('all') // Novo filtro
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [uploadCategory, setUploadCategory] = useState('ai-residente')
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
@@ -31,14 +36,34 @@ const Library: React.FC = () => {
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(true)
   const [totalDocs, setTotalDocs] = useState(0)
 
-  const categories = [
-    { id: 'all', name: 'Todos', count: totalDocs },
-    { id: 'methodology', name: 'Metodologia', count: 0 },
-    { id: 'research', name: 'Pesquisa', count: 0 },
-    { id: 'protocols', name: 'Protocolos', count: 0 },
-    { id: 'guidelines', name: 'Diretrizes', count: 0 },
-    { id: 'case-studies', name: 'Casos Clínicos', count: 0 }
+  // Tipos de usuário
+  const userTypes = [
+    { id: 'all', name: 'Todos os Usuários', icon: Users, color: 'blue' },
+    { id: 'student', name: 'Alunos', icon: GraduationCap, color: 'green' },
+    { id: 'professional', name: 'Profissionais', icon: User, color: 'purple' },
+    { id: 'patient', name: 'Pacientes', icon: Heart, color: 'red' }
   ]
+
+  // Categorias: IA, Protocolos, Pesquisa, Casos, Multimídia
+  const categories = [
+    { id: 'all', name: 'Todos', icon: '📚', count: totalDocs },
+    { id: 'ai-documents', name: 'IA Residente', icon: '🧠', count: 0 },
+    { id: 'protocols', name: 'Protocolos', icon: '📖', count: 0 },
+    { id: 'research', name: 'Pesquisa', icon: '🔬', count: 0 },
+    { id: 'cases', name: 'Casos', icon: '📊', count: 0 },
+    { id: 'multimedia', name: 'Multimídia', icon: '🎥', count: 0 }
+  ]
+
+  // Áreas: Cannabis, IMRE, Clínica, Gestão
+  const knowledgeAreas = [
+    { id: 'all', name: 'Todas', icon: '🌐', color: 'slate' },
+    { id: 'cannabis', name: 'Cannabis', icon: '🌿', color: 'green' },
+    { id: 'imre', name: 'IMRE', icon: '🧬', color: 'purple' },
+    { id: 'clinical', name: 'Clínica', icon: '🏥', color: 'blue' },
+    { id: 'research', name: 'Gestão', icon: '📈', color: 'orange' }
+  ]
+
+  const [selectedArea, setSelectedArea] = useState('all')
 
   const documentTypes = [
     { id: 'all', name: 'Todos os Tipos', icon: '📁' },
@@ -48,116 +73,85 @@ const Library: React.FC = () => {
     { id: 'book', name: 'Livro', icon: '📚' }
   ]
 
-  const documents = [
-    {
-      id: 1,
-      title: 'Metodologia AEC - Arte da Entrevista Clínica',
-      description: 'Guia completo sobre a metodologia AEC para entrevistas clínicas humanizadas',
-      category: 'methodology',
-      type: 'pdf',
-      size: '2.4 MB',
-      uploadDate: '2025-01-10',
-      author: 'Dr. Eduardo Faveret',
-      downloads: 1247,
-      rating: 4.9,
-      tags: ['AEC', 'Entrevista', 'Humanização'],
-      isLinkedToAI: true,
-      thumbnail: '/api/placeholder/200/150'
-    },
-    {
-      id: 2,
-      title: 'Protocolo de Avaliação IMRE Triaxial',
-      description: 'Protocolo completo para avaliação clínica com sistema IMRE de 28 blocos',
-      category: 'protocols',
-      type: 'pdf',
-      size: '1.8 MB',
-      uploadDate: '2025-01-08',
-      author: 'Dra. Maria Santos',
-      downloads: 892,
-      rating: 4.8,
-      tags: ['IMRE', 'Avaliação', 'Protocolo'],
-      isLinkedToAI: true,
-      thumbnail: '/api/placeholder/200/150'
-    },
-    {
-      id: 3,
-      title: 'Cannabis Medicinal - Evidências Científicas',
-      description: 'Revisão sistemática das evidências científicas sobre cannabis medicinal',
-      category: 'research',
-      type: 'pdf',
-      size: '3.2 MB',
-      uploadDate: '2025-01-05',
-      author: 'Dr. Carlos Oliveira',
-      downloads: 634,
-      rating: 4.7,
-      tags: ['Cannabis', 'Pesquisa', 'Evidências'],
-      isLinkedToAI: false,
-      thumbnail: '/api/placeholder/200/150'
-    },
-    {
-      id: 4,
-      title: 'Aula 1: Introdução à Entrevista Clínica',
-      description: 'Vídeo-aula introdutória sobre técnicas de entrevista clínica',
-      category: 'methodology',
-      type: 'video',
-      size: '45 MB',
-      uploadDate: '2025-01-03',
-      author: 'Dra. Ana Costa',
-      downloads: 456,
-      rating: 4.6,
-      tags: ['Vídeo', 'Aula', 'Entrevista'],
-      isLinkedToAI: true,
-      thumbnail: '/api/placeholder/200/150'
-    },
-    {
-      id: 5,
-      title: 'Diretrizes de Prescrição de Cannabis',
-      description: 'Diretrizes oficiais para prescrição de cannabis medicinal no Brasil',
-      category: 'guidelines',
-      type: 'pdf',
-      size: '1.5 MB',
-      uploadDate: '2025-01-01',
-      author: 'ANVISA',
-      downloads: 789,
-      rating: 4.9,
-      tags: ['Diretrizes', 'Cannabis', 'Prescrição'],
-      isLinkedToAI: true,
-      thumbnail: '/api/placeholder/200/150'
-    },
-    {
-      id: 6,
-      title: 'Atlas de Anatomia Renal',
-      description: 'Atlas completo com imagens detalhadas da anatomia renal',
-      category: 'research',
-      type: 'image',
-      size: '8.7 MB',
-      uploadDate: '2024-12-28',
-      author: 'Dr. Pedro Lima',
-      downloads: 234,
-      rating: 4.5,
-      tags: ['Anatomia', 'Rim', 'Atlas'],
-      isLinkedToAI: false,
-      thumbnail: '/api/placeholder/200/150'
-    }
-  ]
+  // Contar documentos por categoria
+  const getCategoryCount = (categoryId: string) => {
+    if (categoryId === 'all') return realDocuments.length
+    const filtered = realDocuments.filter((doc: any) => {
+      // Verificar se o documento pertence à categoria
+      if (categoryId === 'ai-documents') {
+        // IA Residente: incluir todos os documentos que estão vinculados à IA OU têm categoria ai-documents
+        const isAILinked = doc.isLinkedToAI === true
+        const isAICategory = doc.category === 'ai-documents'
+        const hasAITags = doc.tags && (doc.tags.includes('ai-documents') || doc.tags.includes('upload'))
+        const hasAIKeywords = doc.keywords && doc.keywords.some((k: string) => k === 'ai-documents')
+        
+        const matches = isAILinked || isAICategory || hasAITags || hasAIKeywords
+        return matches
+      }
+      // Para outras categorias, verificar category OU tags/keywords
+      return doc.category === categoryId || 
+             (doc.tags && doc.tags.includes(categoryId)) ||
+             (doc.keywords && doc.keywords.some((k: string) => k === categoryId))
+          })
+    return filtered.length
+  }
 
-  // Usar documentos reais se existirem, senão usar mock data
-  const displayDocuments = realDocuments.length > 0 ? realDocuments : documents
+  // Atualizar contadores das categorias
+  const categoriesWithCount = categories.map(cat => ({
+    ...cat,
+    count: getCategoryCount(cat.id)
+  }))
 
-  const filteredDocuments = displayDocuments.filter((doc: any) => {
+  // Debug logs comentados
+  // console.log('📊 Contadores de categorias:', categoriesWithCount)
+  // console.log('📚 Documentos reais completos:', realDocuments)
+
+  // Usar apenas documentos reais do banco de dados
+  const filteredDocuments = realDocuments.filter((doc: any) => {
     // Filtro de busca
     const matchesSearch = searchTerm === '' || 
                          doc.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.summary?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          doc.keywords?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
     
-    // Filtro de categoria - documentos reais não têm category, então sempre retorna true se não for mock
-    const matchesCategory = selectedCategory === 'all' || !doc.category || doc.category === selectedCategory
+    // Filtro de categoria - verificar category, isLinkedToAI, tags ou keywords
+    let matchesCategory = true
+    if (selectedCategory !== 'all') {
+      if (selectedCategory === 'ai-documents') {
+        // Para IA Residente, verificar múltiplos critérios
+        matchesCategory = doc.isLinkedToAI === true || 
+                         doc.category === 'ai-documents' ||
+                         (doc.tags && doc.tags.includes('ai-documents')) ||
+                         (doc.keywords && doc.keywords.some((k: string) => k === 'ai-documents')) ||
+                         (doc.tags && doc.tags.includes('upload')) // Documentos enviados via upload
+      } else {
+        // Para outras categorias, verificar category OU tags/keywords
+        matchesCategory = doc.category === selectedCategory ||
+                         (doc.tags && doc.tags.includes(selectedCategory)) ||
+                         (doc.keywords && doc.keywords.some((k: string) => k === selectedCategory))
+      }
+    }
     
-    // Filtro de tipo
+    // Filtro de tipo de arquivo
     const matchesType = selectedType === 'all' || doc.file_type === selectedType || doc.type === selectedType
     
-    return matchesSearch && matchesCategory && matchesType
+    // Filtro de tipo de usuário - procurar no target_audience, user_type ou tags
+    const docUserType = doc.target_audience || doc.user_type || doc.tags
+    const matchesUserType = selectedUserType === 'all' || 
+                          (docUserType && (
+                            Array.isArray(docUserType) && docUserType.includes(selectedUserType) ||
+                            docUserType === selectedUserType ||
+                            doc.tags?.includes(selectedUserType)
+                          ))
+    
+    // Filtro de área de conhecimento - procurar em keywords, tags ou título
+    const matchesArea = selectedArea === 'all' || 
+                       doc.keywords?.some((k: string) => k.toLowerCase().includes(selectedArea)) ||
+                       doc.tags?.some((tag: string) => tag.toLowerCase().includes(selectedArea)) ||
+                       doc.title?.toLowerCase().includes(selectedArea) ||
+                       doc.summary?.toLowerCase().includes(selectedArea)
+    
+    return matchesSearch && matchesCategory && matchesType && matchesUserType && matchesArea
   })
 
   const getTypeIcon = (type: string) => {
@@ -188,76 +182,154 @@ const Library: React.FC = () => {
     return (bytes / (1024 * 1024)).toFixed(2) + ' MB'
   }
 
-  const handleUpload = async () => {
-    if (!uploadedFile) return
 
+
+  // Função unificada de upload
+  const handleUploadFile = async (file: File, category: string = 'ai-documents') => {
+    console.log('🚀 Iniciando upload:', file.name, 'Categoria:', category)
     setIsUploading(true)
     setUploadProgress(0)
 
+    let progressInterval: NodeJS.Timeout | null = null
+
     try {
-      // Simular progresso de upload
-      const progressInterval = setInterval(() => {
+      progressInterval = setInterval(() => {
         setUploadProgress(prev => {
           if (prev >= 90) {
-            clearInterval(progressInterval)
+            if (progressInterval) clearInterval(progressInterval)
             return 90
           }
           return prev + 10
         })
       }, 200)
 
-      // Aqui você pode adicionar a lógica de upload para Supabase Storage
-      // Por exemplo, upload para bucket específico baseado na categoria
-      const fileExt = uploadedFile.name.split('.').pop()
-      const fileName = `${Date.now()}.${fileExt}`
-      const bucketName = uploadCategory === 'ai-avatar' ? 'avatar' : 'documents'
+      const fileExt = file.name.split('.').pop()?.toLowerCase()
+      const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
+      const bucketName = category === 'ai-avatar' ? 'avatar' : 'documents'
+
+      console.log('📤 Enviando para Storage:', fileName, 'Bucket:', bucketName)
 
       // Upload para Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from(bucketName)
-        .upload(fileName, uploadedFile)
+        .upload(fileName, file)
 
-      if (uploadError) throw uploadError
+      if (uploadError) {
+        console.error('❌ Erro no upload:', uploadError)
+        throw uploadError
+      }
 
-      // Se for o avatar da IA, atualizar a referência e emitir evento
-      if (uploadCategory === 'ai-avatar') {
+      console.log('✅ Arquivo enviado:', uploadData)
+
+      // Se for avatar, não salvar no banco
+      if (category === 'ai-avatar') {
         const { data: { publicUrl } } = supabase.storage
           .from('avatar')
           .getPublicUrl(fileName)
         
-        console.log('✅ Avatar enviado com sucesso!')
-        console.log('Nome do arquivo:', fileName)
-        console.log('URL pública:', publicUrl)
-        
-        // Emitir evento personalizado para notificar outros componentes
-        const event = new CustomEvent('avatarUpdated', { 
-          detail: { url: publicUrl } 
-        })
-        console.log('📢 Disparando evento avatarUpdated com URL:', publicUrl)
+        // Emitir evento para atualizar avatar
+        const event = new CustomEvent('avatarUpdated', { detail: { url: publicUrl } })
         window.dispatchEvent(event)
         
-        // Aviso visual
+        alert('✅ Avatar atualizado!')
+        if (progressInterval) clearInterval(progressInterval)
+        setUploadProgress(100)
         setTimeout(() => {
-          alert('Avatar atualizado! A página de chat será atualizada automaticamente.')
-        }, 500)
+          setIsUploading(false)
+          setUploadProgress(0)
+        }, 1000)
+        return
       }
 
-      clearInterval(progressInterval)
+      // Para documentos, salvar metadata no banco
+      const { data: { publicUrl } } = supabase.storage
+        .from('documents')
+        .getPublicUrl(fileName)
+
+      // Mapear categoria para dados do documento
+      let documentCategory = 'research'
+      let targetAudience = ['professional']
+      
+      if (category === 'ai-documents') {
+        documentCategory = 'ai-documents'
+        targetAudience = ['professional', 'student']
+      } else if (category === 'student') {
+        documentCategory = 'multimedia'
+        targetAudience = ['student']
+      } else if (category === 'professional') {
+        documentCategory = 'protocols'
+        targetAudience = ['professional']
+      } else if (category === 'reports') {
+        documentCategory = 'reports'
+        targetAudience = ['professional']
+      } else if (category === 'research') {
+        documentCategory = 'research'
+        targetAudience = ['professional', 'student']
+      }
+
+      const documentMetadata = {
+        title: file.name,
+        file_type: fileExt || 'unknown',
+        file_url: publicUrl, // Usando file_url em vez de file_path
+        file_size: file.size,
+        author: user?.name || 'Usuário',
+        category: documentCategory,
+        target_audience: targetAudience,
+        tags: ['upload', category],
+        isLinkedToAI: category === 'ai-documents' || category === 'research',
+        summary: `Documento enviado em ${new Date().toLocaleDateString('pt-BR')} - Categoria: ${category}`,
+        keywords: [fileExt || 'document', category]
+      }
+
+      console.log('💾 Salvando metadata:', documentMetadata)
+
+      // Salvar metadata no banco
+      const { data: documentData, error: docError } = await supabase
+        .from('documents')
+        .insert(documentMetadata)
+        .select()
+
+      if (docError) {
+        console.error('❌ Erro ao salvar metadata:', docError)
+        throw docError
+      }
+
+      console.log('✅ Metadata salva!', documentData)
+
+      // Aguardar um pouco para garantir que o banco foi atualizado
+      await new Promise(resolve => setTimeout(resolve, 500))
+
+      // Recarregar lista de documentos
+      await loadDocuments()
+
+      if (progressInterval) clearInterval(progressInterval)
       setUploadProgress(100)
       setUploadSuccess(true)
 
+      console.log('🎉 Upload concluído!')
+      alert('✅ Upload realizado com sucesso!')
+
       setTimeout(() => {
+        setUploadSuccess(false)
+        setUploadProgress(0)
+        setIsUploading(false)
         setShowUploadModal(false)
         setUploadedFile(null)
-        setUploadProgress(0)
-        setUploadSuccess(false)
       }, 2000)
-    } catch (error) {
-      console.error('Erro ao fazer upload:', error)
-      alert('Erro ao fazer upload. Tente novamente.')
-    } finally {
+    } catch (error: any) {
+      console.error('❌ Erro no upload:', error)
+      if (progressInterval) clearInterval(progressInterval)
+      setUploadProgress(0)
+      alert(`Erro ao fazer upload: ${error.message || 'Erro desconhecido'}`)
       setIsUploading(false)
     }
+  }
+
+
+
+  const handleUpload = async () => {
+    if (!uploadedFile) return
+    await handleUploadFile(uploadedFile, uploadCategory)
   }
 
   const uploadCategories = [
@@ -305,38 +377,60 @@ const Library: React.FC = () => {
     }
   ]
 
+  // Função para carregar documentos
+  const loadDocuments = async () => {
+    setIsLoadingDocuments(true)
+    try {
+      console.log('🔄 Recarregando documentos...')
+      const { data, error, count } = await supabase
+        .from('documents')
+        .select('*', { count: 'exact' })
+        .order('created_at', { ascending: false })
+      
+      if (error) {
+        console.error('❌ Erro ao carregar documentos:', error)
+        alert('Erro ao carregar documentos: ' + error.message)
+        return
+      }
+      
+      console.log('📚 Documentos carregados:', data?.length || 0)
+      
+      if (data && data.length > 0) {
+        // Remover duplicatas baseado no título E no ID (para garantir que sejam realmente diferentes)
+        const uniqueDocuments = data.filter((doc, index, self) => {
+          // Procurar se já existe um documento com o mesmo título
+          const foundIndex = self.findIndex(d => d.title === doc.title)
+          // Se o índice encontrado é o índice atual, é único
+          // OU se é a primeira ocorrência desse título
+          return foundIndex === index
+        })
+        
+        console.log('📋 Documentos únicos filtrados:', uniqueDocuments.map(d => ({
+          id: d.id,
+          title: d.title,
+          category: d.category,
+          isLinkedToAI: d.isLinkedToAI
+        })))
+        
+        setRealDocuments(uniqueDocuments)
+        setTotalDocs(uniqueDocuments.length)
+        const totalCount = count || data.length
+        console.log(`✅ ${uniqueDocuments.length} documentos únicos carregados do Supabase (${totalCount} totais, ${totalCount - uniqueDocuments.length} duplicatas removidas)`)
+      } else {
+        console.log('⚠️ Nenhum documento encontrado')
+        setRealDocuments([])
+        setTotalDocs(0)
+      }
+    } catch (error) {
+      console.error('❌ Erro ao carregar documentos:', error)
+      alert('Erro ao carregar documentos')
+    } finally {
+      setIsLoadingDocuments(false)
+    }
+  }
+
   // Carregar documentos reais do Supabase
   useEffect(() => {
-    const loadDocuments = async () => {
-      try {
-        const { data, error, count } = await supabase
-          .from('documents')
-          .select('*', { count: 'exact' })
-          .order('created_at', { ascending: false })
-        
-        if (error) {
-          console.error('Erro ao carregar documentos:', error)
-          return
-        }
-        
-        if (data && data.length > 0) {
-          // Remover duplicatas baseado no título
-          const uniqueDocuments = data.filter((doc, index, self) =>
-            index === self.findIndex(d => d.title === doc.title)
-          )
-          
-          setRealDocuments(uniqueDocuments)
-          setTotalDocs(uniqueDocuments.length)
-          const totalCount = count || data.length
-          console.log(`✅ ${uniqueDocuments.length} documentos únicos carregados do Supabase (${totalCount} totais, ${totalCount - uniqueDocuments.length} duplicatas removidas)`)
-        }
-      } catch (error) {
-        console.error('Erro:', error)
-      } finally {
-        setIsLoadingDocuments(false)
-      }
-    }
-    
     loadDocuments()
   }, [])
 
@@ -345,27 +439,134 @@ const Library: React.FC = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white dark:text-slate-100 mb-2">
-            Biblioteca Geral
-          </h1>
+          <div className="flex items-center gap-3 mb-3">
+            <div className="p-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl">
+              <Brain className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
+                Base de Conhecimento
+              </h1>
+              <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                Nôa Esperança IA • Educação • Pesquisa
+              </p>
+            </div>
+          </div>
           <p className="text-gray-600 dark:text-gray-300">
-            Acesse documentos, protocolos, pesquisas e recursos educacionais
+            Treinamento da IA • Recursos educacionais • Referências científicas • Protocolos clínicos
           </p>
         </div>
 
+        {/* Filters - 3 Columns: User Types, Categories, Areas */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          {/* 1. Tipos de Usuário */}
+          <div>
+            <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">👥 Tipo de Usuário</h3>
+            <div className="flex flex-wrap gap-2">
+              {userTypes.map((ut) => {
+                const Icon = ut.icon
+                const isActive = selectedUserType === ut.id
+                return (
+                  <button
+                    key={ut.id}
+                    onClick={() => setSelectedUserType(ut.id)}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      isActive
+                        ? `bg-${ut.color}-600 text-white shadow-md`
+                        : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    {ut.name}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 2. Categorias */}
+          <div>
+            <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">📚 Categoria</h3>
+            <div className="flex flex-wrap gap-2">
+              {categories.map((cat) => {
+                const isActive = selectedCategory === cat.id
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      isActive
+                        ? 'bg-purple-600 text-white shadow-md'
+                        : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600'
+                    }`}
+                  >
+                    <span>{cat.icon}</span>
+                    {cat.name}
+                    <span className="text-xs opacity-75">({cat.count})</span>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 3. Áreas de Conhecimento */}
+          <div>
+            <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">🎯 Área</h3>
+            <div className="flex flex-wrap gap-2">
+              {knowledgeAreas.map((area) => {
+                const isActive = selectedArea === area.id
+                return (
+                  <button
+                    key={area.id}
+                    onClick={() => setSelectedArea(area.id)}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                      isActive
+                        ? `bg-${area.color}-600 text-white shadow-md`
+                        : 'bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700 border border-gray-300 dark:border-slate-600'
+                    }`}
+                  >
+                    <span>{area.icon}</span>
+                    {area.name}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Upload Hint - Unified system */}
+        {filteredDocuments.length === 0 && (
+          <div className="mb-8 text-center py-8 border-2 border-dashed border-purple-300 dark:border-purple-700 rounded-xl bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+            <Brain className="w-12 h-12 mx-auto mb-3 text-purple-600" />
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-2">
+              Base de Conhecimento da Nôa Esperança
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
+              Faça upload de documentos para treinar a IA e expandir a base de conhecimento
+            </p>
+            <button
+              onClick={() => setShowUploadModal(true)}
+              className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold rounded-lg transition-all"
+            >
+              <Upload className="w-5 h-5 inline mr-2" />
+              Fazer Upload
+            </button>
+          </div>
+        )}
+
         {/* Search and Filters */}
-        <div className="card p-6 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6 mb-8 border-2 border-gray-200 dark:border-slate-700">
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Buscar documentos..."
                   value={searchTerm}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-slate-200/50 dark:bg-slate-700/80 text-slate-900 dark:text-white dark:text-slate-100"
+                  className="w-full pl-10 pr-4 py-3 border-2 border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 dark:bg-slate-700 text-slate-900 dark:text-white font-medium"
                 />
               </div>
             </div>
@@ -375,9 +576,9 @@ const Library: React.FC = () => {
               <select
                 value={selectedCategory}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedCategory(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-slate-200/50 dark:bg-slate-700/80 text-slate-900 dark:text-white dark:text-slate-100"
+                className="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 dark:bg-slate-700 text-slate-900 dark:text-white font-semibold"
               >
-                {categories.map((category) => (
+                {categoriesWithCount.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name} ({category.count})
                   </option>
@@ -390,7 +591,7 @@ const Library: React.FC = () => {
               <select
                 value={selectedType}
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedType(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-slate-200/50 dark:bg-slate-700/80 text-slate-900 dark:text-white dark:text-slate-100"
+                className="w-full px-4 py-3 border-2 border-gray-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-gray-50 dark:bg-slate-700 text-slate-900 dark:text-white font-semibold"
               >
                 {documentTypes.map((type) => (
                   <option key={type.id} value={type.id}>
@@ -403,7 +604,7 @@ const Library: React.FC = () => {
             {/* Upload Button */}
             <button 
               onClick={() => setShowUploadModal(true)}
-              className="btn-primary flex items-center justify-center"
+              className="flex items-center justify-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold rounded-lg shadow-lg hover:shadow-xl transition-all"
             >
               <Upload className="w-5 h-5 mr-2" />
               Upload
@@ -411,72 +612,150 @@ const Library: React.FC = () => {
           </div>
         </div>
 
-        {/* Documents Grid - Compact Version */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Documents Count with Refresh Button */}
+        <div className="mb-4 flex items-center justify-between">
+          <p className="text-lg font-bold text-gray-800 dark:text-gray-200">
+            {filteredDocuments.length} {filteredDocuments.length === 1 ? 'documento encontrado' : 'documentos encontrados'}
+          </p>
+          <button
+            onClick={loadDocuments}
+            disabled={isLoadingDocuments || isUploading}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isLoadingDocuments ? (
+              <>
+                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Carregando...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Atualizar Lista
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Documents List - Dynamic and Intelligent */}
+        <div className="space-y-4">
           {filteredDocuments.map((doc) => (
-            <div key={doc.id} className="card card-hover overflow-hidden">
-              {/* Document Thumbnail - Compact */}
-              <div className="relative h-24 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800">
-                <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="text-3xl">
+            <div 
+              key={doc.id} 
+              className="bg-white dark:bg-slate-800 rounded-xl border-2 border-gray-200 dark:border-slate-700 p-6 hover:shadow-2xl hover:border-purple-400 dark:hover:border-purple-500 transition-all duration-300"
+            >
+              <div className="flex items-start gap-4">
+                {/* Icon */}
+                <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <div className="text-3xl">
                     {getTypeIcon(doc.file_type || doc.type)}
                   </div>
                 </div>
-                {doc.isLinkedToAI === true && (
-                  <div className="absolute top-1 right-1">
-                    <div className="bg-primary-500 text-slate-900 dark:text-white px-1.5 py-0.5 rounded-full text-xs font-medium">
-                      IA
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2 mb-3">
+                    <div className="flex-1">
+                      <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                        {doc.title}
+                      </h3>
+                      <div className="flex items-center gap-3 text-xs text-gray-600 dark:text-gray-400 font-medium mb-3">
+                        <span className="flex items-center gap-1">
+                          <User className="w-3 h-3" />
+                          {doc.author || 'Autor não disponível'}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          <FileText className="w-3 h-3" />
+                          {formatFileSize(doc.file_size || doc.size)}
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-1">
+                          📅 {formatDate(doc.created_at || doc.uploadDate)}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* AI Badge */}
+                    {doc.isLinkedToAI === true && (
+                      <div className="flex-shrink-0">
+                        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                          <Brain className="w-3 h-3" />
+                          IA Ativa
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Summary */}
+                  {doc.summary && (
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-3 line-clamp-2 italic">
+                      {doc.summary}
+                    </p>
+                  )}
+
+                  {/* Tags */}
+                  {(doc.tags?.length > 0 || doc.keywords?.length > 0) && (
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {doc.tags && doc.tags.length > 0 && doc.tags.map((tag: string, index: number) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1 bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-xs rounded-full font-semibold shadow-md"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {doc.keywords && doc.keywords.map((keyword: string, index: number) => (
+                        <span
+                          key={`kw-${index}`}
+                          className="px-3 py-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs rounded-full font-semibold shadow-md"
+                        >
+                          {keyword}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Actions */}
+                  <div className="flex items-center justify-between mt-3 pt-3 border-t-2 border-gray-200 dark:border-slate-700">
+                    <div className="flex items-center gap-4 text-xs text-gray-600 dark:text-gray-400 font-medium">
+                      <span className="flex items-center gap-1 bg-gray-100 dark:bg-slate-700 px-2 py-1 rounded">
+                        ⬇️ {doc.downloads || 0} downloads
+                      </span>
+                      {doc.aiRelevance && doc.aiRelevance > 0 && (
+                        <span className="flex items-center gap-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-2 py-1 rounded">
+                          <Brain className="w-3 h-3" />
+                          Relevância IA: {doc.aiRelevance}
+                        </span>
+                      )}
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => window.open(doc.file_url, '_blank')}
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-sm rounded-lg font-bold transition-all shadow-lg hover:shadow-xl"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Visualizar
+                      </button>
+                      <button 
+                        onClick={() => {
+                          if (doc.file_url) {
+                            const link = document.createElement('a')
+                            link.href = doc.file_url
+                            link.download = doc.title
+                            link.click()
+                          } else {
+                            alert('URL do arquivo não disponível')
+                          }
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white text-sm rounded-lg font-bold transition-all shadow-lg hover:shadow-xl"
+                      >
+                        ⬇️ Baixar
+                      </button>
                     </div>
                   </div>
-                )}
-              </div>
-
-              {/* Document Content - Compact */}
-              <div className="p-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
-                {/* Title - Single line */}
-                <h3 className="text-sm font-semibold text-slate-800 dark:text-white mb-1 line-clamp-1">
-                  {doc.title}
-                </h3>
-                
-                {/* Author and Date in one line */}
-                <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
-                  <span>{doc.author || 'Autor não disponível'}</span>
-                  <span>{formatDate(doc.created_at || doc.uploadDate)}</span>
-                </div>
-
-                {/* Tags - Compact */}
-                <div className="flex flex-wrap gap-1 mb-2">
-                  {(doc.tags || doc.keywords || []).slice(0, 2).map((tag: string, index: number) => (
-                    <span
-                      key={index}
-                      className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs rounded"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Stats - Compact */}
-                <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
-                  <span>{formatFileSize(doc.file_size || doc.size)}</span>
-                  <span className="flex items-center">
-                    <span className="mr-1">⬇️</span>
-                    {doc.downloads || '0'}
-                  </span>
-                  <span className="flex items-center">
-                    <Star className="w-3 h-3 mr-0.5 text-yellow-500 fill-yellow-500" />
-                    {doc.rating || '4.8'}
-                  </span>
-                </div>
-
-                {/* Actions - Compact */}
-                <div className="flex space-x-1">
-                  <button className="flex-1 bg-primary-600 hover:bg-primary-700 text-slate-900 dark:text-white py-1.5 px-2 rounded text-xs transition-colors duration-200">
-                    Baixar
-                  </button>
-                  <button className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-1.5 px-2 rounded transition-colors duration-200">
-                    <Eye className="w-3 h-3" />
-                  </button>
                 </div>
               </div>
             </div>
@@ -485,13 +764,16 @@ const Library: React.FC = () => {
 
         {/* Empty State */}
         {filteredDocuments.length === 0 && (
-          <div className="text-center py-12">
-            <div className="w-16 h-16 text-gray-400 mx-auto mb-4 text-4xl">📁</div>
+          <div className="text-center py-12 border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-lg">
+            <div className="w-16 h-16 text-gray-400 mx-auto mb-4 text-5xl">📁</div>
             <h3 className="text-lg font-medium text-slate-900 dark:text-white dark:text-slate-100 mb-2">
               Nenhum documento encontrado
             </h3>
             <p className="text-gray-500 dark:text-gray-400">
               Tente ajustar os filtros ou fazer uma nova busca
+            </p>
+            <p className="text-xs text-purple-600 dark:text-purple-400 mt-2">
+              Ou faça upload de um novo documento para a base de conhecimento
             </p>
           </div>
         )}
@@ -509,22 +791,29 @@ const Library: React.FC = () => {
           </div>
           <div className="card p-6 text-center">
             <div className="w-8 h-8 text-green-600 mx-auto mb-2 text-2xl">⬇️</div>
-            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">15,234</div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">Downloads (Fictício)</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
+              {realDocuments.reduce((sum, doc: any) => sum + (doc.downloads || 0), 0)}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">Total de Downloads</div>
           </div>
           <div className="card p-6 text-center">
             <div className="w-8 h-8 text-purple-600 mx-auto mb-2 text-2xl">#</div>
             <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
-              {realDocuments.filter((d: any) => d.isLinkedToAI).length}
+              {realDocuments.filter((d: any) => d.isLinkedToAI === true).length}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-300">
-              {realDocuments.length > 0 ? 'Vinculados à IA' : 'Vinculados à IA (Fictício)'}
+              Vinculados à IA
             </div>
           </div>
           <div className="card p-6 text-center">
             <Star className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">4.8</div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">Avaliação Média (Fictício)</div>
+            <div className="text-2xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
+              {realDocuments.length > 0 
+                ? (realDocuments.reduce((sum: number, doc: any) => sum + (doc.aiRelevance || 0), 0) / realDocuments.length).toFixed(1)
+                : '0'
+              }
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">Relevância IA Média</div>
           </div>
         </div>
       </div>
