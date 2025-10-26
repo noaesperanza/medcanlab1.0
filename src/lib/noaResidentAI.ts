@@ -274,9 +274,12 @@ RESPOSTAS:
           0.95
         )
       } else if (this.assessmentStep === 4) {
-        // Após resposta sobre o que mais incomoda, gerar relatório
+        // Após resposta sobre o que mais incomoda, finalizar avaliação inicial
         this.assessmentState = 'completed'
-        return this.completeAssessment()
+        return this.createResponse(
+          'Obrigado por compartilhar essas informações comigo. Agora tenho uma visão inicial do que você está passando. Um profissional médico poderá continuar com uma avaliação mais detalhada quando necessário.',
+          0.95
+        )
       } else {
         // Continuar perguntando "o que mais"
         return this.createResponse(
