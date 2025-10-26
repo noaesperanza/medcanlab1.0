@@ -210,15 +210,21 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
                 <p className="text-sm text-slate-400 mb-4">
                   Sou a Nôa Esperança, IA Residente da plataforma.
                 </p>
-                <div className="bg-slate-700/50 rounded-lg p-3 text-left">
-                  <p className="text-xs text-slate-300 mb-2">Posso ajudar com:</p>
-                  <ul className="text-xs text-slate-400 space-y-1">
-                    <li>• Status da plataforma</li>
-                    <li>• Simulações de pacientes</li>
-                    <li>• Informações sobre funcionalidades</li>
-                    <li>• Histórico de conversas</li>
-                  </ul>
-                </div>
+                                 <div className="bg-slate-700/50 rounded-lg p-3 text-left">
+                   <p className="text-xs text-slate-300 mb-2">Posso ajudar com:</p>
+                   <ul className="text-xs text-slate-400 space-y-1">
+                     <li>• Perguntas sobre a plataforma</li>
+                     <li>• Informações sobre tratamentos</li>
+                     <li>• Dúvidas sobre funcionalidades</li>
+                     <li>• Orientações gerais de saúde</li>
+                   </ul>
+                   <button
+                     onClick={() => navigate('/app/clinical-assessment')}
+                     className="mt-3 w-full px-3 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded transition-colors font-semibold text-xs"
+                   >
+                     🏥 Iniciar Avaliação Clínica IMRE
+                   </button>
+                 </div>
               </div>
             ) : (
               messages.map((message, index) => (
@@ -283,28 +289,6 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
                 ) : (
                   <Send className="w-5 h-5" />
                 )}
-              </button>
-            </div>
-            
-            {/* Quick Commands */}
-            <div className="mt-2 flex flex-wrap gap-2">
-              <button
-                onClick={() => navigate('/app/clinical-assessment')}
-                className="text-xs px-2 py-1 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded transition-colors font-semibold"
-              >
-                🏥 Iniciar Avaliação Clínica
-              </button>
-              <button
-                onClick={() => navigate('/app/library')}
-                className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors"
-              >
-                📚 Biblioteca
-              </button>
-              <button
-                onClick={() => navigate('/app/reports')}
-                className="text-xs px-2 py-1 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded transition-colors"
-              >
-                📊 Relatórios
               </button>
             </div>
           </div>
