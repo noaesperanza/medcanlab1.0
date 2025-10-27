@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   ArrowLeft, 
   Calendar, 
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react'
 
 const PatientAgenda: React.FC = () => {
+  const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [viewMode, setViewMode] = useState<'day' | 'week' | 'month'>('week')
 
@@ -89,7 +91,10 @@ const PatientAgenda: React.FC = () => {
       <div className="bg-slate-800 border-b border-slate-700 p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors">
+            <button 
+              onClick={() => navigate('/app/patient-dashboard')}
+              className="flex items-center space-x-2 text-slate-300 hover:text-white transition-colors"
+            >
               <ArrowLeft className="w-5 h-5" />
               <span>Voltar</span>
             </button>
