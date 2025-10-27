@@ -34,7 +34,7 @@ const Header: React.FC = () => {
     switch (user.type) {
       case 'patient':
         return [
-          { name: '🏠 Dashboard', href: '/app/dashboard' },
+          { name: '🏠 Dashboard', href: '/app/patient-dashboard' },
           { name: '🤖 Avaliação com Nôa', href: '/pre-anamnese' },
           { name: '📊 Meus Relatórios', href: '/app/reports' },
           { name: '💬 Chat com Médico', href: '/app/patient-chat' },

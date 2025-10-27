@@ -22,9 +22,11 @@ import {
   MicOff
 } from 'lucide-react'
 import { useNoa } from '../contexts/NoaContext'
+import { useAuth } from '../contexts/AuthContext'
 import NoaEsperancaAvatar from '../components/NoaEsperancaAvatar'
 
 const PatientDashboard: React.FC = () => {
+  const { user } = useAuth()
   const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
   const [inputMessage, setInputMessage] = useState('')
   const navigate = useNavigate()
@@ -93,10 +95,10 @@ const PatientDashboard: React.FC = () => {
           {/* User Profile */}
           <div className="flex items-center space-x-3 bg-slate-700 p-3 rounded-lg">
             <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-              <span className="text-white font-bold">RV</span>
+              <span className="text-white font-bold">{user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'P'}</span>
             </div>
             <div>
-              <p className="font-semibold text-white">Dr. Ricardo Valença</p>
+              <p className="font-semibold text-white">{user?.name || 'Paciente'}</p>
               <p className="text-sm text-slate-400">Paciente</p>
             </div>
           </div>
@@ -216,10 +218,10 @@ const PatientDashboard: React.FC = () => {
                     <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                          <span className="text-white font-bold">RV</span>
+                          <span className="text-white font-bold">{user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'P'}</span>
                         </div>
                         <div>
-                          <p className="font-semibold text-white">Dr. Ricardo Valença</p>
+                          <p className="font-semibold text-white">{user?.name || 'Paciente'}</p>
                           <p className="text-sm text-slate-400">Cannabis Medicinal & Nefrologia</p>
                         </div>
                       </div>
