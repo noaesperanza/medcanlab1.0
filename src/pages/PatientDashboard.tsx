@@ -28,6 +28,9 @@ import NoaEsperancaAvatar from '../components/NoaEsperancaAvatar'
 const PatientDashboard: React.FC = () => {
   const { user } = useAuth()
   const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
+  
+  // Debug temporário
+  console.log('🏥 PatientDashboard - RENDERIZADO! User:', user?.name, 'Type:', user?.type)
   const [inputMessage, setInputMessage] = useState('')
   const navigate = useNavigate()
   const messagesEndRef = useRef<HTMLDivElement>(null)

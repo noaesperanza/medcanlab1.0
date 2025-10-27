@@ -45,6 +45,9 @@ const ProfessionalDashboard: React.FC = () => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false)
   const [isAudioCallOpen, setIsAudioCallOpen] = useState(false)
   const [callType, setCallType] = useState<'video' | 'audio'>('video')
+  
+  // Debug temporário
+  console.log('👨‍⚕️ ProfessionalDashboard - RENDERIZADO! User:', user?.name, 'Type:', user?.type)
 
   // Buscar pacientes do banco de dados
   useEffect(() => {
