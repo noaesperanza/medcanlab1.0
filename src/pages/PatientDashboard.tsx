@@ -67,6 +67,21 @@ const PatientDashboard: React.FC = () => {
     navigate('/app/reports')
   }
 
+  // Função para iniciar avaliação clínica inicial
+  const handleStartClinicalAssessment = async () => {
+    // Abrir o chat da IA se não estiver aberto
+    if (!isOpen) {
+      toggleChat()
+    }
+    
+    // Aguardar um pouco para o chat abrir e então enviar o prompt
+    setTimeout(async () => {
+      const assessmentPrompt = `Olá Nôa! Gostaria de realizar uma Avaliação Clínica Inicial seguindo a metodologia da Arte da Entrevista Clínica aplicada à Cannabis Medicinal. Por favor, me guie através do processo de avaliação clínica inicial.`
+      
+      await sendMessage(assessmentPrompt)
+    }, 500)
+  }
+
   return (
     <div className="min-h-screen bg-slate-900 text-white">
       {/* Header */}
@@ -105,7 +120,7 @@ const PatientDashboard: React.FC = () => {
                   Realize uma avaliação clínica inicial com a IA residente para que os dados comecem a ser organizados e personalizados para você. Esta é a base para todo o seu cuidado personalizado.
                 </p>
                 <button 
-                  onClick={() => navigate('/pre-anamnese')}
+                  onClick={handleStartClinicalAssessment}
                   className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-lg shadow-lg"
                 >
                   Iniciar Avaliação com IA

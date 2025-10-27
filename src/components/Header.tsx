@@ -35,7 +35,7 @@ const Header: React.FC = () => {
       case 'patient':
         return [
           { name: '🏠 Dashboard', href: '/app/patient-dashboard' },
-          { name: '🤖 Avaliação com Nôa', href: '/pre-anamnese' },
+          { name: '🤖 Avaliação com Nôa', href: '/app/patient-dashboard' },
           { name: '📊 Meus Relatórios', href: '/app/reports' },
           { name: '💬 Chat com Médico', href: '/app/patient-chat' },
           { name: '👤 Meu Perfil', href: '/app/profile' },
