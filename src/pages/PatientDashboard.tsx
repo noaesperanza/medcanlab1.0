@@ -94,19 +94,19 @@ const PatientDashboard: React.FC = () => {
       <div className="p-6">
         <div className="max-w-6xl mx-auto">
           {/* Mensagem Inicial para Avaliação Clínica */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-6 mb-8 border border-blue-500/30">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                <Brain className="w-6 h-6 text-white" />
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 mb-8 border border-blue-500/30 shadow-lg">
+            <div className="flex items-center space-x-6">
+              <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                <Brain className="w-8 h-8 text-white" />
               </div>
-              <div>
-                <h2 className="text-xl font-bold text-white mb-2">🚀 Primeira Avaliação Clínica</h2>
-                <p className="text-white/90 mb-4">
-                  Realize uma avaliação clínica inicial com a IA residente para que os dados comecem a ser organizados e personalizados para você.
+              <div className="flex-1">
+                <h2 className="text-2xl font-bold text-white mb-3">🚀 Primeira Avaliação Clínica</h2>
+                <p className="text-white/90 mb-6 text-lg">
+                  Realize uma avaliação clínica inicial com a IA residente para que os dados comecem a ser organizados e personalizados para você. Esta é a base para todo o seu cuidado personalizado.
                 </p>
                 <button 
                   onClick={() => navigate('/pre-anamnese')}
-                  className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors"
+                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-lg shadow-lg"
                 >
                   Iniciar Avaliação com IA
                 </button>
@@ -167,7 +167,7 @@ const PatientDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Agenda Integrada */}
+              {/* Agenda - Só aparece após avaliação clínica */}
               <div className="bg-slate-800 rounded-xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-xl font-semibold text-white">📅 Minha Agenda</h3>
@@ -178,38 +178,12 @@ const PatientDashboard: React.FC = () => {
                     Ver agenda completa
                   </button>
                 </div>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold">{user?.name ? user.name.split(' ').map(n => n[0]).join('').slice(0, 2) : 'P'}</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-white">{user?.name || 'Paciente'}</p>
-                        <p className="text-sm text-slate-400">Cannabis Medicinal & Nefrologia</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-slate-400">14/12/2024</p>
-                      <p className="text-sm text-slate-400">10:00</p>
-                    </div>
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Calendar className="w-8 h-8 text-slate-400" />
                   </div>
-                  
-                  <div className="flex items-center justify-between p-4 bg-slate-700 rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold">EF</span>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-white">Dr. Eduardo Faveret</p>
-                        <p className="text-sm text-slate-400">Cannabis Medicinal & AEC</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-slate-400">19/12/2024</p>
-                      <p className="text-sm text-slate-400">14:30</p>
-                    </div>
-                  </div>
+                  <p className="text-slate-400 mb-2">Nenhuma consulta agendada</p>
+                  <p className="text-slate-500 text-sm">Complete sua avaliação clínica inicial para agendar consultas</p>
                 </div>
               </div>
 
