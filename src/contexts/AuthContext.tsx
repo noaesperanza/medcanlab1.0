@@ -96,32 +96,19 @@
                                         userName = session.user.user_metadata?.name || email.split('@')[0] || 'Usuário'
                                       }
                                       
-                                      // Debug: mostrar todos os metadados
-                                      console.log('🔍 Debug - Email:', email)
-                                      console.log('🔍 Debug - user_metadata:', session.user.user_metadata)
-                                      console.log('🔍 Debug - user_metadata.type:', session.user.user_metadata?.type)
-                                      console.log('🔍 Debug - user_metadata.user_type:', session.user.user_metadata?.user_type)
-                                      console.log('🔍 Debug - user_metadata.role:', session.user.user_metadata?.role)
-                                      
                                       // SOLUÇÃO TEMPORÁRIA: Forçar admin para Ricardo
                                       if (email.includes('ricardo') || email.includes('rrvlenca') || email.includes('profrvalenca') || email.includes('valenca')) {
                                         userType = 'admin'
-                                        console.log('🔧 FORÇANDO tipo admin para Ricardo:', userType)
                                       } else if (session.user.user_metadata?.type) {
                                         userType = session.user.user_metadata.type
-                                        console.log('✅ Tipo encontrado em user_metadata.type:', userType)
                                       } else if (session.user.user_metadata?.user_type) {
                                         userType = session.user.user_metadata.user_type
-                                        console.log('✅ Tipo encontrado em user_metadata.user_type:', userType)
                                       } else if (session.user.user_metadata?.role) {
                                         userType = session.user.user_metadata.role
-                                        console.log('✅ Tipo encontrado em user_metadata.role:', userType)
                                       } else if (email.includes('admin') || email.includes('philip')) {
                                         userType = 'admin'
-                                        console.log('✅ Tipo determinado por email:', userType)
                                       } else {
                                         // FALLBACK: Se não encontrar tipo, usar 'patient' como padrão
-                                        console.warn('⚠️ Tipo não encontrado, usando "patient" como padrão')
                                         userType = 'patient'
                                       }
                                       
