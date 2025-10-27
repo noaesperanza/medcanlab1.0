@@ -6,6 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 import Sidebar from './Sidebar'
 import { NoaPlatformChat } from './NoaPlatformChat'
+import UserTypeDebug from './UserTypeDebug'
 
 const Layout: React.FC = () => {
   const { user, isLoading } = useAuth()
@@ -68,6 +69,9 @@ const Layout: React.FC = () => {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-slate-900">
+        {/* Debug Component */}
+        <UserTypeDebug />
+        
         {/* Sidebar */}
         <Sidebar userType={user?.type} />
         
