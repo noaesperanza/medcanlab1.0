@@ -47,7 +47,7 @@ const AdminDashboard: React.FC = () => {
       descricao: 'Acesse cursos, incluindo Pós-Graduação em Cannabis Medicinal e Arte da Entrevista Clínica - Dr. Eduardo Faveret',
       cor: 'from-purple-600 to-pink-500',
       icone: GraduationCap,
-      rota: '/app/student-dashboard',
+      rota: '/app/aluno-dashboard',
       funcionalidades: [
         'Pós-Graduação Cannabis Medicinal',
         'Arte da Entrevista Clínica (AEC)',

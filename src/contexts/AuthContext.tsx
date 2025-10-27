@@ -96,6 +96,13 @@
                                         userName = session.user.user_metadata?.name || email.split('@')[0] || 'Usuário'
                                       }
                                       
+                                      // Debug: mostrar todos os metadados
+                                      console.log('🔍 Debug - Email:', email)
+                                      console.log('🔍 Debug - user_metadata:', session.user.user_metadata)
+                                      console.log('🔍 Debug - user_metadata.type:', session.user.user_metadata?.type)
+                                      console.log('🔍 Debug - user_metadata.user_type:', session.user.user_metadata?.user_type)
+                                      console.log('🔍 Debug - user_metadata.role:', session.user.user_metadata?.role)
+                                      
                                       // Verificar metadados para determinar tipo de usuário
                                       if (session.user.user_metadata?.type) {
                                         userType = session.user.user_metadata.type
@@ -106,7 +113,7 @@
                                       } else if (session.user.user_metadata?.role) {
                                         userType = session.user.user_metadata.role
                                         console.log('✅ Tipo encontrado em user_metadata.role:', userType)
-                                      } else if (email.includes('admin') || email.includes('philip')) {
+                                      } else if (email.includes('admin') || email.includes('philip') || email.includes('profrvalenca')) {
                                         userType = 'admin'
                                         console.log('✅ Tipo determinado por email:', userType)
                                       } else {
