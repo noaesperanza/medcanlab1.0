@@ -21,6 +21,9 @@ import AdminDashboard from './AdminDashboard'
 const Dashboard: React.FC = () => {
   const { user } = useAuth()
 
+  // Debug temporário
+  console.log('🔍 Dashboard - User type:', user?.type, 'User name:', user?.name)
+
   const getDashboardContent = () => {
     switch (user?.type) {
       case 'patient':

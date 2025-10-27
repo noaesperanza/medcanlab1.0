@@ -89,8 +89,8 @@
                                         userName = session.user.user_metadata?.name || email.split('@')[0] || 'Usuário'
                                       }
                                       
-                                      // SOLUÇÃO TEMPORÁRIA: Forçar admin para Ricardo
-                                      if (email.includes('ricardo') || email.includes('rrvlenca') || email.includes('profrvalenca') || email.includes('valenca')) {
+                                      // SOLUÇÃO TEMPORÁRIA: Forçar admin apenas para emails específicos
+                                      if (email === 'rrvalenca@gmail.com' || email === 'rrvlenca@gmail.com' || email === 'profrvalenca@gmail.com') {
                                         userType = 'admin'
                                       } else if (session.user.user_metadata?.type) {
                                         userType = session.user.user_metadata.type
