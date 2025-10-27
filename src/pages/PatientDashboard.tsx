@@ -67,18 +67,18 @@ const PatientDashboard: React.FC = () => {
     navigate('/app/reports')
   }
 
-  // Função para iniciar avaliação clínica inicial
+  // Função para iniciar avaliação clínica inicial com protocolo IMRE
   const handleStartClinicalAssessment = async () => {
     // Abrir o chat da IA se não estiver aberto
     if (!isOpen) {
       toggleChat()
     }
     
-    // Aguardar um pouco para o chat abrir e então enviar o prompt
+    // Aguardar um pouco para o chat abrir e então enviar o prompt específico para IMRE
     setTimeout(async () => {
-      const assessmentPrompt = `Olá Nôa! Gostaria de realizar uma Avaliação Clínica Inicial seguindo a metodologia da Arte da Entrevista Clínica aplicada à Cannabis Medicinal. Por favor, me guie através do processo de avaliação clínica inicial.`
+      const imrePrompt = `Olá Nôa! Sou ${user?.name || 'um paciente'} e gostaria de realizar uma Avaliação Clínica Inicial seguindo o protocolo IMRE (Investigação, Metodologia, Resultado, Evolução) da Arte da Entrevista Clínica aplicada à Cannabis Medicinal. Por favor, inicie o protocolo IMRE para minha avaliação clínica inicial e, ao final, gere um relatório clínico que será salvo no meu dashboard.`
       
-      await sendMessage(assessmentPrompt)
+      await sendMessage(imrePrompt)
     }, 500)
   }
 
@@ -108,8 +108,11 @@ const PatientDashboard: React.FC = () => {
       {/* Main Content */}
       <div className="p-6">
         <div className="max-w-6xl mx-auto">
-          {/* Mensagem Inicial para Avaliação Clínica */}
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 mb-8 border border-blue-500/30 shadow-lg">
+          {/* Mensagem Inicial para Avaliação Clínica - Card Clicável */}
+          <div 
+            onClick={handleStartClinicalAssessment}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl p-8 mb-8 border border-blue-500/30 shadow-lg cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all duration-300"
+          >
             <div className="flex items-center space-x-6">
               <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
                 <Brain className="w-8 h-8 text-white" />
@@ -117,14 +120,11 @@ const PatientDashboard: React.FC = () => {
               <div className="flex-1">
                 <h2 className="text-2xl font-bold text-white mb-3">🚀 Primeira Avaliação Clínica</h2>
                 <p className="text-white/90 mb-6 text-lg">
-                  Realize uma avaliação clínica inicial com a IA residente para que os dados comecem a ser organizados e personalizados para você. Esta é a base para todo o seu cuidado personalizado.
+                  Clique aqui para realizar uma avaliação clínica inicial com a IA residente seguindo o protocolo IMRE. Os dados serão organizados e personalizados para você. Esta é a base para todo o seu cuidado personalizado.
                 </p>
-                <button 
-                  onClick={handleStartClinicalAssessment}
-                  className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors text-lg shadow-lg"
-                >
+                <div className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold text-lg shadow-lg inline-block">
                   Iniciar Avaliação com IA
-                </button>
+                </div>
               </div>
             </div>
           </div>
