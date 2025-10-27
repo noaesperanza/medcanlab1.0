@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useNoa } from '../contexts/NoaContext'
 import { MessageCircle, X, Mic, MicOff, Volume2, VolumeX, Send } from 'lucide-react'
 
@@ -17,12 +17,24 @@ const NoaAvatar: React.FC = () => {
   } = useNoa()
 
   const [inputMessage, setInputMessage] = useState('')
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Função para rolar para o final das mensagens
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  // Efeito para rolar automaticamente quando há novas mensagens ou quando está digitando
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, isTyping])
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault()
     if (inputMessage.trim()) {
       sendMessage(inputMessage)
       setInputMessage('')
+      // Scroll será feito automaticamente pelo useEffect
     }
   }
 
@@ -60,7 +72,7 @@ const NoaAvatar: React.FC = () => {
               </div>
               <div>
                 <h3 className="font-semibold">Nôa Esperanza</h3>
-                <p className="text-xs opacity-90">IA Residente</p>
+                <p className="text-xs opacity-90">Assistente</p>
               </div>
             </div>
             <button
@@ -78,7 +90,7 @@ const NoaAvatar: React.FC = () => {
                 <div className="w-16 h-16 bg-primary-100 dark:bg-primary-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">👋</span>
                 </div>
-                <p className="text-sm">Olá! Sou a Nôa, sua assistente médica inteligente.</p>
+                <p className="text-sm">Olá! Sou a Nôa, sua assistente em cannabis medicinal.</p>
                 <p className="text-xs mt-1">Como posso ajudá-lo hoje?</p>
               </div>
             ) : (
@@ -117,6 +129,9 @@ const NoaAvatar: React.FC = () => {
                 </div>
               </div>
             )}
+            
+            {/* Referência para scroll automático */}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input */}

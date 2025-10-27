@@ -4,6 +4,11 @@
  * Assistant ID: asst_fN2Fk9fQ7JEyyFUIe50Fo9QD
  */
 
+import { getPatientDashboardAPI } from './patientDashboardAPI'
+import NoaCommandSystem from './noaCommandSystem'
+import { getResponsibilityTransferSystem } from './responsibilityTransferSystem'
+import { getFilePermissionTransferSystem } from './filePermissionTransferSystem'
+
 interface AssistantConfig {
   assistantId: string
   apiKey: string
@@ -23,6 +28,7 @@ interface MessageResponse {
 export class NoaAssistantIntegration {
   private config: AssistantConfig
   private threadId: string | null = null
+  private commandSystem: NoaCommandSystem
 
   constructor(config: Partial<AssistantConfig>) {
     this.config = {
@@ -30,6 +36,9 @@ export class NoaAssistantIntegration {
       apiKey: config.apiKey || (import.meta as any).env?.VITE_OPENAI_API_KEY || '',
       timeout: config.timeout || 30000
     }
+    
+    // Inicializar sistema de comandos
+    this.commandSystem = new NoaCommandSystem(this, getPatientDashboardAPI())
   }
 
   /**
@@ -301,6 +310,226 @@ export class NoaAssistantIntegration {
    */
   getConfig(): AssistantConfig {
     return { ...this.config }
+  }
+
+  /**
+   * Processar avaliação clínica inicial completa
+   * Inclui registro no dashboard e geração de NFT
+   */
+  async processInitialAssessment(
+    patientId: string,
+    patientName: string,
+    assessmentData: {
+      complaints: string[]
+      mainComplaint: string
+      symptoms: Record<string, any>
+      medicalHistory: string
+      familyHistory: string
+      medications: string
+      lifestyle: string
+    },
+    professionalId: string = 'DEV-001',
+    professionalName: string = 'Dr. Ricardo Valença'
+  ): Promise<{ reportId: string; nftHash: string; report: string }> {
+    try {
+      console.log('🏥 Processando avaliação clínica inicial completa...')
+
+      // Gerar relatório clínico estruturado
+      const report = this.generateClinicalReport(assessmentData, patientName)
+
+      // Registrar no dashboard do paciente
+      const dashboardAPI = getPatientDashboardAPI()
+      const { recordId, nftHash } = await dashboardAPI.processCompleteReport(
+        patientId,
+        patientName,
+        report,
+        professionalId,
+        professionalName
+      )
+
+      console.log('✅ Avaliação clínica processada:', { recordId, nftHash })
+
+      return {
+        reportId: recordId,
+        nftHash,
+        report
+      }
+    } catch (error) {
+      console.error('❌ Erro ao processar avaliação clínica:', error)
+      throw error
+    }
+  }
+
+  /**
+   * Gerar relatório clínico estruturado
+   */
+  private generateClinicalReport(assessmentData: any, patientName: string): string {
+    const timestamp = new Date().toLocaleString('pt-BR')
+    
+    return `
+# RELATÓRIO DE AVALIAÇÃO CLÍNICA INICIAL
+
+**Paciente:** ${patientName}
+**Data:** ${timestamp}
+**Tipo:** Avaliação Clínica Inicial - IMRE Triaxial
+
+## QUEIXAS PRINCIPAIS
+${assessmentData.complaints.map((complaint: string, index: number) => `${index + 1}. ${complaint}`).join('\n')}
+
+## QUEIXA PRINCIPAL
+${assessmentData.mainComplaint}
+
+## DESENVOLVIMENTO INDICIÁRIO
+${Object.entries(assessmentData.symptoms).map(([key, value]) => `- ${key}: ${value}`).join('\n')}
+
+## HISTÓRIA MÉDICA PRÉVIA
+${assessmentData.medicalHistory}
+
+## HISTÓRIA FAMILIAR
+${assessmentData.familyHistory}
+
+## MEDICAÇÕES E TRATAMENTOS
+${assessmentData.medications}
+
+## HÁBITOS DE VIDA
+${assessmentData.lifestyle}
+
+## OBSERVAÇÕES CLÍNICAS
+Avaliação realizada seguindo metodologia IMRE Triaxial e Arte da Entrevista Clínica.
+
+## RECOMENDAÇÕES
+- Investigação clínica detalhada
+- Exames complementares conforme indicação
+- Acompanhamento multidisciplinar
+- Continuidade do cuidado
+
+---
+*Relatório gerado pela IA Residente Nôa Esperança - MedCannLab*
+*Hash NFT: [será gerado automaticamente]*
+    `.trim()
+  }
+
+  /**
+   * Verificar se paciente tem relatórios anteriores
+   */
+  async getPatientHistory(patientId: string): Promise<any[]> {
+    try {
+      const dashboardAPI = getPatientDashboardAPI()
+      const records = await dashboardAPI.getPatientRecords(patientId)
+      return records
+    } catch (error) {
+      console.error('❌ Erro ao buscar histórico do paciente:', error)
+      return []
+    }
+  }
+
+  /**
+   * Processar comando especial da IA
+   */
+  async processSpecialCommand(command: string, context: any = {}): Promise<any> {
+    return await this.commandSystem.processCommand(command, context)
+  }
+
+  /**
+   * Obter comandos disponíveis
+   */
+  getAvailableCommands(): string[] {
+    return this.commandSystem.getAvailableCommands()
+  }
+
+  /**
+   * Transferir todas as responsabilidades do assistente
+   */
+  async transferAllResponsibilities(): Promise<any> {
+    try {
+      console.log('🔄 Nôa Esperança assumindo todas as responsabilidades...')
+      
+      const transferSystem = getResponsibilityTransferSystem()
+      const protocol = await transferSystem.transferAllResponsibilities()
+      
+      console.log('✅ Transferência completa realizada!')
+      console.log(`📊 Responsabilidades assumidas: ${protocol.responsibilities.length}`)
+      
+      return {
+        success: true,
+        message: 'Todas as responsabilidades foram transferidas com sucesso para Nôa Esperança',
+        data: {
+          protocol,
+          report: transferSystem.generateTransferReport()
+        }
+      }
+    } catch (error) {
+      console.error('❌ Erro na transferência:', error)
+      return {
+        success: false,
+        message: 'Erro ao transferir responsabilidades',
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
+      }
+    }
+  }
+
+  /**
+   * Obter status das responsabilidades
+   */
+  getResponsibilityStatus(): any {
+    const transferSystem = getResponsibilityTransferSystem()
+    return transferSystem.getTransferStatus()
+  }
+
+  /**
+   * Verificar se Nôa tem uma responsabilidade específica
+   */
+  hasResponsibility(responsibilityId: string): boolean {
+    const transferSystem = getResponsibilityTransferSystem()
+    return transferSystem.isResponsibilityTransferred(responsibilityId)
+  }
+
+  /**
+   * Transferir permissões de manipulação de arquivos
+   */
+  async transferFilePermissions(): Promise<any> {
+    try {
+      console.log('📁 Nôa Esperança assumindo permissões de manipulação de arquivos...')
+      
+      const fileTransferSystem = getFilePermissionTransferSystem()
+      const result = await fileTransferSystem.transferAllFilePermissions()
+      
+      console.log('✅ Permissões de arquivos transferidas!')
+      console.log(`📊 Operações: ${result.data.operations}`)
+      console.log(`📊 Permissões: ${result.data.permissions}`)
+      
+      return {
+        success: result.success,
+        message: result.message,
+        data: {
+          ...result.data,
+          report: fileTransferSystem.generateTransferReport()
+        }
+      }
+    } catch (error) {
+      console.error('❌ Erro na transferência de permissões de arquivos:', error)
+      return {
+        success: false,
+        message: 'Erro ao transferir permissões de arquivos',
+        error: error instanceof Error ? error.message : 'Erro desconhecido'
+      }
+    }
+  }
+
+  /**
+   * Verificar se Nôa tem permissão para manipular arquivos
+   */
+  hasFilePermission(operationId: string, permissionId: string): boolean {
+    const fileTransferSystem = getFilePermissionTransferSystem()
+    return fileTransferSystem.hasFilePermission(operationId, permissionId)
+  }
+
+  /**
+   * Obter status das permissões de arquivos
+   */
+  getFilePermissionStatus(): any {
+    const fileTransferSystem = getFilePermissionTransferSystem()
+    return fileTransferSystem.getPermissionSummary()
   }
 
   /**

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   ArrowLeft, 
@@ -16,15 +16,29 @@ import {
   Star,
   Activity,
   Target,
-  BarChart3
+  BarChart3,
+  Send,
+  Mic,
+  MicOff
 } from 'lucide-react'
 import { useNoa } from '../contexts/NoaContext'
-import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
+import NoaEsperancaAvatar from '../components/NoaEsperancaAvatar'
 
 const PatientDashboard: React.FC = () => {
   const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
   const [inputMessage, setInputMessage] = useState('')
   const navigate = useNavigate()
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  // Função para rolar para o final das mensagens
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  // Efeito para rolar automaticamente quando há novas mensagens ou quando está digitando
+  useEffect(() => {
+    scrollToBottom()
+  }, [messages, isTyping])
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
@@ -45,14 +59,7 @@ const PatientDashboard: React.FC = () => {
     navigate(path)
   }
 
-  const handleChatWithNoa = () => {
-    navigate('/app/chat-noa-esperanca')
-  }
 
-  const handleOpenNoaChatInPage = () => {
-    // Open chat in current page
-    toggleChat()
-  }
 
   const handleViewReports = () => {
     navigate('/app/reports')
@@ -113,10 +120,6 @@ const PatientDashboard: React.FC = () => {
                 <TrendingUp className="w-5 h-5" />
                 <span>Meus KPIs</span>
               </button>
-              <button onClick={handleChatWithNoa} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
-                <MessageCircle className="w-5 h-5" />
-                <span>Chat com Nôa</span>
-              </button>
               <button onClick={() => navigate('/app/subscription-plans')} className="w-full flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors text-left">
                 <Heart className="w-5 h-5" />
                 <span>Planos e Finanças</span>
@@ -156,18 +159,10 @@ const PatientDashboard: React.FC = () => {
             <div className="bg-gradient-to-r from-purple-600 to-pink-500 rounded-xl p-6 mb-8">
               <h2 className="text-2xl font-bold text-white mb-2">Meu Dashboard de Saúde</h2>
               <p className="text-white/90 mb-4">
-                Bem-vindo à Nôa Esperanza! Aqui você pode acompanhar sua jornada de cuidado personalizado, 
-                conversar com a IA residente e acessar seus relatórios clínicos.
+                Bem-vindo à Nôa Esperanza! Aqui você pode acompanhar sua jornada de cuidado personalizado e acessar seus relatórios clínicos.
               </p>
-              <button 
-                onClick={() => {
-                  navigate('/app/chat-noa-esperanca')
-                }}
-                className="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-              >
-                Iniciar Chat com Nôa
-              </button>
             </div>
+
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {/* KPIs Section */}
@@ -176,10 +171,10 @@ const PatientDashboard: React.FC = () => {
                 <div className="bg-slate-800 rounded-xl p-6">
                   <h3 className="text-xl font-semibold text-white mb-4">Score Clínico</h3>
                   <div className="flex items-center justify-between">
-                    <div className="text-4xl font-bold text-green-400">85/100</div>
-                    <div className="flex items-center space-x-2 text-green-400">
+                    <div className="text-4xl font-bold text-slate-400">--/100</div>
+                    <div className="flex items-center space-x-2 text-slate-400">
                       <TrendingUp className="w-5 h-5" />
-                      <span className="text-sm">↑ +5 desde última avaliação</span>
+                      <span className="text-sm">Aguardando avaliação</span>
                     </div>
                   </div>
                 </div>
@@ -189,28 +184,28 @@ const PatientDashboard: React.FC = () => {
                   <div className="bg-slate-800 rounded-xl p-6">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-lg font-semibold text-white">Adesão ao Tratamento</h4>
-                      <CheckCircle className="w-5 h-5 text-green-400" />
+                      <CheckCircle className="w-5 h-5 text-slate-400" />
                     </div>
-                    <div className="text-3xl font-bold text-green-400 mb-1">92%</div>
-                    <p className="text-sm text-green-400">Excelente!</p>
+                    <div className="text-3xl font-bold text-slate-400 mb-1">--%</div>
+                    <p className="text-sm text-slate-400">Aguardando dados</p>
                   </div>
 
                   <div className="bg-slate-800 rounded-xl p-6">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-lg font-semibold text-white">Melhoria dos Sintomas</h4>
-                      <Activity className="w-5 h-5 text-blue-400" />
+                      <Activity className="w-5 h-5 text-slate-400" />
                     </div>
-                    <div className="text-3xl font-bold text-blue-400 mb-1">78%</div>
-                    <p className="text-sm text-slate-400">Desde início do tratamento</p>
+                    <div className="text-3xl font-bold text-slate-400 mb-1">--%</div>
+                    <p className="text-sm text-slate-400">Aguardando avaliação</p>
                   </div>
 
                   <div className="bg-slate-800 rounded-xl p-6">
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="text-lg font-semibold text-white">Qualidade de Vida</h4>
-                      <Star className="w-5 h-5 text-yellow-400" />
+                      <Star className="w-5 h-5 text-slate-400" />
                     </div>
-                    <div className="text-3xl font-bold text-yellow-400 mb-1">88/100</div>
-                    <p className="text-sm text-yellow-400">↑ +12 este mês</p>
+                    <div className="text-3xl font-bold text-slate-400 mb-1">--/100</div>
+                    <p className="text-sm text-slate-400">Aguardando dados</p>
                   </div>
                 </div>
 
@@ -250,7 +245,10 @@ const PatientDashboard: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <button className="w-full mt-4 text-center text-purple-400 hover:text-purple-300 transition-colors">
+                  <button 
+                    onClick={() => handleViewAgenda()}
+                    className="w-full mt-4 text-center text-purple-400 hover:text-purple-300 transition-colors"
+                  >
                     Ver agenda completa
                   </button>
                 </div>
@@ -262,164 +260,11 @@ const PatientDashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Chat Section */}
-              <div className="lg:col-span-1">
-                <div className="bg-slate-800 rounded-xl p-6 h-full">
-                  <div className="text-center mb-6">
-                    <h3 className="text-xl font-semibold text-white mb-2">Nôa Esperanza</h3>
-                    <p className="text-sm text-slate-400">IA Residente • Sempre ativa</p>
-                  </div>
-
-                  {/* Avatar */}
-                  <div className="flex justify-center mb-6">
-                    <button onClick={handleChatWithNoa} className="cursor-pointer hover:opacity-80 transition-opacity">
-                      <NoaAnimatedAvatar
-                        isSpeaking={isSpeaking}
-                        isListening={isListening}
-                        size="md"
-                        showStatus={true}
-                      />
-                    </button>
-                  </div>
-
-                  {/* Welcome Message */}
-                  <div className="bg-slate-700 rounded-lg p-4 mb-4">
-                    <p className="text-sm text-slate-300 mb-2">
-                      🌬️ Bons ventos soprem. Sou Nôa Esperanza, sua IA Residente. Como posso apoiar você hoje?
-                    </p>
-                    <p className="text-xs text-slate-400 mb-2">Você pode:</p>
-                    <ul className="text-xs text-slate-400 space-y-1">
-                      <li>• Iniciar uma Avaliação Clínica</li>
-                      <li>• Fazer perguntas sobre a plataforma</li>
-                      <li>• Enviar documentos para análise</li>
-                    </ul>
-                    <div className="text-xs text-slate-500 mt-2">22:36</div>
-                  </div>
-
-                  {/* Quick Actions */}
-                  <div className="space-y-3 mb-6">
-                    <button 
-                      onClick={handleChatWithNoa}
-                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-purple-600 hover:to-pink-600 transition-colors"
-                    >
-                      Iniciar Chat com Nôa
-                    </button>
-                    <p className="text-xs text-slate-400 text-center">
-                      Inclui avaliação de risco renal integrada
-                    </p>
-                  </div>
-
-                  {/* Chat Input */}
-                  <div className="space-y-3">
-                    <div className="relative">
-                      <input
-                        type="text"
-                        value={inputMessage}
-                        onChange={(e) => setInputMessage(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Digite sua mensagem..."
-                        className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-purple-500"
-                      />
-                    </div>
-                    
-                    <p className="text-xs text-slate-500 text-center">
-                      Nôa utiliza AEC para escuta profunda e ética • LGPD Compliant
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Chat Modal */}
-      {isOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-slate-800 rounded-xl w-96 h-[600px] flex flex-col">
-            {/* Chat Header */}
-            <div className="p-4 border-b border-slate-700">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <Brain className="w-4 h-4 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-white">Nôa Esperança</h3>
-                    <p className="text-xs text-slate-400">IA Residente</p>
-                  </div>
-                </div>
-                <button
-                  onClick={toggleChat}
-                  className="text-slate-400 hover:text-white transition-colors"
-                >
-                  ×
-                </button>
-              </div>
-            </div>
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.length === 0 ? (
-                <div className="text-center text-slate-400 py-8">
-                  <Brain className="w-12 h-12 mx-auto mb-3 text-purple-400" />
-                  <p className="text-sm">Olá! Sou a Nôa Esperança, sua IA Residente.</p>
-                </div>
-              ) : (
-                messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[70%] px-4 py-2 rounded-lg text-sm ${
-                        message.type === 'user'
-                          ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white'
-                          : 'bg-slate-700 text-slate-100'
-                      }`}
-                    >
-                      {message.content}
-                    </div>
-                  </div>
-                ))
-              )}
-              
-              {isTyping && (
-                <div className="flex justify-start">
-                  <div className="bg-slate-700 px-4 py-2 rounded-lg">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" />
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }} />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Input */}
-            <div className="p-4 border-t border-slate-700">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Digite sua mensagem..."
-                  className="flex-1 px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:border-purple-500"
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={!inputMessage.trim()}
-                  className="p-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <MessageCircle className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

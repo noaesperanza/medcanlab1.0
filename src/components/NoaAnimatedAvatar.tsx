@@ -3,7 +3,7 @@ import { Bot, Mic, MicOff, Video, VideoOff, Volume2, VolumeX, Activity, Brain } 
 import { supabase } from '../lib/supabase'
 
 // Imagem padrão (fallback)
-const DEFAULT_AVATAR_URL = '/noa-avatar.png'
+const DEFAULT_AVATAR_URL = 'https://via.placeholder.com/200x200/8B5CF6/FFFFFF?text=N'
 
 // Helper para combinar classes
 const cn = (...classes: (string | undefined | null | false)[]): string => {
@@ -31,7 +31,7 @@ const NoaAnimatedAvatar: React.FC<NoaAnimatedAvatarProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isLipSyncActive, setIsLipSyncActive] = useState(false)
   const [pulseIntensity, setPulseIntensity] = useState(1)
-  const [avatarUrl, setAvatarUrl] = useState<string>(DEFAULT_AVATAR_URL)
+  const [avatarUrl, setAvatarUrl] = useState<string>('https://via.placeholder.com/200x200/8B5CF6/FFFFFF?text=N')
   const [pensando, setPensando] = useState(false)
   const [cameraAtiva, setCameraAtiva] = useState(false)
   const [somAtivo, setSomAtivo] = useState(true)
@@ -221,7 +221,7 @@ const NoaAnimatedAvatar: React.FC<NoaAnimatedAvatarProps> = ({
   }, [isListening])
 
   return (
-    <div className="relative w-full aspect-square max-w-md mx-auto">
+    <div className="relative w-48 h-48 mx-auto">
       <div 
         ref={avatarRef}
         className={cn(
@@ -248,9 +248,15 @@ const NoaAnimatedAvatar: React.FC<NoaAnimatedAvatarProps> = ({
               <img 
                 src={avatarUrl} 
                 alt="Nôa Esperanza" 
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover rounded-full"
                 onError={(e) => {
-                  console.error('❌ Erro ao carregar imagem do avatar')
+                  console.error('❌ Erro ao carregar imagem do avatar:', avatarUrl)
+                  // Fallback para uma imagem simples
+                  const target = e.target as HTMLImageElement
+                  target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjOEI1Q0Y2Ii8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTEwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iNDgiIGZvbnQtd2VpZ2h0PSJib2xkIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TjwvdGV4dD4KPC9zdmc+'
+                }}
+                onLoad={() => {
+                  console.log('✅ Imagem do avatar carregada com sucesso:', avatarUrl)
                 }}
               />
               

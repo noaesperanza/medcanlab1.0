@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, Loader2, Code, Route, Brain } from 'lucide-reac
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getNoaTrainingSystem } from '../lib/noaTrainingSystem'
 import { getNoaAssistantIntegration } from '../lib/noaAssistantIntegration'
+import { supabase } from '../lib/supabase'
 
 interface NoaPlatformChatProps {
   userCode?: string
@@ -34,6 +35,8 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
   
   const [assistantAvailable, setAssistantAvailable] = useState(false)
   const [currentMode, setCurrentMode] = useState<'assistant' | 'local'>('local')
+  const [avatarUrl, setAvatarUrl] = useState<string>('https://via.placeholder.com/200x200/8B5CF6/FFFFFF?text=N')
+  const [chatSize, setChatSize] = useState<'small' | 'medium' | 'large'>('medium')
 
   // Registrar usuário no sistema de treinamento
   useEffect(() => {
@@ -53,6 +56,40 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
       setCurrentMode(available ? 'assistant' : 'local')
     }
     checkAssistant()
+  }, [])
+
+  // Buscar avatar da Nôa no Supabase
+  useEffect(() => {
+    const fetchAvatarUrl = async () => {
+      try {
+        console.log('🔍 Buscando avatar da Nôa no Supabase...')
+        const { data, error } = await supabase.storage
+          .from('avatar')
+          .list('', {
+            limit: 1,
+            sortBy: { column: 'created_at', order: 'desc' }
+          })
+
+        if (error) {
+          console.warn('❌ Erro ao buscar avatar:', error)
+          return
+        }
+
+        if (data && data.length > 0) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('avatar')
+            .getPublicUrl(data[0].name)
+          
+          console.log('✅ Avatar da Nôa encontrado:', publicUrl)
+          const urlWithCache = `${publicUrl}?t=${Date.now()}`
+          setAvatarUrl(urlWithCache)
+        }
+      } catch (error) {
+        console.warn('❌ Erro ao buscar avatar da Nôa:', error)
+      }
+    }
+
+    fetchAvatarUrl()
   }, [])
 
   // Scroll para última mensagem
@@ -135,6 +172,30 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
     }
   }
 
+  const getSizeClasses = () => {
+    switch (chatSize) {
+      case 'small':
+        return 'w-80 h-[500px]'
+      case 'medium':
+        return 'w-96 h-[600px]'
+      case 'large':
+        return 'w-[500px] h-[700px]'
+      default:
+        return 'w-96 h-[600px]'
+    }
+  }
+
+  const toggleChatSize = () => {
+    setChatSize(prev => {
+      switch (prev) {
+        case 'small': return 'medium'
+        case 'medium': return 'large'
+        case 'large': return 'small'
+        default: return 'medium'
+      }
+    })
+  }
+
   const getPositionClasses = () => {
     switch (position) {
       case 'bottom-right':
@@ -158,33 +219,66 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
           onClick={() => setIsOpen(true)}
           className={`fixed ${getPositionClasses()} z-50 w-14 h-14 bg-gradient-to-r from-purple-600 to-pink-600 
             rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 
-            transition-all duration-300 flex items-center justify-center text-white`}
+            transition-all duration-300 flex items-center justify-center text-white overflow-hidden`}
           title="Chat com Nôa Esperança - Plataforma"
         >
-          <MessageCircle className="w-6 h-6" />
+          <img 
+            src={avatarUrl} 
+            alt="Nôa Esperança" 
+            className="w-full h-full object-cover rounded-full"
+            onError={(e) => {
+              console.warn('❌ Erro ao carregar avatar da Nôa, usando ícone padrão')
+              e.currentTarget.style.display = 'none'
+              e.currentTarget.nextElementSibling?.classList.remove('hidden')
+            }}
+          />
+          <MessageCircle className="w-6 h-6 hidden" />
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
-        <div className={`fixed ${getPositionClasses()} z-50 w-96 h-[600px] bg-slate-800 rounded-xl shadow-2xl flex flex-col border border-slate-700`}>
+        <div className={`fixed ${getPositionClasses()} z-50 ${getSizeClasses()} bg-slate-800 rounded-xl shadow-2xl flex flex-col border border-slate-700`}>
           {/* Header */}
           <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-t-xl flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <MessageCircle className="w-6 h-6 text-purple-600" />
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center overflow-hidden">
+                <img 
+                  src={avatarUrl} 
+                  alt="Nôa Esperança" 
+                  className="w-full h-full object-cover rounded-full"
+                  onError={(e) => {
+                    console.warn('❌ Erro ao carregar avatar da Nôa no header, usando ícone padrão')
+                    e.currentTarget.style.display = 'none'
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                  }}
+                />
+                <MessageCircle className="w-6 h-6 text-purple-600 hidden" />
               </div>
               <div>
                 <h3 className="font-bold text-white">Nôa Esperança</h3>
                 <p className="text-xs text-purple-100">IA Residente - Plataforma</p>
               </div>
             </div>
-            <button
-              onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={toggleChatSize}
+                className="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+                title={`Redimensionar chat (${chatSize})`}
+              >
+                <div className="w-5 h-5 flex items-center justify-center">
+                  {chatSize === 'small' && <div className="w-3 h-3 border border-white"></div>}
+                  {chatSize === 'medium' && <div className="w-4 h-4 border border-white"></div>}
+                  {chatSize === 'large' && <div className="w-5 h-5 border border-white"></div>}
+                </div>
+              </button>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Info Badge */}
@@ -203,8 +297,18 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-slate-800 to-slate-900">
             {messages.length === 0 ? (
               <div className="text-center py-8">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="w-8 h-8 text-white" />
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden">
+                  <img 
+                    src={avatarUrl} 
+                    alt="Nôa Esperança" 
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => {
+                      console.warn('❌ Erro ao carregar avatar da Nôa na mensagem inicial, usando ícone padrão')
+                      e.currentTarget.style.display = 'none'
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden')
+                    }}
+                  />
+                  <MessageCircle className="w-8 h-8 text-white hidden" />
                 </div>
                 <h4 className="text-white font-semibold mb-2">Olá, {userName}!</h4>
                 <p className="text-sm text-slate-400 mb-4">

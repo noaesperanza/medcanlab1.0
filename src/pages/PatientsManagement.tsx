@@ -87,7 +87,7 @@ const PatientsManagement: React.FC = () => {
   const mockPatients: Patient[] = [
     {
       id: '1',
-      name: 'Maria Silva',
+      name: 'Paulo Gonçalves',
       age: 45,
       months: 3,
       days: 15,
@@ -96,32 +96,13 @@ const PatientsManagement: React.FC = () => {
       code: '#PAT001',
       photo: '',
       specialty: 'Cannabis Medicinal',
-      clinic: 'Rio Bonito',
+      clinic: 'Consultório Dr. Ricardo Valença',
       room: 'Sala 1',
-      referringDoctor: 'Dr. João',
+      referringDoctor: 'Dr. Ricardo Valença',
       status: 'active',
       appointmentsCount: 4,
       absences: 0,
       servicesCount: 5
-    },
-    {
-      id: '2',
-      name: 'João Santos',
-      age: 52,
-      months: 0,
-      days: 10,
-      phone: '(21) 97654-3210',
-      cpf: '987.654.321-00',
-      code: '#PAT002',
-      photo: '',
-      specialty: 'Nefrologia',
-      clinic: 'Rio Bonito',
-      room: 'Sala 2',
-      referringDoctor: '',
-      status: 'active',
-      appointmentsCount: 8,
-      absences: 1,
-      servicesCount: 12
     }
   ]
 

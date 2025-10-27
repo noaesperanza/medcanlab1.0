@@ -6,17 +6,18 @@ import { NoaProvider } from './contexts/NoaContext'
 import { RealtimeProvider } from './contexts/RealtimeContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
+import SmartDashboardRedirect from './components/SmartDashboardRedirect'
 
 // Pages
 import Landing from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Courses from './pages/Courses'
+import StudyArea from './pages/StudyArea'
 import Library from './pages/Library'
 import ChatGlobal from './pages/ChatGlobal'
 import PatientChat from './pages/PatientChat'
 import ForumCasosClinicos from './pages/ForumCasosClinicos'
 import Gamificacao from './pages/Gamificacao'
-import PreAnamnese from './pages/PreAnamnese'
 import Profile from './pages/Profile'
 import AdminDashboardWrapper from './components/AdminDashboardWrapper'
 import ExperienciaPaciente from './pages/ExperienciaPaciente'
@@ -68,18 +69,18 @@ function App() {
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/termos-lgpd" element={<TermosLGPD />} />
-              <Route path="/pre-anamnese" element={<PreAnamnese />} />
               <Route path="/experiencia-paciente" element={<ExperienciaPaciente />} />
               <Route path="/curso-eduardo-faveret" element={<CursoEduardoFaveret />} />
               <Route path="/patient-onboarding" element={<PatientOnboarding />} />
               
               <Route path="/app" element={<Layout />}>
-                <Route index element={<Navigate to="dashboard" replace />} />
+                <Route index element={<SmartDashboardRedirect />} />
                 <Route path="home" element={<Dashboard />} />
                 <Route path="test" element={<TestPage />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
                 <Route path="courses" element={<Courses />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
+                <Route path="study-area" element={<StudyArea />} />
             <Route path="patient-dashboard" element={<PatientDashboard />} />
             <Route path="patient-agenda" element={<PatientAgenda />} />
             <Route path="patient-kpis" element={<PatientKPIs />} />

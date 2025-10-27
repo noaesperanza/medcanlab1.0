@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { useToast } from '../contexts/ToastContext'
 import { supabase } from '../lib/supabase'
+import LoginDebugPanel from '../components/LoginDebugPanel'
 import { 
   Stethoscope, 
   User, 
@@ -55,11 +56,29 @@ const Landing: React.FC = () => {
     }
   }
 
-  // Redirecionar quando o usuário fizer login
+  // Redirecionar quando o usuário fizer login baseado no tipo
   useEffect(() => {
     if (user && !authLoading) {
       console.log('🔄 Usuário logado detectado, redirecionando...', user.type)
-      navigate('/app/dashboard')
+      
+      // Redirecionar baseado no tipo de usuário
+      switch (user.type) {
+        case 'admin':
+          navigate('/app/dashboard')
+          break
+        case 'professional':
+          navigate('/app/professional-dashboard')
+          break
+        case 'patient':
+          navigate('/app/patient-dashboard')
+          break
+        case 'student':
+          navigate('/app/student-dashboard')
+          break
+        default:
+          console.warn('⚠️ Tipo de usuário não reconhecido:', user.type)
+          navigate('/app/dashboard')
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading])
@@ -102,11 +121,13 @@ const Landing: React.FC = () => {
       })
       // Redirecionar baseado no tipo de usuário
       if (registerData.userType === 'admin') {
-        navigate('/app/admin')
-      } else if (registerData.userType === 'patient') {
-        navigate('/patient-onboarding')
-      } else {
         navigate('/app/dashboard')
+      } else if (registerData.userType === 'patient') {
+        navigate('/app/patient-dashboard')
+      } else if (registerData.userType === 'student') {
+        navigate('/app/student-dashboard')
+      } else {
+        navigate('/app/professional-dashboard')
       }
     } catch (err) {
       error('Erro ao criar conta. Tente novamente.')
@@ -126,8 +147,7 @@ const Landing: React.FC = () => {
       await login(loginData.email, loginData.password)
       success('Login realizado com sucesso!')
       setLoginData({ email: '', password: '' })
-      // Redirecionar para dashboard após login
-      navigate('/app/dashboard')
+      // O redirecionamento será feito pelo useEffect quando o user for carregado
     } catch (err) {
       error('Erro ao fazer login. Verifique suas credenciais.')
     } finally {
@@ -685,6 +705,13 @@ const Landing: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Painel de Debug - Apenas em desenvolvimento */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 right-4 z-40 max-w-md">
+          <LoginDebugPanel />
+        </div>
+      )}
 
       {/* Modal de Login Admin */}
       {showAdminLogin && (

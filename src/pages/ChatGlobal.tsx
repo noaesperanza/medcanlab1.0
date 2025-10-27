@@ -714,7 +714,7 @@ const ChatGlobal: React.FC = () => {
       {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl font-bold text-white mb-2">
-          💬 Chat Global + Fórum Profissional
+          Fórum de Conselheiros em Inteligência artificial na saúde
         </h1>
         <p className="text-slate-300 text-lg">
           Conecte-se com colegas, participe de debates e compartilhe conhecimento
