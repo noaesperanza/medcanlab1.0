@@ -88,7 +88,7 @@
                                       const email = session.user.email || ''
                                       
                                       // Detectar nome baseado no email
-                                      if (email.includes('ricardo') || email.includes('rrvalenca')) {
+                                      if (email.includes('ricardo') || email.includes('rrvalenca') || email.includes('rrvlenca') || email.includes('profrvalenca') || email.includes('valenca')) {
                                         userName = 'Dr. Ricardo Valença'
                                       } else if (email.includes('eduardo') || email.includes('faveret')) {
                                         userName = 'Dr. Eduardo Faveret'
@@ -103,8 +103,11 @@
                                       console.log('🔍 Debug - user_metadata.user_type:', session.user.user_metadata?.user_type)
                                       console.log('🔍 Debug - user_metadata.role:', session.user.user_metadata?.role)
                                       
-                                      // Verificar metadados para determinar tipo de usuário
-                                      if (session.user.user_metadata?.type) {
+                                      // SOLUÇÃO TEMPORÁRIA: Forçar admin para Ricardo
+                                      if (email.includes('ricardo') || email.includes('rrvlenca') || email.includes('profrvalenca') || email.includes('valenca')) {
+                                        userType = 'admin'
+                                        console.log('🔧 FORÇANDO tipo admin para Ricardo:', userType)
+                                      } else if (session.user.user_metadata?.type) {
                                         userType = session.user.user_metadata.type
                                         console.log('✅ Tipo encontrado em user_metadata.type:', userType)
                                       } else if (session.user.user_metadata?.user_type) {
@@ -113,7 +116,7 @@
                                       } else if (session.user.user_metadata?.role) {
                                         userType = session.user.user_metadata.role
                                         console.log('✅ Tipo encontrado em user_metadata.role:', userType)
-                                      } else if (email.includes('admin') || email.includes('philip') || email.includes('profrvalenca')) {
+                                      } else if (email.includes('admin') || email.includes('philip')) {
                                         userType = 'admin'
                                         console.log('✅ Tipo determinado por email:', userType)
                                       } else {
