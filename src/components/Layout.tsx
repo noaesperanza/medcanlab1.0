@@ -66,6 +66,29 @@ const Layout: React.FC = () => {
     )
   }
 
+  // Layout específico para pacientes (sem sidebar externa)
+  if (user?.type === 'patient') {
+    return (
+      <ProtectedRoute>
+        <div className="min-h-screen bg-slate-900">
+          {/* Main Content - sem sidebar externa */}
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1 bg-slate-900" style={{ marginLeft: '2%', marginRight: '2%' }}>
+              <Breadcrumbs />
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+          
+          {/* Avatar Nôa Esperança */}
+          <NoaPlatformChat />
+        </div>
+      </ProtectedRoute>
+    )
+  }
+
+  // Layout padrão para outros tipos de usuário (com sidebar)
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-slate-900">
