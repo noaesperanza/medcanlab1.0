@@ -23,8 +23,8 @@ const Dashboard: React.FC = () => {
         return <PatientDashboard />
       case 'professional':
         return <ProfessionalDashboard />
-      case 'student':
-        return <StudentDashboard />
+      case 'aluno':
+        return <AlunoDashboard />
       case 'admin':
         return <AdminDashboard />
       default:

@@ -25,7 +25,7 @@ const Landing: React.FC = () => {
   const navigate = useNavigate()
   const { register, login, isLoading: authLoading, user } = useAuth()
   const { success, error } = useToast()
-  const [activeProfile, setActiveProfile] = useState<'professional' | 'patient' | 'student' | null>(null)
+  const [activeProfile, setActiveProfile] = useState<'professional' | 'patient' | 'aluno' | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [isLoginMode, setIsLoginMode] = useState(false)
@@ -72,8 +72,8 @@ const Landing: React.FC = () => {
         case 'patient':
           navigate('/app/patient-dashboard')
           break
-        case 'student':
-          navigate('/app/student-dashboard')
+        case 'aluno':
+          navigate('/app/aluno-dashboard')
           break
         default:
           console.warn('⚠️ Tipo de usuário não reconhecido:', user.type)
@@ -90,7 +90,7 @@ const Landing: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'professional' as 'patient' | 'professional' | 'admin' | 'student'
+    userType: 'professional' as 'patient' | 'professional' | 'admin' | 'aluno'
   })
   const [loginData, setLoginData] = useState({
     email: '',
@@ -124,9 +124,9 @@ const Landing: React.FC = () => {
         navigate('/app/dashboard')
       } else if (registerData.userType === 'patient') {
         navigate('/app/patient-dashboard')
-      } else if (registerData.userType === 'student') {
-        navigate('/app/student-dashboard')
-      } else {
+        } else if (registerData.userType === 'aluno') {
+          navigate('/app/aluno-dashboard')
+        } else {
         navigate('/app/professional-dashboard')
       }
     } catch (err) {
@@ -205,8 +205,8 @@ const Landing: React.FC = () => {
       ]
     },
     {
-      id: 'student',
-      title: 'Estudante',
+      id: 'aluno',
+      title: 'Aluno',
       subtitle: 'Formação Médica',
       icon: <GraduationCap className="w-8 h-8" />,
       color: 'from-green-400 to-green-500',

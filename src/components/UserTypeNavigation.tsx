@@ -13,8 +13,8 @@ import {
 } from 'lucide-react'
 
 interface UserTypeNavigationProps {
-  currentUserType: 'professional' | 'student' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa'
-  onUserTypeChange: (userType: 'professional' | 'student' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa') => void
+  currentUserType: 'professional' | 'aluno' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa'
+  onUserTypeChange: (userType: 'professional' | 'aluno' | 'patient' | 'admin' | 'clinica' | 'ensino' | 'pesquisa') => void
 }
 
 const UserTypeNavigation: React.FC<UserTypeNavigationProps> = ({

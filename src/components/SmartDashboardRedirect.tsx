@@ -17,8 +17,8 @@ const SmartDashboardRedirect: React.FC = () => {
       return <Navigate to="/app/professional-dashboard" replace />
     case 'patient':
       return <Navigate to="/app/patient-dashboard" replace />
-    case 'student':
-      return <Navigate to="/app/student-dashboard" replace />
+    case 'aluno':
+      return <Navigate to="/app/aluno-dashboard" replace />
     default:
       // Fallback para admin se tipo não reconhecido
       return <Navigate to="/app/dashboard" replace />

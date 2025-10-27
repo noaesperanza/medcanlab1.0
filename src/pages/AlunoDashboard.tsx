@@ -25,7 +25,7 @@ import {
 import { useNoa } from '../contexts/NoaContext'
 import NoaAnimatedAvatar from '../components/NoaAnimatedAvatar'
 
-const StudentDashboard: React.FC = () => {
+const AlunoDashboard: React.FC = () => {
   const navigate = useNavigate()
   const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
   const [inputMessage, setInputMessage] = useState('')
@@ -121,7 +121,7 @@ const StudentDashboard: React.FC = () => {
               <span>Voltar</span>
             </button>
             <div>
-              <h1 className="text-2xl font-bold text-white">Dashboard Acadêmico</h1>
+              <h1 className="text-2xl font-bold text-white">Dashboard do Aluno</h1>
               <p className="text-slate-400">Área de Ensino - Pós-Graduação Cannabis Medicinal</p>
             </div>
           </div>
@@ -417,4 +417,4 @@ const StudentDashboard: React.FC = () => {
   )
 }
 
-export default StudentDashboard
+export default AlunoDashboard

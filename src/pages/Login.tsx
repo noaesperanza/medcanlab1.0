@@ -16,16 +16,16 @@ const Login: React.FC = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    userType: 'professional' as 'patient' | 'professional' | 'admin' | 'student'
+    userType: 'professional' as 'patient' | 'professional' | 'admin' | 'aluno'
   })
 
   // Carregar tipo de usuário do localStorage
   useEffect(() => {
     const savedUserType = localStorage.getItem('selectedUserType');
-    if (savedUserType && ['patient', 'professional', 'admin', 'student'].includes(savedUserType)) {
+    if (savedUserType && ['patient', 'professional', 'admin', 'aluno'].includes(savedUserType)) {
       setFormData(prev => ({
         ...prev,
-        userType: savedUserType as 'patient' | 'professional' | 'admin' | 'student'
+        userType: savedUserType as 'patient' | 'professional' | 'admin' | 'aluno'
       }));
     }
   }, []);
@@ -44,8 +44,8 @@ const Login: React.FC = () => {
       description: 'Ferramentas clínicas e gestão de pacientes'
     },
     {
-      value: 'student',
-      label: 'Estudante',
+      value: 'aluno',
+      label: 'Aluno',
       icon: <GraduationCap className="w-5 h-5" />,
       description: 'Cursos e certificações médicas'
     },
