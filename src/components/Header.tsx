@@ -20,14 +20,14 @@ const Header: React.FC = () => {
     // Se for admin e estiver no modo admin, mostrar menu admin
     if (user.type === 'admin' && isAdminMode) {
       return [
-        { name: '💬 Chat Global + Fórum', href: '/app/chat' },
+        { name: '💬 Fórum de Conselheiros em IA na Saúde', href: '/app/chat' },
       ]
     }
     
     // Se for admin mas estiver no modo profissional, mostrar menu profissional
     if (user.type === 'admin' && !isAdminMode) {
       return [
-        { name: '💬 Chat Global + Fórum', href: '/app/chat' },
+        { name: '💬 Fórum de Conselheiros em IA na Saúde', href: '/app/chat' },
       ]
     }
     
@@ -42,7 +42,7 @@ const Header: React.FC = () => {
         ]
       case 'professional':
         return [
-          { name: '💬 Chat Global + Fórum', href: '/app/chat' },
+          { name: '💬 Fórum de Conselheiros em IA na Saúde', href: '/app/chat' },
         ]
       case 'student':
         return [

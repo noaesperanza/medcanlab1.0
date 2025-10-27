@@ -648,7 +648,7 @@ const ProfessionalDashboard: React.FC = () => {
                 className="flex items-center space-x-3 p-3 bg-purple-500/20 hover:bg-purple-500/30 rounded-lg transition-colors"
               >
                 <Users className="w-5 h-5 text-purple-400" />
-                <span className="text-white font-medium">Chat Global + Fórum</span>
+                <span className="text-white font-medium">Fórum de Conselheiros em IA na Saúde</span>
               </Link>
               <Link
                 to="/reports"

@@ -143,7 +143,7 @@ const PesquisaDashboard: React.FC = () => {
               </a>
               <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <MessageCircle className="w-5 h-5" />
-                <span>💬 Chat Global + Fórum</span>
+                <span>💬 Fórum de Conselheiros em IA na Saúde</span>
               </a>
               <a href="#" className="flex items-center space-x-3 p-3 rounded-lg text-slate-300 hover:bg-slate-700 hover:text-white transition-colors">
                 <FileText className="w-5 h-5" />

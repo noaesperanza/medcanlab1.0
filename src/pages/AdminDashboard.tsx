@@ -543,7 +543,7 @@ const AdminDashboard: React.FC = () => {
             className="bg-gradient-to-r from-cyan-500 to-blue-400 hover:from-cyan-600 hover:to-blue-500 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center space-x-3"
           >
             <MessageCircle className="w-6 h-6" />
-            <span>💬 Chat Global + Fórum</span>
+            <span>💬 Fórum de Conselheiros em IA na Saúde</span>
           </button>
         </div>
       </div>
