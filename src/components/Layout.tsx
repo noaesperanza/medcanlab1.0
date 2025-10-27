@@ -6,6 +6,7 @@ import Header from './Header'
 import Footer from './Footer'
 import Sidebar from './Sidebar'
 import { NoaPlatformChat } from './NoaPlatformChat'
+import Breadcrumbs from './Breadcrumbs'
 
 const Layout: React.FC = () => {
   const { user, isLoading } = useAuth()
@@ -77,6 +78,7 @@ const Layout: React.FC = () => {
           
           
           <main className="flex-1 bg-slate-900 lg:ml-4" style={{ marginLeft: '2%', marginRight: '2%' }}>
+            <Breadcrumbs />
             <Outlet />
           </main>
           <Footer />

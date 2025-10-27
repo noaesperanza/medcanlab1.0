@@ -7,6 +7,9 @@ import { RealtimeProvider } from './contexts/RealtimeContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import SmartDashboardRedirect from './components/SmartDashboardRedirect'
+import EixoRotaRedirect from './components/EixoRotaRedirect'
+import Breadcrumbs from './components/Breadcrumbs'
+import EixoSelector from './components/EixoSelector'
 
 // Pages
 import Landing from './pages/Landing'
@@ -72,6 +75,12 @@ function App() {
               <Route path="/experiencia-paciente" element={<ExperienciaPaciente />} />
               <Route path="/curso-eduardo-faveret" element={<CursoEduardoFaveret />} />
               <Route path="/patient-onboarding" element={<PatientOnboarding />} />
+              
+              {/* Rotas estruturadas por eixo e tipo */}
+              <Route path="/eixo/:eixo/tipo/:tipo" element={<EixoRotaRedirect />} />
+              
+              {/* Seletor de eixo */}
+              <Route path="/selecionar-eixo" element={<EixoSelector />} />
               
               <Route path="/app" element={<Layout />}>
                 <Route index element={<SmartDashboardRedirect />} />

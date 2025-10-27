@@ -434,6 +434,20 @@ const AdminDashboard: React.FC = () => {
             Como administrador, você tem acesso a todas as áreas do sistema. A <strong>Arte da Entrevista Clínica (AEC)</strong> é a metodologia que 
             permeia toda a plataforma, garantindo uma abordagem humanizada e ética no cuidado com Cannabis Medicinal.
           </p>
+          <div className="flex justify-center space-x-4 mt-6">
+            <button 
+              onClick={() => navigate('/selecionar-eixo')}
+              className="bg-gradient-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              🎯 Selecionar Área de Trabalho
+            </button>
+            <button 
+              onClick={() => navigate('/app/dashboard')}
+              className="bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+            >
+              📊 Dashboard Completo
+            </button>
+          </div>
         </div>
 
         {/* Areas Section */}
