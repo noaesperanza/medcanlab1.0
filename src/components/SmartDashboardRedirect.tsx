@@ -5,6 +5,9 @@ import { useAuth } from '../contexts/AuthContext'
 const SmartDashboardRedirect: React.FC = () => {
   const { user } = useAuth()
 
+  // Debug temporário
+  console.log('🔍 SmartDashboardRedirect - User type:', user?.type, 'User name:', user?.name)
+
   if (!user) {
     return <Navigate to="/" replace />
   }
