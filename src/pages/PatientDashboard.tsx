@@ -20,43 +20,16 @@ import {
   Mic,
   MicOff
 } from 'lucide-react'
-import { useNoa } from '../contexts/NoaContext'
 import { useAuth } from '../contexts/AuthContext'
-import NoaEsperancaAvatar from '../components/NoaEsperancaAvatar'
+import { useNoaPlatform } from '../contexts/NoaPlatformContext'
 
 const PatientDashboard: React.FC = () => {
   const { user } = useAuth()
-  const { isOpen, toggleChat, messages, isTyping, isListening, isSpeaking, sendMessage } = useNoa()
+  const { sendInitialMessage } = useNoaPlatform()
   
   // Debug temporário
   console.log('🏥 PatientDashboard - RENDERIZADO! User:', user?.name, 'Type:', user?.type)
-  const [inputMessage, setInputMessage] = useState('')
   const navigate = useNavigate()
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  // Função para rolar para o final das mensagens
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  // Efeito para rolar automaticamente quando há novas mensagens ou quando está digitando
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages, isTyping])
-
-  const handleSendMessage = () => {
-    if (inputMessage.trim()) {
-      sendMessage(inputMessage.trim())
-      setInputMessage('')
-    }
-  }
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
-  }
 
   // Navigation handlers
   const handleNavigate = (path: string) => {
@@ -68,18 +41,10 @@ const PatientDashboard: React.FC = () => {
   }
 
   // Função para iniciar avaliação clínica inicial com protocolo IMRE
-  const handleStartClinicalAssessment = async () => {
-    // Abrir o chat da IA se não estiver aberto
-    if (!isOpen) {
-      toggleChat()
-    }
+  const handleStartClinicalAssessment = () => {
+    const imrePrompt = `Olá Nôa! Sou ${user?.name || 'um paciente'} e gostaria de realizar uma Avaliação Clínica Inicial seguindo o protocolo IMRE (Investigação, Metodologia, Resultado, Evolução) da Arte da Entrevista Clínica aplicada à Cannabis Medicinal. Por favor, inicie o protocolo IMRE para minha avaliação clínica inicial e, ao final, gere um relatório clínico que será salvo no meu dashboard.`
     
-    // Aguardar um pouco para o chat abrir e então enviar o prompt específico para IMRE
-    setTimeout(async () => {
-      const imrePrompt = `Olá Nôa! Sou ${user?.name || 'um paciente'} e gostaria de realizar uma Avaliação Clínica Inicial seguindo o protocolo IMRE (Investigação, Metodologia, Resultado, Evolução) da Arte da Entrevista Clínica aplicada à Cannabis Medicinal. Por favor, inicie o protocolo IMRE para minha avaliação clínica inicial e, ao final, gere um relatório clínico que será salvo no meu dashboard.`
-      
-      await sendMessage(imrePrompt)
-    }, 500)
+    sendInitialMessage(imrePrompt)
   }
 
   return (

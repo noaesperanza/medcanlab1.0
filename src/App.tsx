@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { ToastProvider } from './contexts/ToastContext'
 import { NoaProvider } from './contexts/NoaContext'
+import { NoaPlatformProvider } from './contexts/NoaPlatformContext'
 import { RealtimeProvider } from './contexts/RealtimeContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
@@ -68,7 +69,8 @@ function App() {
           <AuthProvider>
             <ToastProvider>
               <NoaProvider>
-                <RealtimeProvider>
+                <NoaPlatformProvider>
+                  <RealtimeProvider>
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/termos-lgpd" element={<TermosLGPD />} />
@@ -219,7 +221,8 @@ function App() {
               
               <Route path="*" element={<NotFound />} />
             </Routes>
-                </RealtimeProvider>
+                  </RealtimeProvider>
+                </NoaPlatformProvider>
               </NoaProvider>
             </ToastProvider>
           </AuthProvider>

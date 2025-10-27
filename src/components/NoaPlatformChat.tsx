@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { getNoaTrainingSystem } from '../lib/noaTrainingSystem'
 import { getNoaAssistantIntegration } from '../lib/noaAssistantIntegration'
 import { supabase } from '../lib/supabase'
+import { useNoaPlatform } from '../contexts/NoaPlatformContext'
 
 interface NoaPlatformChatProps {
   userCode?: string
@@ -18,7 +19,8 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
   position = 'bottom-right',
   hideButton = false
 }) => {
-  const [isOpen, setIsOpen] = useState(hideButton) // Se hideButton for true, começa aberto
+  const { isOpen: contextIsOpen, closeChat, pendingMessage, clearPendingMessage } = useNoaPlatform()
+  const [isOpen, setIsOpen] = useState(hideButton || contextIsOpen) // Usar contexto ou prop
   const [inputMessage, setInputMessage] = useState('')
   const [messages, setMessages] = useState<Array<{
     role: 'user' | 'noa'
@@ -92,16 +94,30 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
     fetchAvatarUrl()
   }, [])
 
+  // Sincronizar com contexto
+  useEffect(() => {
+    setIsOpen(contextIsOpen)
+  }, [contextIsOpen])
+
+  // Processar mensagem pendente
+  useEffect(() => {
+    if (pendingMessage && isOpen) {
+      // Aguardar um pouco para o chat abrir completamente
+      setTimeout(async () => {
+        await handleSendMessageDirect(pendingMessage)
+        clearPendingMessage()
+      }, 500)
+    }
+  }, [pendingMessage, isOpen])
+
   // Scroll para última mensagem
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return
-
-    const userMessage = inputMessage.trim()
-    setInputMessage('')
+  const handleSendMessageDirect = async (message: string) => {
+    const userMessage = message.trim()
+    if (!userMessage) return
 
     // Adicionar mensagem do usuário
     const newUserMessage = {
@@ -163,6 +179,15 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
     } finally {
       setIsTyping(false)
     }
+  }
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim()) return
+
+    const userMessage = inputMessage.trim()
+    setInputMessage('')
+
+    await handleSendMessageDirect(userMessage)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -273,7 +298,10 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
                 </div>
               </button>
               <button
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  setIsOpen(false)
+                  closeChat()
+                }}
                 className="text-white hover:bg-white/20 rounded-full p-1 transition-colors"
               >
                 <X className="w-5 h-5" />
