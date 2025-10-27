@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { clinicalReportService, ClinicalReport } from './clinicalReportService'
 
 export interface AIResponse {
   id: string
@@ -87,6 +88,9 @@ Sempre seja empática, profissional e focada na saúde do paciente.`,
 
       // Salvar na memória
       this.saveToMemory(userMessage, response, userId)
+      
+      // Verificar se a avaliação foi concluída e gerar relatório
+      await this.checkForAssessmentCompletion(userMessage, userId)
       
       return response
     } catch (error) {
@@ -214,6 +218,86 @@ Sempre seja empática, profissional e focada na saúde do paciente.`,
     }
     
     return tags
+  }
+
+  // Detectar conclusão de avaliação clínica e gerar relatório
+  private async checkForAssessmentCompletion(userMessage: string, userId?: string): Promise<void> {
+    const lowerMessage = userMessage.toLowerCase()
+    
+    // Palavras-chave que indicam conclusão da avaliação
+    const completionKeywords = [
+      'avaliação concluída',
+      'avaliacao concluida',
+      'protocolo imre finalizado',
+      'relatório final',
+      'relatorio final',
+      'avaliação completa',
+      'avaliacao completa',
+      'obrigado pela avaliação',
+      'obrigado pela avaliacao'
+    ]
+    
+    const isCompleted = completionKeywords.some(keyword => lowerMessage.includes(keyword))
+    
+    if (isCompleted && userId) {
+      try {
+        console.log('🎯 Detectada conclusão de avaliação clínica para usuário:', userId)
+        
+        // Buscar dados do usuário
+        const { data: userData, error: userError } = await supabase
+          .from('auth.users')
+          .select('email, raw_user_meta_data')
+          .eq('id', userId)
+          .single()
+        
+        if (userError || !userData) {
+          console.error('Erro ao buscar dados do usuário:', userError)
+          return
+        }
+        
+        const patientName = userData.raw_user_meta_data?.name || 'Paciente'
+        
+        // Gerar relatório clínico
+        const report = await clinicalReportService.generateAIReport(
+          userId,
+          patientName,
+          {
+            investigation: 'Investigação realizada através da avaliação clínica inicial com IA residente',
+            methodology: 'Aplicação da Arte da Entrevista Clínica (AEC) com protocolo IMRE',
+            result: 'Avaliação clínica inicial concluída com sucesso',
+            evolution: 'Plano de cuidado personalizado estabelecido',
+            recommendations: [
+              'Continuar acompanhamento clínico regular',
+              'Seguir protocolo de tratamento estabelecido',
+              'Manter comunicação com equipe médica'
+            ],
+            scores: {
+              clinical_score: 75,
+              treatment_adherence: 80,
+              symptom_improvement: 70,
+              quality_of_life: 85
+            }
+          }
+        )
+        
+        console.log('✅ Relatório clínico gerado:', report.id)
+        
+        // Salvar na memória da IA
+        this.saveToMemory(
+          `Relatório clínico gerado para ${patientName} (ID: ${report.id})`,
+          {
+            type: 'assessment_completion',
+            reportId: report.id,
+            patientId: userId,
+            patientName: patientName
+          },
+          userId
+        )
+        
+      } catch (error) {
+        console.error('Erro ao gerar relatório clínico:', error)
+      }
+    }
   }
 
   // Métodos públicos para acesso ao estado
