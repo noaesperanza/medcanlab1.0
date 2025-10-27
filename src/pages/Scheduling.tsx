@@ -8,7 +8,6 @@ import {
   Users,
   CheckCircle,
   XCircle,
-  ArrowLeft,
   ChevronLeft,
   ChevronRight,
   Settings
@@ -221,12 +220,6 @@ const Scheduling: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/app/professional-dashboard')}
-                className="p-2 hover:bg-slate-700 rounded-lg transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5 text-white" />
-              </button>
               <div>
                 <h1 className="text-3xl font-bold text-white mb-2">Agendamento de Consultas</h1>
                 <p className="text-slate-400">Consulte nossos profissionais e agende sua consulta online</p>
