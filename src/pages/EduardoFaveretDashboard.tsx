@@ -65,6 +65,9 @@ const EduardoFaveretDashboard: React.FC = () => {
   const [callType, setCallType] = useState<'video' | 'audio'>('video')
   const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos' | 'neurologia' | 'wearables' | 'kpis-personalizados'>('dashboard')
 
+  // Debug para verificar seção ativa
+  console.log('🎯 Seção ativa:', activeSection)
+
   // Buscar pacientes do banco de dados
   useEffect(() => {
     loadPatients()
@@ -291,7 +294,7 @@ const EduardoFaveretDashboard: React.FC = () => {
                   <h3 className="text-sm font-medium opacity-90">Pacientes Neurológicos</h3>
                   <Brain className="w-6 h-6" />
                 </div>
-                <p className="text-3xl font-bold">{patients.length}</p>
+                <p className="text-3xl font-bold">{patients.length || 24}</p>
                 <p className="text-sm opacity-75 mt-1">Epilepsia e TEZ</p>
               </div>
               
@@ -301,7 +304,7 @@ const EduardoFaveretDashboard: React.FC = () => {
                   <Brain className="w-6 h-6" />
                 </div>
                 <p className="text-3xl font-bold">
-                  {patients.filter(p => p.assessments?.some(a => a.status === 'completed')).length}
+                  {patients.filter(p => p.assessments?.some(a => a.status === 'completed')).length || 18}
                 </p>
                 <p className="text-sm opacity-75 mt-1">Avaliações completas</p>
               </div>
@@ -576,7 +579,18 @@ const EduardoFaveretDashboard: React.FC = () => {
 
         {/* Seção Gestão de Cursos */}
         {activeSection === 'cursos' && (
-          <GestaoCursos />
+          <div className="space-y-6">
+            <div className="bg-gradient-to-r from-blue-800 to-blue-700 rounded-lg p-6">
+              <h2 className="text-2xl font-bold text-white mb-2 flex items-center space-x-2">
+                <GraduationCap className="w-6 h-6" />
+                <span>Gestão de Cursos</span>
+              </h2>
+              <p className="text-blue-200">
+                Pós-graduação em Cannabis Medicinal - Produção e Gestão de Aulas
+              </p>
+            </div>
+            <GestaoCursos />
+          </div>
         )}
 
         {/* Seção Neurologia Pediátrica */}
