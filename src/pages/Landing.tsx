@@ -328,12 +328,12 @@ const Landing: React.FC = () => {
             <div className="relative flex justify-center mb-8" style={{ transform: 'translateX(38%) translateY(103%) scale(1.44)' }}>
               <div className="relative">
                 <img 
-                  src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0xMiAyQzYuNDggMiAyIDYuNDggMiAxMnM0LjQ4IDEwIDEwIDEwIDEwLTQuNDggMTAtMTBTMTcuNTIgMiAxMiAyem0tMiAxNWwtNS01IDEuNDEtMS40MUwxMCAxNC4xN2w3LjU5LTcuNTlMMTkgOGwtOSA5eiIgZmlsbD0iIzAwQzE2QSIvPjwvc3ZnPg=="
+                  src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDMyMCAzMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTYwIiBjeT0iMTYwIiByPSIxNDAiIGZpbGw9IiMwMGMxNmEiIG9wYWNpdHk9IjAuMSIvPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2MCIgcj0iMTIwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGMxNmEiIHN0cm9rZS13aWR0aD0iNCIvPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE2MCIgcj0iODAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwYzE2YSIgc3Ryb2tlLXdpZHRoPSIzIiBvcGFjaXR5PSIwLjciLz48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNjAiIHI9IjQwIiBmaWxsPSIjMDBjMTZhIiBvcGFjaXR5PSIwLjMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjQ4IiBmaWxsPSIjMDBjMTZhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+4p2M8L3RleHQ+PC9zdmc+"
                   alt="Cérebro com IA" 
                   className="w-80 h-80 object-contain drop-shadow-2xl"
-                        style={{
-                          filter: 'drop-shadow(0 0 15px rgba(0, 193, 106, 0.2)) drop-shadow(0 0 30px rgba(255, 211, 61, 0.1)) brightness(1.1) contrast(1.1)' // Brilho equalizado com fundo
-                        }}
+                  style={{
+                    filter: 'drop-shadow(0 0 15px rgba(0, 193, 106, 0.2)) drop-shadow(0 0 30px rgba(255, 211, 61, 0.1)) brightness(1.1) contrast(1.1)'
+                  }}
                 />
               </div>
             </div>
