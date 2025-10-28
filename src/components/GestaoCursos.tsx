@@ -209,8 +209,8 @@ const GestaoCursos: React.FC<GestaoCursosProps> = ({ className = '' }) => {
     <div className={`space-y-6 ${className}`}>
       {/* Header */}
       <div className="bg-gradient-to-r from-blue-800 to-blue-700 rounded-lg p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 space-y-4 lg:space-y-0">
+          <div className="flex-1">
             <h2 className="text-2xl font-bold text-white mb-2 flex items-center space-x-2">
               <GraduationCap className="w-6 h-6" />
               <span>Gestão de Cursos</span>
@@ -221,7 +221,7 @@ const GestaoCursos: React.FC<GestaoCursosProps> = ({ className = '' }) => {
           </div>
           <button 
             onClick={() => setShowModal(true)}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors"
+            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors w-full lg:w-auto"
           >
             <Plus className="w-4 h-4" />
             <span>Novo Curso</span>
@@ -229,7 +229,7 @@ const GestaoCursos: React.FC<GestaoCursosProps> = ({ className = '' }) => {
         </div>
 
         {/* Tabs */}
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           {[
             { key: 'cursos', label: 'Cursos', icon: <BookOpen className="w-4 h-4" /> },
             { key: 'modulos', label: 'Módulos', icon: <FileText className="w-4 h-4" /> },
@@ -256,16 +256,16 @@ const GestaoCursos: React.FC<GestaoCursosProps> = ({ className = '' }) => {
         <div className="space-y-4">
           {cursos.map((curso) => (
             <div key={curso.id} className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-colors">
-              <div className="flex items-start space-x-4">
+              <div className="flex flex-col lg:flex-row lg:items-start space-y-4 lg:space-y-0 lg:space-x-4">
                 <img 
                   src={curso.thumbnail} 
                   alt={curso.titulo}
-                  className="w-20 h-20 rounded-lg object-cover"
+                  className="w-full lg:w-20 h-20 rounded-lg object-cover flex-shrink-0"
                 />
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-white text-lg font-semibold">{curso.titulo}</h3>
-                    <div className="flex items-center space-x-2">
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 space-y-2 sm:space-y-0">
+                    <h3 className="text-white text-lg font-semibold truncate">{curso.titulo}</h3>
+                    <div className="flex items-center space-x-2 flex-shrink-0">
                       <span className={`px-2 py-1 rounded text-xs ${getStatusColor(curso.status)}`}>
                         {getStatusText(curso.status)}
                       </span>
@@ -298,12 +298,12 @@ const GestaoCursos: React.FC<GestaoCursosProps> = ({ className = '' }) => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
                     <div className="text-slate-400 text-sm">
                       <p>Criado em: {new Date(curso.dataCriacao).toLocaleDateString('pt-BR')}</p>
                       <p>Última atualização: {new Date(curso.ultimaAtualizacao).toLocaleDateString('pt-BR')}</p>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 flex-wrap">
                       <button className="flex items-center space-x-1 px-3 py-1 bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 rounded-md transition-colors text-sm">
                         <Eye className="w-3 h-3" />
                         <span>Ver</span>
