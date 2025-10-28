@@ -24,7 +24,8 @@ import {
   Users,
   Heart,
   Brain,
-  Microscope
+  Microscope,
+  Activity
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { ClinicalAssessmentService } from '../lib/clinicalAssessmentService'
