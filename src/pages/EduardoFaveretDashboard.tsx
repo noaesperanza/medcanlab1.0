@@ -33,6 +33,9 @@ import VideoCall from '../components/VideoCall'
 import KPIDashboard from '../components/KPIDashboard'
 import Newsletter from '../components/Newsletter'
 import QuickPrescriptions from '../components/QuickPrescriptions'
+import EduardoScheduling from '../components/EduardoScheduling'
+import CoordenacaoMedica from '../components/CoordenacaoMedica'
+import GestaoCursos from '../components/GestaoCursos'
 
 interface Patient {
   id: string
@@ -56,7 +59,7 @@ const EduardoFaveretDashboard: React.FC = () => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false)
   const [isAudioCallOpen, setIsAudioCallOpen] = useState(false)
   const [callType, setCallType] = useState<'video' | 'audio'>('video')
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching'>('dashboard')
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos'>('dashboard')
 
   // Buscar pacientes do banco de dados
   useEffect(() => {
@@ -204,15 +207,37 @@ const EduardoFaveretDashboard: React.FC = () => {
               <span>Publicações</span>
             </button>
             <button
-              onClick={() => setActiveSection('prescriptions')}
+              onClick={() => setActiveSection('scheduling')}
               className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
-                activeSection === 'prescriptions' 
-                  ? 'bg-red-600 text-white' 
+                activeSection === 'scheduling' 
+                  ? 'bg-emerald-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
               }`}
             >
-              <FileText className="w-4 h-4" />
-              <span>Protocolos</span>
+              <Calendar className="w-4 h-4" />
+              <span>Agendamento</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('coordenacao')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'coordenacao' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-green-700 text-green-200 hover:bg-green-600'
+              }`}
+            >
+              <Users className="w-4 h-4" />
+              <span>Coordenação</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('cursos')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'cursos' 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-green-700 text-green-200 hover:bg-green-600'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Cursos</span>
             </button>
           </div>
         </div>
@@ -500,6 +525,21 @@ const EduardoFaveretDashboard: React.FC = () => {
         {/* Seção Prescrições */}
         {activeSection === 'prescriptions' && (
           <QuickPrescriptions />
+        )}
+
+        {/* Seção Agendamento */}
+        {activeSection === 'scheduling' && (
+          <EduardoScheduling />
+        )}
+
+        {/* Seção Coordenação Médica */}
+        {activeSection === 'coordenacao' && (
+          <CoordenacaoMedica />
+        )}
+
+        {/* Seção Gestão de Cursos */}
+        {activeSection === 'cursos' && (
+          <GestaoCursos />
         )}
       </div>
 
