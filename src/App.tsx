@@ -88,6 +88,7 @@ function App() {
               
               <Route path="/app" element={<Layout />}>
                 <Route index element={<RedirectIndividualizado />} />
+                <Route path="dashboard" element={<Dashboard />} />
                 <Route path="home" element={<Dashboard />} />
                 <Route path="test" element={<TestPage />} />
                 <Route path="eduardo-faveret-dashboard" element={<EduardoFaveretDashboard />} />

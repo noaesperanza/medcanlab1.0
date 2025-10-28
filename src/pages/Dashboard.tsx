@@ -25,17 +25,38 @@ const Dashboard: React.FC = () => {
   console.log('🔍 Dashboard - User type:', user?.type, 'User name:', user?.name)
 
   const getDashboardContent = () => {
+    console.log('🔍 Dashboard - Renderizando conteúdo para tipo:', user?.type)
     switch (user?.type) {
       case 'patient':
+        console.log('🎯 Renderizando PatientDashboard')
         return <PatientDashboard />
       case 'professional':
+        console.log('🎯 Renderizando ProfessionalDashboard')
         return <ProfessionalDashboard />
       case 'aluno':
+        console.log('🎯 Renderizando AlunoDashboard')
         return <AlunoDashboard />
       case 'admin':
+        console.log('🎯 Renderizando AdminDashboard')
         return <AdminDashboard />
       default:
-        return <DefaultDashboard />
+        console.log('⚠️ Tipo não reconhecido, renderizando DefaultDashboard')
+        return (
+          <div className="text-center py-12">
+            <h1 className="text-3xl font-bold text-white mb-4">
+              Bem-vindo ao MedCannLab 3.0
+            </h1>
+            <p className="text-slate-300 mb-8">
+              Faça login para acessar seu dashboard personalizado
+            </p>
+            <Link
+              to="/login"
+              className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
+            >
+              Fazer Login
+            </Link>
+          </div>
+        )
     }
   }
 
@@ -52,23 +73,5 @@ const Dashboard: React.FC = () => {
 
 
 
-const DefaultDashboard: React.FC = () => {
-  return (
-    <div className="text-center py-12">
-      <h1 className="text-3xl font-bold text-white mb-4">
-        Bem-vindo ao MedCannLab 3.0
-      </h1>
-      <p className="text-slate-300 mb-8">
-        Faça login para acessar seu dashboard personalizado
-      </p>
-      <Link
-        to="/login"
-        className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
-      >
-        Fazer Login
-      </Link>
-    </div>
-  )
-}
 
 export default Dashboard

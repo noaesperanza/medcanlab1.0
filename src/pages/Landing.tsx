@@ -226,10 +226,10 @@ const Landing: React.FC = () => {
   ]
 
   const partners = [
-    { name: 'Hospital São Paulo', logo: '/api/placeholder/120/60', type: 'Hospital' },
-    { name: 'Clínica MedCann', logo: '/api/placeholder/120/60', type: 'Clínica' },
-    { name: 'Universidade Federal', logo: '/api/placeholder/120/60', type: 'Universidade' },
-    { name: 'Instituto de Pesquisa', logo: '/api/placeholder/120/60', type: 'Pesquisa' }
+    { name: 'Hospital São Paulo', logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjOEI1Q0Y2Ii8+Cjx0ZXh0IHg9IjYwIiB5PSIzNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKdpDwvdGV4dD4KPC9zdmc+', type: 'Hospital' },
+    { name: 'Clínica MedCann', logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjOEI1Q0Y2Ii8+Cjx0ZXh0IHg9IjYwIiB5PSIzNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKdpDwvdGV4dD4KPC9zdmc+', type: 'Clínica' },
+    { name: 'Universidade Federal', logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjOEI1Q0Y2Ii8+Cjx0ZXh0IHg9IjYwIiB5PSIzNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKdpDwvdGV4dD4KPC9zdmc+', type: 'Universidade' },
+    { name: 'Instituto de Pesquisa', logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiB2aWV3Qm94PSIwIDAgMTIwIDYwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cmVjdCB3aWR0aD0iMTIwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjOEI1Q0Y2Ii8+Cjx0ZXh0IHg9IjYwIiB5PSIzNSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPuKdpDwvdGV4dD4KPC9zdmc+', type: 'Pesquisa' }
   ]
 
   const stats = [
@@ -328,8 +328,8 @@ const Landing: React.FC = () => {
             <div className="relative flex justify-center mb-8" style={{ transform: 'translateX(38%) translateY(103%) scale(1.44)' }}>
               <div className="relative">
                 <img 
-                  src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIwIiBoZWlnaHQ9IjMyMCIgdmlld0JveD0iMCAwIDMyMCAzMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PCEtLSBDw6lyZWJybyAtLT48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNDAiIHI9IjgwIiBmaWxsPSIjMDBjMTZhIiBvcGFjaXR5PSIwLjIiLz48Y2lyY2xlIGN4PSIxNjAiIGN5PSIxNDAiIHI9IjYwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGMxNmEiIHN0cm9rZS13aWR0aD0iNCIvPjxjaXJjbGUgY3g9IjE2MCIgY3k9IjE0MCIgcj0iNDAiIGZpbGw9IiMwMGMxNmEiIG9wYWNpdHk9IjAuMyIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMzIiIGZpbGw9IiMwMGMxNmEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7inYw8L3RleHQ+PCEtLSBSaW0gLS0+PGVsbGlwc2UgY3g9IjEwMCIgY3k9IjIwMCIgcng9IjMwIiByeT0iNDUiIGZpbGw9IiMwMGMxNmEiIG9wYWNpdHk9IjAuMiIvPjxlbGxpcHNlIGN4PSIxMDAiIGN5PSIyMDAiIHJ4PSIyMCIgcnk9IjMwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGMxNmEiIHN0cm9rZS13aWR0aD0iNCIvPjx0ZXh0IHg9IjMxJSIgeT0iNjIlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZpbGw9IiMwMGMxNmEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj7wn5GAPC90ZXh0PjwhLS0gRm9saGEgZGUgQ2FubmFiaXMgLS0+PHBhdGggZD0iTTIyMCAxODAgUTIyMCAxNjAgMjQwIDE2MCBRMjYwIDE2MCAyNjAgMTgwIFEyNjAgMjAwIDI0MCAyMDAgUTIyMCAyMDAgMjIwIDE4MCBaIiBmaWxsPSIjMDBjMTZhIiBvcGFjaXR5PSIwLjIiLz48cGF0aCBkPSJNMjIwIDE4MCBRMjIwIDE2MCAyNDAgMTYwIFEyNjAgMTYwIDI2MCAxODAgIFEyNjAgMjAwIDI0MCAyMDAgUTIyMCAyMDAgMjIwIDE4MCBaIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGMxNmEiIHN0cm9rZS13aWR0aD0iNCIvLz48cGF0aCBkPSJNMjMwIDE3MCBRMjMwIDE1MCAyNDAgMTUwIFEyNTAgMTUwIDI1MCAxNzAgIFEyNTAgMTkwIDI0MCAxOTAgUTIzMCAxOTAgMjMwIDE3MCBaIiBmaWxsPSIjMDBjMTZhIiBvcGFjaXR5PSIwLjMiLz48dGV4dCB4PSI3MiUiIHk9IjYyJSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjI0IiBmaWxsPSIjMDBjMTZhIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+8J+QjzwvdGV4dD48L3N2Zz4="
-                  alt="Cérebro, Rim e Cannabis - MedCannLab" 
+                  src="/brain.png" 
+                  alt="Cérebro com IA" 
                   className="w-80 h-80 object-contain drop-shadow-2xl"
                   style={{
                     filter: 'drop-shadow(0 0 15px rgba(0, 193, 106, 0.2)) drop-shadow(0 0 30px rgba(255, 211, 61, 0.1)) brightness(1.1) contrast(1.1)'
