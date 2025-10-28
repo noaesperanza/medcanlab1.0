@@ -37,7 +37,7 @@ export const NoaPlatformChat: React.FC<NoaPlatformChatProps> = ({
   
   const [assistantAvailable, setAssistantAvailable] = useState(false)
   const [currentMode, setCurrentMode] = useState<'assistant' | 'local'>('local')
-  const [avatarUrl, setAvatarUrl] = useState<string>('https://via.placeholder.com/200x200/8B5CF6/FFFFFF?text=N')
+  const [avatarUrl, setAvatarUrl] = useState<string>('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTIiIHI9IjEwIiBmaWxsPSIjOEI1Q0Y2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5OPC90ZXh0Pjwvc3ZnPg==')
   const [chatSize, setChatSize] = useState<'small' | 'medium' | 'large'>('medium')
 
   // Registrar usuário no sistema de treinamento

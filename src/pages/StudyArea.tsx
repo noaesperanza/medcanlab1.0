@@ -49,7 +49,7 @@ const StudyArea: React.FC = () => {
       progress: 0,
       status: 'Pendente',
       type: 'video',
-      thumbnail: 'https://via.placeholder.com/300x200/8B5CF6/FFFFFF?text=AEC',
+      thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjOEI1Q0Y2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5BRUM8L3RleHQ+PC9zdmc+',
       instructor: 'Dr. Especialista',
       lessons: [
         { title: 'Introdução à Entrevista Clínica', duration: '15 min', completed: false },
@@ -66,7 +66,7 @@ const StudyArea: React.FC = () => {
       progress: 0,
       status: 'Pendente',
       type: 'interactive',
-      thumbnail: 'https://via.placeholder.com/300x200/10B981/FFFFFF?text=FARM',
+      thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjMTBCOTgxIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5GQVJNPC90ZXh0Pjwvc3ZnPg==',
       instructor: 'Dr. Farmacologista',
       lessons: [
         { title: 'CBD e THC: Diferenças', duration: '18 min', completed: false },
@@ -83,7 +83,7 @@ const StudyArea: React.FC = () => {
       progress: 0,
       status: 'Pendente',
       type: 'case-study',
-      thumbnail: 'https://via.placeholder.com/300x200/F59E0B/FFFFFF?text=CLIN',
+      thumbnail: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjU5RTBCIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNCIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DTElOPC90ZXh0Pjwvc3ZnPg==',
       instructor: 'Dr. Clínico',
       lessons: [
         { title: 'Casos de Dor Crônica', duration: '25 min', completed: false },
