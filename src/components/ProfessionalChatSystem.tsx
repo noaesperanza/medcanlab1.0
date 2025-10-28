@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Send, Users, Search, Lock, MessageCircle, Building2, Phone, Mail, Calendar } from 'lucide-react'
+import { Send, Users, Search, Lock, MessageCircle, Building2, Phone, Mail, Calendar, Video, Mic, FileText, User, GraduationCap, Heart } from 'lucide-react'
 import { useAuth } from '../contexts/AuthContext'
 
 interface Consultorio {
@@ -12,6 +12,7 @@ interface Consultorio {
   cro?: string
   status: 'online' | 'offline' | 'busy'
   lastSeen?: Date
+  type: 'professional' | 'student' | 'patient'
 }
 
 interface Message {
@@ -24,6 +25,8 @@ interface Message {
   encrypted: boolean
   read: boolean
   consultorioId: string
+  type: 'text' | 'audio' | 'video' | 'file'
+  fileUrl?: string
 }
 
 interface ProfessionalChatSystemProps {
@@ -37,8 +40,11 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
   const [inputMessage, setInputMessage] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+  const [chatType, setChatType] = useState<'professional-professional' | 'professional-student' | 'professional-patient'>('professional-professional')
+  const [isVideoCallActive, setIsVideoCallActive] = useState(false)
+  const [isAudioCallActive, setIsAudioCallActive] = useState(false)
 
-  // Dados dos consultórios
+  // Dados dos consultórios e usuários
   const consultorios: Consultorio[] = [
     {
       id: 'consultorio-ricardo',
@@ -49,7 +55,8 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
       crm: 'CRM-RJ 123456',
       cro: 'CRO-RJ 789012',
       status: 'online',
-      lastSeen: new Date()
+      lastSeen: new Date(),
+      type: 'professional'
     },
     {
       id: 'consultorio-eduardo',
@@ -60,7 +67,30 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
       crm: 'CRM-RJ 123456',
       cro: 'CRO-RJ 654321',
       status: 'online',
-      lastSeen: new Date()
+      lastSeen: new Date(),
+      type: 'professional'
+    },
+    {
+      id: 'aluno-joao',
+      name: 'João Silva',
+      doctor: 'João Silva',
+      email: 'joao.silva@medcannlab.com',
+      specialty: 'Estudante de Medicina',
+      crm: 'Em formação',
+      status: 'online',
+      lastSeen: new Date(),
+      type: 'student'
+    },
+    {
+      id: 'paciente-maria',
+      name: 'Maria Santos',
+      doctor: 'Maria Santos',
+      email: 'maria.santos@email.com',
+      specialty: 'Paciente',
+      crm: 'N/A',
+      status: 'online',
+      lastSeen: new Date(),
+      type: 'patient'
     }
   ]
 
@@ -75,7 +105,8 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 horas atrás
       encrypted: true,
       read: true,
-      consultorioId: 'consultorio-ricardo'
+      consultorioId: 'consultorio-ricardo',
+      type: 'text'
     },
     {
       id: '2',
@@ -86,7 +117,8 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
       timestamp: new Date(Date.now() - 1.5 * 60 * 60 * 1000), // 1.5 horas atrás
       encrypted: true,
       read: true,
-      consultorioId: 'consultorio-eduardo'
+      consultorioId: 'consultorio-eduardo',
+      type: 'text'
     },
     {
       id: '3',
@@ -97,7 +129,21 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
       timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutos atrás
       encrypted: true,
       read: false,
-      consultorioId: 'consultorio-ricardo'
+      consultorioId: 'consultorio-ricardo',
+      type: 'text'
+    },
+    {
+      id: '4',
+      senderId: 'consultorio-eduardo',
+      senderName: 'Dr. Eduardo Faveret',
+      senderEmail: 'eduardoscfaveret@gmail.com',
+      content: 'Protocolo_TEA_2024.pdf',
+      timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutos atrás
+      encrypted: true,
+      read: false,
+      consultorioId: 'consultorio-ricardo',
+      type: 'file',
+      fileUrl: '#'
     }
   ]
 
@@ -117,7 +163,8 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
         timestamp: new Date(),
         encrypted: true,
         read: false,
-        consultorioId: selectedConsultorio.id
+        consultorioId: selectedConsultorio.id,
+        type: 'text'
       }
       
       setMessages(prev => [...prev, newMessage])
@@ -134,11 +181,46 @@ const ProfessionalChatSystem: React.FC<ProfessionalChatSystemProps> = ({ classNa
           timestamp: new Date(),
           encrypted: true,
           read: false,
-          consultorioId: user?.id || 'current-user'
+          consultorioId: user?.id || 'current-user',
+          type: 'text'
         }
         setMessages(prev => [...prev, autoReply])
       }, 2000)
     }
+  }
+
+  const handleVideoCall = () => {
+    if (selectedConsultorio) {
+      setIsVideoCallActive(true)
+      // Aqui você integraria com o sistema de vídeo chamada existente
+      console.log(`Iniciando vídeo chamada com ${selectedConsultorio.doctor}`)
+    }
+  }
+
+  const handleAudioCall = () => {
+    if (selectedConsultorio) {
+      setIsAudioCallActive(true)
+      // Aqui você integraria com o sistema de áudio chamada existente
+      console.log(`Iniciando áudio chamada com ${selectedConsultorio.doctor}`)
+    }
+  }
+
+  const handleFileUpload = () => {
+    // Simular upload de arquivo
+    const fileMessage: Message = {
+      id: Date.now().toString(),
+      senderId: user?.id || 'current-user',
+      senderName: user?.name || 'Usuário',
+      senderEmail: user?.email || '',
+      content: 'documento_compartilhado.pdf',
+      timestamp: new Date(),
+      encrypted: true,
+      read: false,
+      consultorioId: selectedConsultorio?.id || '',
+      type: 'file',
+      fileUrl: '#'
+    }
+    setMessages(prev => [...prev, fileMessage])
   }
 
   const getConsultorioMessages = (consultorioId: string) => {
