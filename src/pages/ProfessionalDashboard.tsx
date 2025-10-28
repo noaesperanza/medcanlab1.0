@@ -16,12 +16,18 @@ import {
   Image,
   AlertCircle,
   Calendar,
-  Share2
+  Share2,
+  BarChart3,
+  BookOpen,
+  Prescription
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { ClinicalAssessmentService } from '../lib/clinicalAssessmentService'
 import { useAuth } from '../contexts/AuthContext'
 import VideoCall from '../components/VideoCall'
+import KPIDashboard from '../components/KPIDashboard'
+import Newsletter from '../components/Newsletter'
+import QuickPrescriptions from '../components/QuickPrescriptions'
 
 interface Patient {
   id: string
@@ -45,6 +51,7 @@ const ProfessionalDashboard: React.FC = () => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false)
   const [isAudioCallOpen, setIsAudioCallOpen] = useState(false)
   const [callType, setCallType] = useState<'video' | 'audio'>('video')
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions'>('dashboard')
   
   // Debug temporário
   console.log('👨‍⚕️ ProfessionalDashboard - RENDERIZADO! User:', user?.name, 'Type:', user?.type)
@@ -145,12 +152,63 @@ const ProfessionalDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+          
+          {/* Navigation Tabs */}
+          <div className="flex space-x-2 mt-4">
+            <button
+              onClick={() => setActiveSection('dashboard')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'dashboard' 
+                  ? 'bg-blue-600 text-white' 
+                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              }`}
+            >
+              <User className="w-4 h-4" />
+              <span>Dashboard</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('kpis')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'kpis' 
+                  ? 'bg-green-600 text-white' 
+                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              }`}
+            >
+              <BarChart3 className="w-4 h-4" />
+              <span>KPIs Tempo Real</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('newsletter')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'newsletter' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              }`}
+            >
+              <BookOpen className="w-4 h-4" />
+              <span>Newsletter Científico</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('prescriptions')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'prescriptions' 
+                  ? 'bg-orange-600 text-white' 
+                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              }`}
+            >
+              <Prescription className="w-4 h-4" />
+              <span>Prescrições</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Status Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        {/* Renderizar seção ativa */}
+        {activeSection === 'dashboard' && (
+          <>
+            {/* Status Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <button 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl p-6 text-white hover:shadow-lg hover:scale-105 transition-all cursor-pointer"
@@ -513,6 +571,23 @@ const ProfessionalDashboard: React.FC = () => {
             )}
           </div>
         </div>
+          </>
+        )}
+
+        {/* Seção KPIs */}
+        {activeSection === 'kpis' && (
+          <KPIDashboard userType={user?.type || 'professional'} userName={user?.name || 'Dr. Profissional'} />
+        )}
+
+        {/* Seção Newsletter */}
+        {activeSection === 'newsletter' && (
+          <Newsletter />
+        )}
+
+        {/* Seção Prescrições */}
+        {activeSection === 'prescriptions' && (
+          <QuickPrescriptions />
+        )}
       </div>
 
       {/* Video/Audio Call Component */}
