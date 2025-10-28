@@ -157,10 +157,10 @@ const EduardoFaveretDashboard: React.FC = () => {
           </div>
           
           {/* Navigation Tabs Personalizadas */}
-          <div className="flex space-x-2 mt-4">
+          <div className="flex flex-wrap gap-2 mt-4">
             <button
               onClick={() => setActiveSection('dashboard')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'dashboard' 
                   ? 'bg-yellow-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -171,7 +171,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('kpis')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'kpis' 
                   ? 'bg-green-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -182,7 +182,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('kpis-personalizados')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'kpis-personalizados' 
                   ? 'bg-indigo-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -193,7 +193,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('research')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'research' 
                   ? 'bg-purple-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -204,7 +204,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('teaching')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'teaching' 
                   ? 'bg-blue-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -215,7 +215,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('newsletter')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'newsletter' 
                   ? 'bg-orange-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -226,7 +226,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('scheduling')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'scheduling' 
                   ? 'bg-emerald-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -237,7 +237,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('coordenacao')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'coordenacao' 
                   ? 'bg-purple-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -248,7 +248,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('cursos')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'cursos' 
                   ? 'bg-indigo-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -259,7 +259,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('neurologia')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'neurologia' 
                   ? 'bg-purple-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
@@ -270,7 +270,7 @@ const EduardoFaveretDashboard: React.FC = () => {
             </button>
             <button
               onClick={() => setActiveSection('wearables')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
                 activeSection === 'wearables' 
                   ? 'bg-cyan-600 text-white' 
                   : 'bg-green-700 text-green-200 hover:bg-green-600'
