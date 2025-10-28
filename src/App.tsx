@@ -63,7 +63,7 @@ import { SubscriptionPlans } from './pages/SubscriptionPlans'
 import { PaymentCheckout } from './pages/PaymentCheckout'
 import { LessonPreparation } from './pages/LessonPreparation'
 import { ProfessionalFinancial } from './pages/ProfessionalFinancial'
-import TestMonitoringDashboard from './components/TestMonitoringDashboard'
+import EduardoFaveretDashboard from './pages/EduardoFaveretDashboard'
 
 function App() {
   return (
@@ -90,7 +90,7 @@ function App() {
                 <Route index element={<RedirectIndividualizado />} />
                 <Route path="home" element={<Dashboard />} />
                 <Route path="test" element={<TestPage />} />
-                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="eduardo-faveret-dashboard" element={<EduardoFaveretDashboard />} />
                 
                 {/* Rotas Individualizadas por Eixo e Tipo */}
                 {/* EIXO CLÍNICA */}

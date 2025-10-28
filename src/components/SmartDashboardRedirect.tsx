@@ -13,7 +13,13 @@ const SmartDashboardRedirect: React.FC = () => {
     return <Navigate to="/" replace />
   }
 
-  // Usar o novo sistema de rotas individualizadas
+  // Redirecionamento especial para Dr. Eduardo Faveret
+  if (user.email === 'eduardoscfaveret@gmail.com' || user.name === 'Dr. Eduardo Faveret') {
+    console.log('🎯 Redirecionando Dr. Eduardo Faveret para dashboard personalizado')
+    return <Navigate to="/app/eduardo-faveret-dashboard" replace />
+  }
+
+  // Usar o novo sistema de rotas individualizadas para outros usuários
   const defaultRoute = getDefaultRoute(user.type)
   
   console.log('🎯 Redirecionando para rota individualizada:', defaultRoute)
