@@ -36,6 +36,8 @@ import QuickPrescriptions from '../components/QuickPrescriptions'
 import EduardoScheduling from '../components/EduardoScheduling'
 import CoordenacaoMedica from '../components/CoordenacaoMedica'
 import GestaoCursos from '../components/GestaoCursos'
+import NeurologiaPediatrica from '../components/NeurologiaPediatrica'
+import WearableMonitoring from '../components/WearableMonitoring'
 
 interface Patient {
   id: string
@@ -59,7 +61,7 @@ const EduardoFaveretDashboard: React.FC = () => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false)
   const [isAudioCallOpen, setIsAudioCallOpen] = useState(false)
   const [callType, setCallType] = useState<'video' | 'audio'>('video')
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos'>('dashboard')
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos' | 'neurologia' | 'wearables'>('dashboard')
 
   // Buscar pacientes do banco de dados
   useEffect(() => {
@@ -135,7 +137,7 @@ const EduardoFaveretDashboard: React.FC = () => {
                 <Award className="w-8 h-8 text-yellow-400" />
                 <span>Dr. Eduardo Faveret</span>
               </h1>
-              <p className="text-green-200">Fundador MedCannLab • Especialista em Cannabis Medicinal</p>
+              <p className="text-green-200">Neurologista Pediátrico • Especialista em Epilepsia e Cannabis Medicinal</p>
             </div>
             <div className="flex items-center space-x-4">
               <div className="text-right">
@@ -239,6 +241,28 @@ const EduardoFaveretDashboard: React.FC = () => {
               <BookOpen className="w-4 h-4" />
               <span>Cursos</span>
             </button>
+            <button
+              onClick={() => setActiveSection('neurologia')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'neurologia' 
+                  ? 'bg-purple-600 text-white' 
+                  : 'bg-green-700 text-green-200 hover:bg-green-600'
+              }`}
+            >
+              <Brain className="w-4 h-4" />
+              <span>Neurologia</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('wearables')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'wearables' 
+                  ? 'bg-cyan-600 text-white' 
+                  : 'bg-green-700 text-green-200 hover:bg-green-600'
+              }`}
+            >
+              <Activity className="w-4 h-4" />
+              <span>Wearables</span>
+            </button>
           </div>
         </div>
       </div>
@@ -251,11 +275,11 @@ const EduardoFaveretDashboard: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
               <div className="bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl p-6 text-white hover:shadow-lg hover:scale-105 transition-all">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium opacity-90">Pacientes AEC</h3>
-                  <Heart className="w-6 h-6" />
+                  <h3 className="text-sm font-medium opacity-90">Pacientes Neurológicos</h3>
+                  <Brain className="w-6 h-6" />
                 </div>
                 <p className="text-3xl font-bold">{patients.length}</p>
-                <p className="text-sm opacity-75 mt-1">Pacientes com AEC</p>
+                <p className="text-sm opacity-75 mt-1">Epilepsia e TEZ</p>
               </div>
               
               <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl p-6 text-white hover:shadow-lg hover:scale-105 transition-all">
@@ -266,25 +290,25 @@ const EduardoFaveretDashboard: React.FC = () => {
                 <p className="text-3xl font-bold">
                   {patients.filter(p => p.assessments?.some(a => a.status === 'completed')).length}
                 </p>
-                <p className="text-sm opacity-75 mt-1">Protocolos completos</p>
+                <p className="text-sm opacity-75 mt-1">Avaliações completas</p>
               </div>
               
               <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl p-6 text-white hover:shadow-lg hover:scale-105 transition-all">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium opacity-90">Pesquisas Ativas</h3>
+                  <h3 className="text-sm font-medium opacity-90">Respondedores TEZ</h3>
                   <Microscope className="w-6 h-6" />
                 </div>
-                <p className="text-3xl font-bold">12</p>
-                <p className="text-sm opacity-75 mt-1">Estudos em andamento</p>
+                <p className="text-3xl font-bold">8</p>
+                <p className="text-sm opacity-75 mt-1">Pacientes com melhora</p>
               </div>
               
               <div className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6 text-white hover:shadow-lg hover:scale-105 transition-all">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium opacity-90">Alunos AEC</h3>
-                  <GraduationCap className="w-6 h-6" />
+                  <h3 className="text-sm font-medium opacity-90">Wearables Ativos</h3>
+                  <Activity className="w-6 h-6" />
                 </div>
-                <p className="text-3xl font-bold">45</p>
-                <p className="text-sm opacity-75 mt-1">Formados em AEC</p>
+                <p className="text-3xl font-bold">12</p>
+                <p className="text-sm opacity-75 mt-1">Monitoramento 24/7</p>
               </div>
             </div>
 
@@ -540,6 +564,16 @@ const EduardoFaveretDashboard: React.FC = () => {
         {/* Seção Gestão de Cursos */}
         {activeSection === 'cursos' && (
           <GestaoCursos />
+        )}
+
+        {/* Seção Neurologia Pediátrica */}
+        {activeSection === 'neurologia' && (
+          <NeurologiaPediatrica />
+        )}
+
+        {/* Seção Monitoramento Wearables */}
+        {activeSection === 'wearables' && (
+          <WearableMonitoring />
         )}
       </div>
 
