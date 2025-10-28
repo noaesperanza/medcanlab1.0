@@ -111,8 +111,8 @@ class NoaCommandSystem {
         context.patientId,
         context.patientName,
         context,
-        'DEV-001',
-        'Dr. Ricardo Valença'
+        'PROF-001',
+        'Profissional'
       )
 
       return {

@@ -83,7 +83,10 @@ const Layout: React.FC = () => {
           </div>
           
           {/* Avatar Nôa Esperança */}
-          <NoaPlatformChat />
+          <NoaPlatformChat 
+            userName={user?.name || 'Usuário'}
+            userCode={user?.id || 'USER-001'}
+          />
         </div>
       </ProtectedRoute>
     )
@@ -107,7 +110,10 @@ const Layout: React.FC = () => {
         </div>
         
         {/* Avatar Nôa Esperança */}
-        <NoaPlatformChat />
+        <NoaPlatformChat 
+          userName={user?.name || 'Usuário'}
+          userCode={user?.id || 'USER-001'}
+        />
       </div>
     </ProtectedRoute>
   )

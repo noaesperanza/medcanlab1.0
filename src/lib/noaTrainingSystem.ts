@@ -100,7 +100,7 @@ export class NoaTrainingSystem {
     this.userIdentities = new Map()
     
     // Usuário dev/admin padrão
-    this.registerUser('DEV-001', 'Dr. Ricardo Valença', 'developer', ['full'])
+    this.registerUser('DEV-001', 'Administrador', 'developer', ['full'])
   }
 
   // Registro de identidade do usuário

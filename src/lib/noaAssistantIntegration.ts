@@ -328,8 +328,8 @@ export class NoaAssistantIntegration {
       medications: string
       lifestyle: string
     },
-    professionalId: string = 'DEV-001',
-    professionalName: string = 'Dr. Ricardo Valença'
+    professionalId: string = 'PROF-001',
+    professionalName: string = 'Profissional'
   ): Promise<{ reportId: string; nftHash: string; report: string }> {
     try {
       console.log('🏥 Processando avaliação clínica inicial completa...')
