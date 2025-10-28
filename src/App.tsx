@@ -191,7 +191,6 @@ function App() {
                 <Route path="checkout" element={<PaymentCheckout />} />
                 <Route path="lesson-prep" element={<LessonPreparation />} />
                 <Route path="professional-financial" element={<ProfessionalFinancial />} />
-                <Route path="test-monitoring" element={<TestMonitoringDashboard />} />
                 <Route path="admin/users" element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminDashboardWrapper />
