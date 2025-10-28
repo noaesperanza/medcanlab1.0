@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Badge } from '../components/ui/badge'
-import { Button } from '../components/ui/button'
 import { 
   BookOpen, 
   Calendar, 
@@ -191,29 +188,27 @@ const Newsletter: React.FC<NewsletterProps> = ({ className = '' }) => {
               Últimas pesquisas e descobertas em Cannabis Medicinal e Nefrologia
             </p>
           </div>
-          <Badge variant="outline" className="text-slate-300 border-slate-500">
-            <TrendingUp className="w-3 h-3 mr-1" />
-            Atualizado hoje
-          </Badge>
+          <span className="flex items-center space-x-1 px-3 py-1 text-slate-300 border border-slate-500 rounded-md text-sm">
+            <TrendingUp className="w-3 h-3" />
+            <span>Atualizado hoje</span>
+          </span>
         </div>
 
         {/* Filtros por categoria */}
         <div className="flex flex-wrap gap-2">
           {categories.map((category) => (
-            <Button
+            <button
               key={category.key}
               onClick={() => setSelectedCategory(category.key)}
-              variant={selectedCategory === category.key ? 'default' : 'outline'}
-              size="sm"
-              className={`flex items-center space-x-1 ${
+              className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm transition-colors ${
                 selectedCategory === category.key 
-                  ? 'bg-green-600 hover:bg-green-700' 
-                  : 'text-slate-300 border-slate-600 hover:bg-slate-700'
+                  ? 'bg-green-600 hover:bg-green-700 text-white' 
+                  : 'text-slate-300 border border-slate-600 hover:bg-slate-700'
               }`}
             >
               {category.icon}
               <span>{category.label}</span>
-            </Button>
+            </button>
           ))}
         </div>
       </div>
@@ -222,94 +217,86 @@ const Newsletter: React.FC<NewsletterProps> = ({ className = '' }) => {
       {isLoading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="bg-slate-800 border-slate-700 animate-pulse">
-              <CardContent className="p-6">
-                <div className="space-y-3">
-                  <div className="h-4 bg-slate-700 rounded w-3/4"></div>
-                  <div className="h-3 bg-slate-700 rounded w-1/2"></div>
-                  <div className="h-3 bg-slate-700 rounded w-2/3"></div>
-                </div>
-              </CardContent>
-            </Card>
+            <div key={i} className="bg-slate-800 border border-slate-700 rounded-lg p-6 animate-pulse">
+              <div className="space-y-3">
+                <div className="h-4 bg-slate-700 rounded w-3/4"></div>
+                <div className="h-3 bg-slate-700 rounded w-1/2"></div>
+                <div className="h-3 bg-slate-700 rounded w-2/3"></div>
+              </div>
+            </div>
           ))}
         </div>
       ) : (
         <div className="space-y-4">
           {newsItems.map((item) => (
-            <Card key={item.id} className="bg-slate-800 border-slate-700 hover:border-slate-600 transition-colors">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <CardTitle className="text-white text-lg mb-2 hover:text-green-400 transition-colors cursor-pointer">
-                      {item.title}
-                    </CardTitle>
-                    <div className="flex items-center space-x-4 text-sm text-slate-400">
-                      <div className="flex items-center space-x-1">
-                        <Calendar className="w-3 h-3" />
-                        <span>{new Date(item.date).toLocaleDateString('pt-BR')}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <FileText className="w-3 h-3" />
-                        <span>{item.readTime}</span>
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <Star className={`w-3 h-3 ${getImpactColor(item.impact)}`} />
-                        <span className={getImpactColor(item.impact)}>
-                          {item.impact === 'high' ? 'Alto Impacto' : 
-                           item.impact === 'medium' ? 'Médio Impacto' : 'Baixo Impacto'}
-                        </span>
-                      </div>
+            <div key={item.id} className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-colors">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex-1">
+                  <h3 className="text-white text-lg mb-2 hover:text-green-400 transition-colors cursor-pointer">
+                    {item.title}
+                  </h3>
+                  <div className="flex items-center space-x-4 text-sm text-slate-400">
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="w-3 h-3" />
+                      <span>{new Date(item.date).toLocaleDateString('pt-BR')}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <FileText className="w-3 h-3" />
+                      <span>{item.readTime}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Star className={`w-3 h-3 ${getImpactColor(item.impact)}`} />
+                      <span className={getImpactColor(item.impact)}>
+                        {item.impact === 'high' ? 'Alto Impacto' : 
+                         item.impact === 'medium' ? 'Médio Impacto' : 'Baixo Impacto'}
+                      </span>
                     </div>
                   </div>
-                  <Badge className={`${getCategoryColor(item.category)} text-white`}>
-                    {getCategoryIcon(item.category)}
-                    <span className="ml-1 capitalize">{item.category}</span>
-                  </Badge>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-slate-300 mb-4 leading-relaxed">
-                  {item.summary}
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
-                      <Badge key={tag} variant="outline" className="text-xs text-slate-400 border-slate-600">
-                        #{tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-slate-400 text-sm">{item.author}</span>
-                    <Button size="sm" variant="outline" className="text-slate-300 border-slate-600 hover:bg-slate-700">
-                      <ExternalLink className="w-3 h-3 mr-1" />
-                      Ler
-                    </Button>
-                  </div>
+                <span className={`flex items-center space-x-1 px-2 py-1 rounded text-sm ${getCategoryColor(item.category)} text-white`}>
+                  {getCategoryIcon(item.category)}
+                  <span className="capitalize">{item.category}</span>
+                </span>
+              </div>
+              <p className="text-slate-300 mb-4 leading-relaxed">
+                {item.summary}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex flex-wrap gap-2">
+                  {item.tags.map((tag) => (
+                    <span key={tag} className="px-2 py-1 text-xs text-slate-400 border border-slate-600 rounded">
+                      #{tag}
+                    </span>
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex items-center space-x-2">
+                  <span className="text-slate-400 text-sm">{item.author}</span>
+                  <button className="flex items-center space-x-1 px-3 py-1 text-slate-300 border border-slate-600 rounded-md hover:bg-slate-700 transition-colors text-sm">
+                    <ExternalLink className="w-3 h-3" />
+                    <span>Ler</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       )}
 
       {/* Footer com estatísticas */}
-      <Card className="bg-slate-800 border-slate-700">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between text-sm text-slate-400">
-            <div className="flex items-center space-x-4">
-              <span>📚 {newsItems.length} artigos disponíveis</span>
-              <span>🔬 Cobertura: Pesquisa, Clínica, Farmacologia, Nefrologia</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span>Atualização automática a cada 24h</span>
-              <Badge variant="outline" className="text-xs text-green-400 border-green-600">
-                Ativo
-              </Badge>
-            </div>
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
+        <div className="flex items-center justify-between text-sm text-slate-400">
+          <div className="flex items-center space-x-4">
+            <span>📚 {newsItems.length} artigos disponíveis</span>
+            <span>🔬 Cobertura: Pesquisa, Clínica, Farmacologia, Nefrologia</span>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-center space-x-2">
+            <span>Atualização automática a cada 24h</span>
+            <span className="px-2 py-1 text-xs text-green-400 border border-green-600 rounded">
+              Ativo
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

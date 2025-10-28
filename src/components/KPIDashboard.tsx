@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Badge } from '../components/ui/badge'
-import { Button } from '../components/ui/button'
 import { 
   Activity, 
   Users, 
@@ -254,23 +251,19 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ userType, userName }) => {
             </p>
           </div>
           <div className="flex items-center space-x-4">
-            <Button
+            <button
               onClick={() => setSoundEnabled(!soundEnabled)}
-              variant="outline"
-              size="sm"
-              className="text-slate-300 border-slate-600 hover:bg-slate-700"
+              className="flex items-center space-x-2 px-3 py-2 text-slate-300 border border-slate-600 rounded-md hover:bg-slate-700 transition-colors"
             >
               {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={loadKPIData}
               disabled={isRefreshing}
-              variant="outline"
-              size="sm"
-              className="text-slate-300 border-slate-600 hover:bg-slate-700"
+              className="flex items-center space-x-2 px-3 py-2 text-slate-300 border border-slate-600 rounded-md hover:bg-slate-700 transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
-            </Button>
+            </button>
           </div>
         </div>
 
@@ -281,10 +274,10 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ userType, userName }) => {
             { key: 'semantico', label: 'Semânticos', icon: <Brain className="w-4 h-4" /> },
             { key: 'administrativo', label: 'Administrativos', icon: <BarChart3 className="w-4 h-4" /> }
           ].map((layer) => (
-            <Button
+            <button
               key={layer.key}
               onClick={() => handleLayerChange(layer.key as any)}
-              className={`flex items-center space-x-2 ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-md transition-colors ${
                 selectedLayer === layer.key 
                   ? getLayerColor(layer.key) 
                   : 'bg-slate-700 hover:bg-slate-600 text-slate-300'
@@ -292,7 +285,7 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ userType, userName }) => {
             >
               {layer.icon}
               <span>{layer.label}</span>
-            </Button>
+            </button>
           ))}
         </div>
 
@@ -306,72 +299,65 @@ const KPIDashboard: React.FC<KPIDashboardProps> = ({ userType, userName }) => {
       {/* Grid de KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {kpiData.map((kpi) => (
-          <Card key={kpi.id} className="bg-slate-800 border-slate-700 hover:border-slate-600 transition-colors">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-white text-sm font-medium">
-                  {kpi.title}
-                </CardTitle>
-                {getTrendIcon(kpi.trend)}
+          <div key={kpi.id} className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-colors">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-white text-sm font-medium">
+                {kpi.title}
+              </h3>
+              {getTrendIcon(kpi.trend)}
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-baseline space-x-2">
+                <span className="text-2xl font-bold text-white">
+                  {kpi.value}%
+                </span>
+                <span className={`px-2 py-1 rounded text-xs ${
+                  kpi.trend === 'up' ? 'bg-green-500/20 text-green-400' : 
+                  kpi.trend === 'down' ? 'bg-red-500/20 text-red-400' : 
+                  'bg-gray-500/20 text-gray-400'
+                }`}>
+                  {kpi.change > 0 ? '+' : ''}{kpi.change}%
+                </span>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-baseline space-x-2">
-                  <span className="text-2xl font-bold text-white">
-                    {kpi.value}%
-                  </span>
-                  <Badge 
-                    variant={kpi.trend === 'up' ? 'default' : kpi.trend === 'down' ? 'destructive' : 'secondary'}
-                    className="text-xs"
-                  >
-                    {kpi.change > 0 ? '+' : ''}{kpi.change}%
-                  </Badge>
-                </div>
-                <p className="text-slate-400 text-xs">
-                  {kpi.description}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+              <p className="text-slate-400 text-xs">
+                {kpi.description}
+              </p>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Seção de Discussão em Tempo Real */}
-      <Card className="bg-slate-800 border-slate-700">
-        <CardHeader>
-          <CardTitle className="text-white flex items-center space-x-2">
-            <Users className="w-5 h-5" />
-            <span>Discussão em Tempo Real</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="bg-slate-700 rounded-lg p-4">
-              <p className="text-slate-300 text-sm">
-                💬 <strong>Dr. Maria Silva:</strong> "Os KPIs clínicos estão mostrando uma melhora significativa na adesão ao tratamento. Vale a pena discutir estratégias para manter essa tendência."
-              </p>
-              <p className="text-slate-400 text-xs mt-1">há 2 minutos</p>
-            </div>
-            <div className="bg-slate-700 rounded-lg p-4">
-              <p className="text-slate-300 text-sm">
-                🤖 <strong>Nôa Esperança:</strong> "Analisando os dados semânticos, identifiquei padrões interessantes na evolução dos sintomas. Posso gerar um relatório detalhado?"
-              </p>
-              <p className="text-slate-400 text-xs mt-1">há 5 minutos</p>
-            </div>
-            <div className="flex space-x-2">
-              <input
-                type="text"
-                placeholder="Compartilhe suas observações..."
-                className="flex-1 bg-slate-700 text-white px-3 py-2 rounded-md border border-slate-600 focus:border-green-500 focus:outline-none"
-              />
-              <Button className="bg-green-600 hover:bg-green-700">
-                Enviar
-              </Button>
-            </div>
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
+        <div className="flex items-center space-x-2 mb-4">
+          <Users className="w-5 h-5 text-white" />
+          <h3 className="text-white font-semibold">Discussão em Tempo Real</h3>
+        </div>
+        <div className="space-y-4">
+          <div className="bg-slate-700 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              💬 <strong>Dr. Maria Silva:</strong> "Os KPIs clínicos estão mostrando uma melhora significativa na adesão ao tratamento. Vale a pena discutir estratégias para manter essa tendência."
+            </p>
+            <p className="text-slate-400 text-xs mt-1">há 2 minutos</p>
           </div>
-        </CardContent>
-      </Card>
+          <div className="bg-slate-700 rounded-lg p-4">
+            <p className="text-slate-300 text-sm">
+              🤖 <strong>Nôa Esperança:</strong> "Analisando os dados semânticos, identifiquei padrões interessantes na evolução dos sintomas. Posso gerar um relatório detalhado?"
+            </p>
+            <p className="text-slate-400 text-xs mt-1">há 5 minutos</p>
+          </div>
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              placeholder="Compartilhe suas observações..."
+              className="flex-1 bg-slate-700 text-white px-3 py-2 rounded-md border border-slate-600 focus:border-green-500 focus:outline-none"
+            />
+            <button className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors">
+              Enviar
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

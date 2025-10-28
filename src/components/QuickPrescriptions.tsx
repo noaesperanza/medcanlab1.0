@@ -1,7 +1,4 @@
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
-import { Button } from '../components/ui/button'
-import { Badge } from '../components/ui/badge'
 import { 
   Prescription, 
   Plus, 
@@ -184,10 +181,10 @@ const QuickPrescriptions: React.FC<QuickPrescriptionsProps> = ({ className = '' 
               Templates de prescrição para Cannabis Medicinal e Nefrologia
             </p>
           </div>
-          <Button className="bg-green-600 hover:bg-green-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Prescrição
-          </Button>
+          <button className="flex items-center space-x-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors">
+            <Plus className="w-4 h-4" />
+            <span>Nova Prescrição</span>
+          </button>
         </div>
 
         {/* Filtros e busca */}
@@ -206,20 +203,18 @@ const QuickPrescriptions: React.FC<QuickPrescriptionsProps> = ({ className = '' 
           </div>
           <div className="flex space-x-2">
             {categories.map((category) => (
-              <Button
+              <button
                 key={category.key}
                 onClick={() => setSelectedCategory(category.key)}
-                variant={selectedCategory === category.key ? 'default' : 'outline'}
-                size="sm"
-                className={`flex items-center space-x-1 ${
+                className={`flex items-center space-x-1 px-3 py-2 rounded-md text-sm transition-colors ${
                   selectedCategory === category.key 
-                    ? 'bg-green-600 hover:bg-green-700' 
-                    : 'text-slate-300 border-slate-600 hover:bg-slate-700'
+                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    : 'text-slate-300 border border-slate-600 hover:bg-slate-700'
                 }`}
               >
                 {category.icon}
                 <span>{category.label}</span>
-              </Button>
+              </button>
             ))}
           </div>
         </div>
@@ -228,107 +223,97 @@ const QuickPrescriptions: React.FC<QuickPrescriptionsProps> = ({ className = '' 
       {/* Grid de templates */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTemplates.map((template) => (
-          <Card key={template.id} className="bg-slate-800 border-slate-700 hover:border-slate-600 transition-colors">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <CardTitle className="text-white text-lg mb-2">
-                    {template.name}
-                  </CardTitle>
-                  <p className="text-slate-400 text-sm">
-                    {template.description}
-                  </p>
-                </div>
-                <Badge className={`${getCategoryColor(template.category)} text-white`}>
-                  {getCategoryIcon(template.category)}
-                </Badge>
+          <div key={template.id} className="bg-slate-800 border border-slate-700 rounded-lg p-6 hover:border-slate-600 transition-colors">
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <h3 className="text-white text-lg mb-2">
+                  {template.name}
+                </h3>
+                <p className="text-slate-400 text-sm">
+                  {template.description}
+                </p>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {/* Informações básicas */}
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div className="flex items-center space-x-2 text-slate-300">
-                    <Pill className="w-3 h-3" />
-                    <span>{template.dosage}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-slate-300">
-                    <Clock className="w-3 h-3" />
-                    <span>{template.frequency}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-slate-300">
-                    <FileText className="w-3 h-3" />
-                    <span>{template.duration}</span>
-                  </div>
-                  <div className="flex items-center space-x-2 text-slate-300">
-                    <User className="w-3 h-3" />
-                    <span>{template.usageCount}x usado</span>
-                  </div>
+              <span className={`flex items-center space-x-1 px-2 py-1 rounded text-sm ${getCategoryColor(template.category)} text-white`}>
+                {getCategoryIcon(template.category)}
+              </span>
+            </div>
+            <div className="space-y-4">
+              {/* Informações básicas */}
+              <div className="grid grid-cols-2 gap-2 text-sm">
+                <div className="flex items-center space-x-2 text-slate-300">
+                  <Pill className="w-3 h-3" />
+                  <span>{template.dosage}</span>
                 </div>
-
-                {/* Indicações */}
-                <div>
-                  <h4 className="text-slate-300 text-sm font-medium mb-2">Indicações:</h4>
-                  <div className="flex flex-wrap gap-1">
-                    {template.indications.slice(0, 3).map((indication) => (
-                      <Badge key={indication} variant="outline" className="text-xs text-green-400 border-green-600">
-                        {indication}
-                      </Badge>
-                    ))}
-                    {template.indications.length > 3 && (
-                      <Badge variant="outline" className="text-xs text-slate-400 border-slate-600">
-                        +{template.indications.length - 3} mais
-                      </Badge>
-                    )}
-                  </div>
+                <div className="flex items-center space-x-2 text-slate-300">
+                  <Clock className="w-3 h-3" />
+                  <span>{template.frequency}</span>
                 </div>
-
-                {/* Ações */}
-                <div className="flex space-x-2 pt-2">
-                  <Button 
-                    onClick={() => handlePrescribe(template)}
-                    className="flex-1 bg-green-600 hover:bg-green-700"
-                  >
-                    <Prescription className="w-4 h-4 mr-1" />
-                    Prescrever
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="text-slate-300 border-slate-600 hover:bg-slate-700"
-                  >
-                    <FileText className="w-4 h-4" />
-                  </Button>
+                <div className="flex items-center space-x-2 text-slate-300">
+                  <FileText className="w-3 h-3" />
+                  <span>{template.duration}</span>
                 </div>
-
-                {/* Último uso */}
-                <div className="text-xs text-slate-500 pt-2 border-t border-slate-700">
-                  Último uso: {new Date(template.lastUsed).toLocaleDateString('pt-BR')}
+                <div className="flex items-center space-x-2 text-slate-300">
+                  <User className="w-3 h-3" />
+                  <span>{template.usageCount}x usado</span>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* Indicações */}
+              <div>
+                <h4 className="text-slate-300 text-sm font-medium mb-2">Indicações:</h4>
+                <div className="flex flex-wrap gap-1">
+                  {template.indications.slice(0, 3).map((indication) => (
+                    <span key={indication} className="px-2 py-1 text-xs text-green-400 border border-green-600 rounded">
+                      {indication}
+                    </span>
+                  ))}
+                  {template.indications.length > 3 && (
+                    <span className="px-2 py-1 text-xs text-slate-400 border border-slate-600 rounded">
+                      +{template.indications.length - 3} mais
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Ações */}
+              <div className="flex space-x-2 pt-2">
+                <button 
+                  onClick={() => handlePrescribe(template)}
+                  className="flex-1 flex items-center justify-center space-x-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors"
+                >
+                  <Prescription className="w-4 h-4" />
+                  <span>Prescrever</span>
+                </button>
+                <button className="flex items-center justify-center px-3 py-2 text-slate-300 border border-slate-600 rounded-md hover:bg-slate-700 transition-colors">
+                  <FileText className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Último uso */}
+              <div className="text-xs text-slate-500 pt-2 border-t border-slate-700">
+                Último uso: {new Date(template.lastUsed).toLocaleDateString('pt-BR')}
+              </div>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Estatísticas */}
-      <Card className="bg-slate-800 border-slate-700">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between text-sm text-slate-400">
-            <div className="flex items-center space-x-4">
-              <span>📋 {filteredTemplates.length} templates disponíveis</span>
-              <span>💊 Cobertura: Cannabis, Nefrologia, Sintomático</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span>Atualização automática</span>
-              <Badge variant="outline" className="text-xs text-green-400 border-green-600">
-                <CheckCircle className="w-3 h-3 mr-1" />
-                Ativo
-              </Badge>
-            </div>
+      <div className="bg-slate-800 border border-slate-700 rounded-lg p-4">
+        <div className="flex items-center justify-between text-sm text-slate-400">
+          <div className="flex items-center space-x-4">
+            <span>📋 {filteredTemplates.length} templates disponíveis</span>
+            <span>💊 Cobertura: Cannabis, Nefrologia, Sintomático</span>
           </div>
-        </CardContent>
-      </Card>
+          <div className="flex items-center space-x-2">
+            <span>Atualização automática</span>
+            <span className="px-2 py-1 text-xs text-green-400 border border-green-600 rounded">
+              <CheckCircle className="w-3 h-3 inline mr-1" />
+              Ativo
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
