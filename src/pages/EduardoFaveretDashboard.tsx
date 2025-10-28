@@ -39,6 +39,7 @@ import CoordenacaoMedica from '../components/CoordenacaoMedica'
 import GestaoCursos from '../components/GestaoCursos'
 import NeurologiaPediatrica from '../components/NeurologiaPediatrica'
 import WearableMonitoring from '../components/WearableMonitoring'
+import KPIClinicosPersonalizados from '../components/KPIClinicosPersonalizados'
 
 interface Patient {
   id: string
@@ -62,7 +63,7 @@ const EduardoFaveretDashboard: React.FC = () => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false)
   const [isAudioCallOpen, setIsAudioCallOpen] = useState(false)
   const [callType, setCallType] = useState<'video' | 'audio'>('video')
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos' | 'neurologia' | 'wearables'>('dashboard')
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos' | 'neurologia' | 'wearables' | 'kpis-personalizados'>('dashboard')
 
   // Buscar pacientes do banco de dados
   useEffect(() => {
@@ -175,6 +176,17 @@ const EduardoFaveretDashboard: React.FC = () => {
             >
               <BarChart3 className="w-4 h-4" />
               <span>KPIs AEC</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('kpis-personalizados')}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-colors ${
+                activeSection === 'kpis-personalizados' 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-green-700 text-green-200 hover:bg-green-600'
+              }`}
+            >
+              <Brain className="w-4 h-4" />
+              <span>KPIs TEA</span>
             </button>
             <button
               onClick={() => setActiveSection('research')}
@@ -471,9 +483,9 @@ const EduardoFaveretDashboard: React.FC = () => {
           </>
         )}
 
-        {/* Seção KPIs */}
-        {activeSection === 'kpis' && (
-          <KPIDashboard userType="professional" userName="Dr. Eduardo Faveret" />
+        {/* Seção KPIs Personalizados */}
+        {activeSection === 'kpis-personalizados' && (
+          <KPIClinicosPersonalizados />
         )}
 
         {/* Seção Pesquisa */}
