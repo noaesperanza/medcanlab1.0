@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS courses (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   description TEXT,
-  instructor_id UUID REFERENCES auth.users(id),
+  instructor_name TEXT, -- Nome do instrutor em vez de referência
   duration_hours INTEGER,
   price DECIMAL(10,2),
   status TEXT NOT NULL DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'draft')),
@@ -71,7 +71,7 @@ CREATE INDEX IF NOT EXISTS idx_appointments_professional_id ON appointments(prof
 CREATE INDEX IF NOT EXISTS idx_appointments_date ON appointments(appointment_date);
 CREATE INDEX IF NOT EXISTS idx_appointments_status ON appointments(status);
 
-CREATE INDEX IF NOT EXISTS idx_courses_instructor_id ON courses(instructor_id);
+CREATE INDEX IF NOT EXISTS idx_courses_instructor_name ON courses(instructor_name);
 CREATE INDEX IF NOT EXISTS idx_courses_status ON courses(status);
 
 CREATE INDEX IF NOT EXISTS idx_enrollments_user_id ON course_enrollments(user_id);
@@ -129,8 +129,14 @@ CREATE POLICY "Admins podem gerenciar todos os agendamentos" ON appointments
 CREATE POLICY "Todos podem ver cursos ativos" ON courses
   FOR SELECT USING (status = 'active');
 
-CREATE POLICY "Instrutores podem gerenciar seus cursos" ON courses
-  FOR ALL USING (instructor_id = auth.uid());
+CREATE POLICY "Instrutores podem gerenciar cursos por nome" ON courses
+  FOR ALL USING (
+    instructor_name = (
+      SELECT raw_user_meta_data->>'name' 
+      FROM auth.users 
+      WHERE id = auth.uid()
+    )
+  );
 
 CREATE POLICY "Admins podem gerenciar todos os cursos" ON courses
   FOR ALL USING (
@@ -153,7 +159,11 @@ CREATE POLICY "Instrutores veem inscrições em seus cursos" ON course_enrollmen
     EXISTS (
       SELECT 1 FROM courses 
       WHERE courses.id = course_enrollments.course_id 
-      AND courses.instructor_id = auth.uid()
+      AND courses.instructor_name = (
+        SELECT raw_user_meta_data->>'name' 
+        FROM auth.users 
+        WHERE id = auth.uid()
+      )
     )
   );
 
@@ -180,10 +190,10 @@ CREATE TRIGGER update_courses_updated_at
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 13. Inserir dados de exemplo
-INSERT INTO courses (id, title, description, duration_hours, price, status) VALUES 
-  ('550e8400-e29b-41d4-a716-446655440001', 'Arte da Entrevista Clínica', 'Fundamentos da entrevista clínica aplicada à Cannabis Medicinal', 40, 299.90, 'active'),
-  ('550e8400-e29b-41d4-a716-446655440002', 'Farmacologia da Cannabis', 'Estudo dos componentes ativos e mecanismos de ação', 60, 399.90, 'active'),
-  ('550e8400-e29b-41d4-a716-446655440003', 'Casos Clínicos', 'Casos clínicos e protocolos terapêuticos', 80, 499.90, 'active')
+INSERT INTO courses (id, title, description, instructor_name, duration_hours, price, status) VALUES 
+  ('550e8400-e29b-41d4-a716-446655440001', 'Arte da Entrevista Clínica', 'Fundamentos da entrevista clínica aplicada à Cannabis Medicinal', 'Dr. Eduardo Faveret', 40, 299.90, 'active'),
+  ('550e8400-e29b-41d4-a716-446655440002', 'Farmacologia da Cannabis', 'Estudo dos componentes ativos e mecanismos de ação', 'Dr. Farmacologista', 60, 399.90, 'active'),
+  ('550e8400-e29b-41d4-a716-446655440003', 'Casos Clínicos', 'Casos clínicos e protocolos terapêuticos', 'Dr. Clínico', 80, 499.90, 'active')
 ON CONFLICT (id) DO NOTHING;
 
 -- 14. Verificar criação das tabelas
