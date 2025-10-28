@@ -7,6 +7,7 @@ import Footer from './Footer'
 import Sidebar from './Sidebar'
 import { NoaPlatformChat } from './NoaPlatformChat'
 import Breadcrumbs from './Breadcrumbs'
+import NavegacaoIndividualizada from './NavegacaoIndividualizada'
 
 const Layout: React.FC = () => {
   const { user, isLoading } = useAuth()
@@ -74,8 +75,8 @@ const Layout: React.FC = () => {
           {/* Main Content - sem sidebar externa */}
           <div className="flex flex-col min-h-screen">
             <Header />
+            <NavegacaoIndividualizada />
             <main className="flex-1 bg-slate-900" style={{ marginLeft: '2%', marginRight: '2%' }}>
-              <Breadcrumbs />
               <Outlet />
             </main>
             <Footer />
@@ -98,10 +99,8 @@ const Layout: React.FC = () => {
         {/* Main Content */}
         <div className="flex flex-col min-h-screen lg:ml-80">
           <Header />
-          
-          
+          <NavegacaoIndividualizada />
           <main className="flex-1 bg-slate-900 lg:ml-4" style={{ marginLeft: '2%', marginRight: '2%' }}>
-            <Breadcrumbs />
             <Outlet />
           </main>
           <Footer />

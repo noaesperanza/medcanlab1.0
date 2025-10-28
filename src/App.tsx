@@ -8,6 +8,8 @@ import { RealtimeProvider } from './contexts/RealtimeContext'
 import Layout from './components/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import SmartDashboardRedirect from './components/SmartDashboardRedirect'
+import RedirectIndividualizado from './components/RedirectIndividualizado'
+import NavegacaoIndividualizada from './components/NavegacaoIndividualizada'
 import EixoRotaRedirect from './components/EixoRotaRedirect'
 import Breadcrumbs from './components/Breadcrumbs'
 import EixoSelector from './components/EixoSelector'
@@ -85,21 +87,54 @@ function App() {
               <Route path="/selecionar-eixo" element={<EixoSelector />} />
               
               <Route path="/app" element={<Layout />}>
-                <Route index element={<SmartDashboardRedirect />} />
+                <Route index element={<RedirectIndividualizado />} />
                 <Route path="home" element={<Dashboard />} />
                 <Route path="test" element={<TestPage />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
+                
+                {/* Rotas Individualizadas por Eixo e Tipo */}
+                {/* EIXO CLÍNICA */}
+                <Route path="clinica/profissional/dashboard" element={<ProfessionalDashboard />} />
+                <Route path="clinica/profissional/pacientes" element={<PatientsManagement />} />
+                <Route path="clinica/profissional/agendamentos" element={<ProfessionalScheduling />} />
+                <Route path="clinica/profissional/relatorios" element={<Reports />} />
+                <Route path="clinica/profissional/chat-pacientes" element={<ProfessionalChat />} />
+                
+                <Route path="clinica/paciente/dashboard" element={<PatientDashboard />} />
+                <Route path="clinica/paciente/avaliacao-clinica" element={<ClinicalAssessment />} />
+                <Route path="clinica/paciente/relatorios" element={<Reports />} />
+                <Route path="clinica/paciente/agenda" element={<PatientAgenda />} />
+                <Route path="clinica/paciente/chat-profissional" element={<PatientDoctorChat />} />
+                
+                {/* EIXO ENSINO */}
+                <Route path="ensino/profissional/dashboard" element={<EnsinoDashboard />} />
+                <Route path="ensino/profissional/preparacao-aulas" element={<LessonPreparation />} />
+                <Route path="ensino/profissional/arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
+                
+                <Route path="ensino/aluno/dashboard" element={<AlunoDashboard />} />
+                <Route path="ensino/aluno/cursos" element={<Courses />} />
+                <Route path="ensino/aluno/biblioteca" element={<Library />} />
+                <Route path="ensino/aluno/gamificacao" element={<Gamificacao />} />
+                
+                {/* EIXO PESQUISA */}
+                <Route path="pesquisa/profissional/dashboard" element={<PesquisaDashboard />} />
+                <Route path="pesquisa/profissional/forum-casos" element={<ForumCasosClinicos />} />
+                
+                <Route path="pesquisa/aluno/dashboard" element={<PesquisaDashboard />} />
+                <Route path="pesquisa/aluno/forum-casos" element={<ForumCasosClinicos />} />
+                
+                {/* Rotas Legadas (para compatibilidade) */}
+                <Route path="patient-dashboard" element={<PatientDashboard />} />
+                <Route path="patient-agenda" element={<PatientAgenda />} />
+                <Route path="patient-kpis" element={<PatientKPIs />} />
+                <Route path="professional-dashboard" element={<ProfessionalDashboard />} />
+                <Route path="aluno-dashboard" element={<AlunoDashboard />} />
+                <Route path="clinica-dashboard" element={<ClinicaDashboard />} />
+                <Route path="ensino-dashboard" element={<EnsinoDashboard />} />
+                <Route path="pesquisa-dashboard" element={<PesquisaDashboard />} />
                 <Route path="courses" element={<Courses />} />
                 <Route path="arte-entrevista-clinica" element={<ArteEntrevistaClinica />} />
                 <Route path="study-area" element={<StudyArea />} />
-            <Route path="patient-dashboard" element={<PatientDashboard />} />
-            <Route path="patient-agenda" element={<PatientAgenda />} />
-            <Route path="patient-kpis" element={<PatientKPIs />} />
-            <Route path="professional-dashboard" element={<ProfessionalDashboard />} />
-            <Route path="aluno-dashboard" element={<AlunoDashboard />} />
-            <Route path="clinica-dashboard" element={<ClinicaDashboard />} />
-            <Route path="ensino-dashboard" element={<EnsinoDashboard />} />
-            <Route path="pesquisa-dashboard" element={<PesquisaDashboard />} />
                 <Route path="library" element={<Library />} />
                 <Route path="chat" element={<ChatGlobal />} />
                 <Route path="chat-noa-esperanca" element={<PatientNOAChat />} />

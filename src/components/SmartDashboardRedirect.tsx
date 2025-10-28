@@ -1,6 +1,7 @@
 import React from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
+import { getDefaultRoute } from '../lib/rotasIndividualizadas'
 
 const SmartDashboardRedirect: React.FC = () => {
   const { user } = useAuth()
@@ -12,20 +13,12 @@ const SmartDashboardRedirect: React.FC = () => {
     return <Navigate to="/" replace />
   }
 
-  // Redirecionar baseado no tipo de usuário
-  switch (user.type) {
-    case 'admin':
-      return <Navigate to="/app/dashboard" replace />
-    case 'professional':
-      return <Navigate to="/app/professional-dashboard" replace />
-    case 'patient':
-      return <Navigate to="/app/patient-dashboard" replace />
-    case 'aluno':
-      return <Navigate to="/app/aluno-dashboard" replace />
-    default:
-      // Fallback para admin se tipo não reconhecido
-      return <Navigate to="/app/dashboard" replace />
-  }
+  // Usar o novo sistema de rotas individualizadas
+  const defaultRoute = getDefaultRoute(user.type)
+  
+  console.log('🎯 Redirecionando para rota individualizada:', defaultRoute)
+  
+  return <Navigate to={defaultRoute} replace />
 }
 
 export default SmartDashboardRedirect
