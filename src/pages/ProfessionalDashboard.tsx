@@ -18,8 +18,7 @@ import {
   Calendar,
   Share2,
   BarChart3,
-  BookOpen,
-  Prescription
+  BookOpen
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { ClinicalAssessmentService } from '../lib/clinicalAssessmentService'
@@ -196,7 +195,7 @@ const ProfessionalDashboard: React.FC = () => {
                   : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
               }`}
             >
-              <Prescription className="w-4 h-4" />
+              <FileText className="w-4 h-4" />
               <span>Prescrições</span>
             </button>
           </div>

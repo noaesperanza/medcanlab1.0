@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
 import { 
-  Prescription, 
+  FileText, 
   Plus, 
   Search, 
   Filter,
-  FileText,
   Clock,
   User,
   Pill,
@@ -139,7 +138,7 @@ const QuickPrescriptions: React.FC<QuickPrescriptionsProps> = ({ className = '' 
       case 'nefrologia': return <Droplets className="w-4 h-4" />
       case 'sintomatico': return <Zap className="w-4 h-4" />
       case 'suporte': return <CheckCircle className="w-4 h-4" />
-      default: return <Prescription className="w-4 h-4" />
+      default: return <FileText className="w-4 h-4" />
     }
   }
 
@@ -154,7 +153,7 @@ const QuickPrescriptions: React.FC<QuickPrescriptionsProps> = ({ className = '' 
   }
 
   const categories = [
-    { key: 'all', label: 'Todos', icon: <Prescription className="w-4 h-4" /> },
+    { key: 'all', label: 'Todos', icon: <FileText className="w-4 h-4" /> },
     { key: 'cannabis', label: 'Cannabis', icon: <Pill className="w-4 h-4" /> },
     { key: 'nefrologia', label: 'Nefrologia', icon: <Droplets className="w-4 h-4" /> },
     { key: 'sintomatico', label: 'Sintomático', icon: <Zap className="w-4 h-4" /> },
@@ -174,7 +173,7 @@ const QuickPrescriptions: React.FC<QuickPrescriptionsProps> = ({ className = '' 
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold text-white mb-2 flex items-center space-x-2">
-              <Prescription className="w-6 h-6" />
+              <FileText className="w-6 h-6" />
               <span>Prescrições Rápidas</span>
             </h2>
             <p className="text-slate-300">
@@ -281,7 +280,7 @@ const QuickPrescriptions: React.FC<QuickPrescriptionsProps> = ({ className = '' 
                   onClick={() => handlePrescribe(template)}
                   className="flex-1 flex items-center justify-center space-x-1 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors"
                 >
-                  <Prescription className="w-4 h-4" />
+                  <FileText className="w-4 h-4" />
                   <span>Prescrever</span>
                 </button>
                 <button className="flex items-center justify-center px-3 py-2 text-slate-300 border border-slate-600 rounded-md hover:bg-slate-700 transition-colors">
