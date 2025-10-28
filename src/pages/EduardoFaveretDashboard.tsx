@@ -40,6 +40,7 @@ import GestaoCursos from '../components/GestaoCursos'
 import NeurologiaPediatrica from '../components/NeurologiaPediatrica'
 import WearableMonitoring from '../components/WearableMonitoring'
 import KPIClinicosPersonalizados from '../components/KPIClinicosPersonalizados'
+import ProfessionalChatSystem from '../components/ProfessionalChatSystem'
 
 interface Patient {
   id: string
@@ -63,7 +64,7 @@ const EduardoFaveretDashboard: React.FC = () => {
   const [isVideoCallOpen, setIsVideoCallOpen] = useState(false)
   const [isAudioCallOpen, setIsAudioCallOpen] = useState(false)
   const [callType, setCallType] = useState<'video' | 'audio'>('video')
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos' | 'neurologia' | 'wearables' | 'kpis-personalizados'>('dashboard')
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'research' | 'teaching' | 'scheduling' | 'coordenacao' | 'cursos' | 'neurologia' | 'wearables' | 'kpis-personalizados' | 'chat-profissionais'>('dashboard')
 
   // Debug para verificar seção ativa
   console.log('🎯 Seção ativa:', activeSection)
@@ -278,6 +279,17 @@ const EduardoFaveretDashboard: React.FC = () => {
             >
               <Activity className="w-4 h-4" />
               <span>Wearables</span>
+            </button>
+            <button
+              onClick={() => setActiveSection('chat-profissionais')}
+              className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors text-sm ${
+                activeSection === 'chat-profissionais' 
+                  ? 'bg-indigo-600 text-white' 
+                  : 'bg-green-700 text-green-200 hover:bg-green-600'
+              }`}
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span>Chat Profissionais</span>
             </button>
           </div>
         </div>
@@ -601,6 +613,22 @@ const EduardoFaveretDashboard: React.FC = () => {
         {/* Seção Monitoramento Wearables */}
         {activeSection === 'wearables' && (
           <WearableMonitoring />
+        )}
+
+        {/* Seção Chat Profissionais */}
+        {activeSection === 'chat-profissionais' && (
+          <div className="space-y-6">
+            <div className="bg-gradient-to-r from-indigo-800 to-indigo-700 rounded-lg p-6">
+              <h2 className="text-2xl font-bold text-white mb-2 flex items-center space-x-2">
+                <MessageCircle className="w-6 h-6" />
+                <span>Chat com Profissionais</span>
+              </h2>
+              <p className="text-indigo-200">
+                Comunicação segura entre consultórios da plataforma MedCannLab
+              </p>
+            </div>
+            <ProfessionalChatSystem />
+          </div>
         )}
       </div>
 
