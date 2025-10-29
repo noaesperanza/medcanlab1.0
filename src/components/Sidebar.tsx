@@ -31,12 +31,24 @@ const BanknoteIcon = (props: any) => (
 
 interface SidebarProps {
   userType?: 'patient' | 'professional' | 'student' | 'admin' | 'unconfirmed'
+  isMobile?: boolean
+  isOpen?: boolean
+  onClose?: () => void
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
+const Sidebar: React.FC<SidebarProps> = ({ 
+  userType = 'patient', 
+  isMobile = false, 
+  isOpen = false, 
+  onClose 
+}) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
   const location = useLocation()
+
+  // Usar props do Layout quando disponíveis
+  const mobileOpen = isMobile ? isOpen : isMobileOpen
+  const setMobileOpen = isMobile ? onClose : setIsMobileOpen
 
   const getNavigationItems = () => {
     const adminItems = [
@@ -201,10 +213,10 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
   return (
     <>
       {/* Mobile Overlay */}
-      {isMobileOpen && (
+      {mobileOpen && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={() => setMobileOpen?.()}
         />
       )}
       
@@ -212,8 +224,8 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
       <div className={`bg-slate-800 text-white transition-all duration-300 ${
         isCollapsed ? 'w-20' : 'w-80'
       } flex flex-col fixed left-0 top-0 z-50 ${
-        isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`} style={{ top: '0.1%', height: '99.9%' }}>
+        mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      } ${isMobile ? 'w-80' : ''}`} style={{ top: '0.1%', height: '99.9%' }}>
       {/* Header */}
       <div className="p-4 border-b border-slate-700">
         <div className="flex items-center justify-between">
@@ -243,7 +255,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
           <>
             {/* Dashboard */}
             <div className="mb-2">
-                              {navigationItems
+              {navigationItems
                 .filter(item => (item as any).section === 'main')
                 .map((item) => {
                   const Icon = item.icon
@@ -256,6 +268,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
                           ? 'bg-primary-600 text-white'
                           : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                       }`}
+                      onClick={() => isMobile && setMobileOpen?.()}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
@@ -286,6 +299,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
                           ? 'bg-primary-600 text-white'
                           : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                       }`}
+                      onClick={() => isMobile && setMobileOpen?.()}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
@@ -308,6 +322,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
                           ? 'bg-primary-600 text-white'
                           : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                       }`}
+                      onClick={() => isMobile && setMobileOpen?.()}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
@@ -331,6 +346,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
                           ? 'bg-primary-600 text-white'
                           : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                       }`}
+                      onClick={() => isMobile && setMobileOpen?.()}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
                       {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
@@ -353,6 +369,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
                       ? 'bg-primary-600 text-white'
                       : 'text-slate-300 hover:bg-slate-700 hover:text-white'
                   }`}
+                  onClick={() => isMobile && setMobileOpen?.()}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   {!isCollapsed && <span className="text-sm font-medium">{item.name}</span>}
@@ -400,13 +417,15 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
       )}
       </div>
       
-      {/* Mobile Toggle Button */}
-      <button
-        onClick={() => setIsMobileOpen(!isMobileOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden bg-slate-800 text-white p-2 rounded-md"
-      >
-        <Menu className="w-6 h-6" />
-      </button>
+      {/* Mobile Toggle Button - apenas quando não controlado pelo Layout */}
+      {!isMobile && (
+        <button
+          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          className="fixed top-4 left-4 z-50 lg:hidden bg-slate-800 text-white p-2 rounded-md"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      )}
     </>
   )
 }

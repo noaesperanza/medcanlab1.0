@@ -119,43 +119,43 @@ const Reports: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 md:space-y-8 px-2 md:px-0">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">📈 Relatórios</h1>
-          <p className="text-slate-300">Visualize e gerencie os relatórios dos seus pacientes</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">📈 Relatórios</h1>
+          <p className="text-slate-300 text-sm md:text-base">Visualize e gerencie os relatórios dos seus pacientes</p>
         </div>
         <div className="mt-4 md:mt-0">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg flex items-center space-x-2 transition-colors">
-            <Plus className="w-5 h-5" />
-            <span>Gerar Relatório</span>
+          <button className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 md:px-6 py-2 md:py-3 rounded-lg flex items-center justify-center space-x-2 transition-colors">
+            <Plus className="w-4 h-4 md:w-5 md:h-5" />
+            <span className="text-sm md:text-base">Gerar Relatório</span>
           </button>
         </div>
       </div>
 
       {/* Filtros e Busca */}
-      <div className="bg-slate-800/80 rounded-lg p-6 border border-slate-700">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="bg-slate-800/80 rounded-lg p-4 md:p-6 border border-slate-700">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
           {/* Busca */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4 md:w-5 md:h-5" />
             <input
               type="text"
               placeholder="Buscar por paciente, tipo ou título..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-8 md:pl-10 pr-4 py-2 md:py-3 bg-slate-700 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
             />
           </div>
 
           {/* Filtro de Tipo */}
           <div className="flex items-center space-x-2">
-            <Filter className="w-5 h-5 text-slate-400" />
+            <Filter className="w-4 h-4 md:w-5 md:h-5 text-slate-400" />
             <select
               value={filterType}
               onChange={(e) => setFilterType(e.target.value)}
-              className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-3 md:px-4 py-2 md:py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
             >
               <option value="all">Todos os Tipos</option>
               <option value="IMRE">IMRE</option>
@@ -166,11 +166,11 @@ const Reports: React.FC = () => {
 
           {/* Filtro de Período */}
           <div className="flex items-center space-x-2">
-            <Calendar className="w-5 h-5 text-slate-400" />
+            <Calendar className="w-4 h-4 md:w-5 md:h-5 text-slate-400" />
             <select
               value={filterPeriod}
               onChange={(e) => setFilterPeriod(e.target.value)}
-              className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="flex-1 px-3 md:px-4 py-2 md:py-3 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm md:text-base"
             >
               <option value="all">Todos os Períodos</option>
               <option value="today">Hoje</option>
@@ -183,97 +183,97 @@ const Reports: React.FC = () => {
       </div>
 
       {/* Estatísticas Rápidas */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div className="bg-slate-800/80 rounded-lg p-6 border border-slate-700">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+        <div className="bg-slate-800/80 rounded-lg p-3 md:p-6 border border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm">Total de Relatórios</p>
-              <p className="text-2xl font-bold text-white">{reports.length}</p>
+              <p className="text-slate-400 text-xs md:text-sm">Total de Relatórios</p>
+              <p className="text-lg md:text-2xl font-bold text-white">{reports.length}</p>
             </div>
-            <FileText className="w-8 h-8 text-blue-400" />
+            <FileText className="w-6 h-6 md:w-8 md:h-8 text-blue-400" />
           </div>
         </div>
         
-        <div className="bg-slate-800/80 rounded-lg p-6 border border-slate-700">
+        <div className="bg-slate-800/80 rounded-lg p-3 md:p-6 border border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm">Concluídos</p>
-              <p className="text-2xl font-bold text-white">{reports.filter(r => r.status === 'concluido').length}</p>
+              <p className="text-slate-400 text-xs md:text-sm">Concluídos</p>
+              <p className="text-lg md:text-2xl font-bold text-white">{reports.filter(r => r.status === 'concluido').length}</p>
             </div>
-            <CheckCircle className="w-8 h-8 text-green-400" />
+            <CheckCircle className="w-6 h-6 md:w-8 md:h-8 text-green-400" />
           </div>
         </div>
         
-        <div className="bg-slate-800/80 rounded-lg p-6 border border-slate-700">
+        <div className="bg-slate-800/80 rounded-lg p-3 md:p-6 border border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm">Em Andamento</p>
-              <p className="text-2xl font-bold text-white">{reports.filter(r => r.status === 'em_andamento').length}</p>
+              <p className="text-slate-400 text-xs md:text-sm">Em Andamento</p>
+              <p className="text-lg md:text-2xl font-bold text-white">{reports.filter(r => r.status === 'em_andamento').length}</p>
             </div>
-            <Clock className="w-8 h-8 text-yellow-400" />
+            <Clock className="w-6 h-6 md:w-8 md:h-8 text-yellow-400" />
           </div>
         </div>
         
-        <div className="bg-slate-800/80 rounded-lg p-6 border border-slate-700">
+        <div className="bg-slate-800/80 rounded-lg p-3 md:p-6 border border-slate-700">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-slate-400 text-sm">Páginas Totais</p>
-              <p className="text-2xl font-bold text-white">{reports.reduce((acc, r) => acc + r.pages, 0)}</p>
+              <p className="text-slate-400 text-xs md:text-sm">Páginas Totais</p>
+              <p className="text-lg md:text-2xl font-bold text-white">{reports.reduce((acc, r) => acc + r.pages, 0)}</p>
             </div>
-            <BarChart3 className="w-8 h-8 text-purple-400" />
+            <BarChart3 className="w-6 h-6 md:w-8 md:h-8 text-purple-400" />
           </div>
         </div>
       </div>
 
       {/* Lista de Relatórios */}
-      <div className="space-y-4">
+      <div className="space-y-3 md:space-y-4">
         {filteredReports.map((report) => (
-          <div key={report.id} className="bg-slate-800/80 rounded-lg p-6 border border-slate-700 hover:bg-slate-800/90 transition-colors">
+          <div key={report.id} className="bg-slate-800/80 rounded-lg p-4 md:p-6 border border-slate-700 hover:bg-slate-800/90 transition-colors">
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between">
               {/* Informações Principais */}
               <div className="flex-1">
-                <div className="flex items-center space-x-4 mb-4">
+                <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 mb-4">
                   <div className="flex items-center space-x-2">
                     {getTypeIcon(report.type)}
-                    <span className="text-lg font-bold text-white">{report.title}</span>
+                    <span className="text-base md:text-lg font-bold text-white">{report.title}</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     {getStatusIcon(report.status)}
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>
+                    <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(report.status)}`}>
                       {report.status.replace('_', ' ').charAt(0).toUpperCase() + report.status.replace('_', ' ').slice(1)}
                     </span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-4">
                   <div>
-                    <p className="text-slate-400 text-sm">Paciente</p>
-                    <p className="text-white font-medium">{report.patientName}</p>
+                    <p className="text-slate-400 text-xs md:text-sm">Paciente</p>
+                    <p className="text-white font-medium text-sm md:text-base">{report.patientName}</p>
                   </div>
                   <div>
-                    <p className="text-slate-400 text-sm">Data</p>
-                    <p className="text-white font-medium">{report.date}</p>
+                    <p className="text-slate-400 text-xs md:text-sm">Data</p>
+                    <p className="text-white font-medium text-sm md:text-base">{report.date}</p>
                   </div>
                   <div>
-                    <p className="text-slate-400 text-sm">Tamanho</p>
-                    <p className="text-white font-medium">{report.size}</p>
+                    <p className="text-slate-400 text-xs md:text-sm">Tamanho</p>
+                    <p className="text-white font-medium text-sm md:text-base">{report.size}</p>
                   </div>
                   <div>
-                    <p className="text-slate-400 text-sm">Páginas</p>
-                    <p className="text-white font-medium">{report.pages}</p>
+                    <p className="text-slate-400 text-xs md:text-sm">Páginas</p>
+                    <p className="text-white font-medium text-sm md:text-base">{report.pages}</p>
                   </div>
                 </div>
 
                 {/* Resumo */}
                 <div className="mb-4">
-                  <p className="text-slate-400 text-sm mb-2">Resumo</p>
-                  <p className="text-slate-300 text-sm">{report.summary}</p>
+                  <p className="text-slate-400 text-xs md:text-sm mb-2">Resumo</p>
+                  <p className="text-slate-300 text-xs md:text-sm">{report.summary}</p>
                 </div>
 
                 {/* Principais Achados */}
                 <div className="mb-4">
-                  <p className="text-slate-400 text-sm mb-2">Principais Achados</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-slate-400 text-xs md:text-sm mb-2">Principais Achados</p>
+                  <div className="flex flex-wrap gap-1 md:gap-2">
                     {report.keyFindings.map((finding: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-full">
                         {finding}
@@ -284,8 +284,8 @@ const Reports: React.FC = () => {
 
                 {/* Recomendações */}
                 <div className="mb-4">
-                  <p className="text-slate-400 text-sm mb-2">Recomendações</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-slate-400 text-xs md:text-sm mb-2">Recomendações</p>
+                  <div className="flex flex-wrap gap-1 md:gap-2">
                     {report.recommendations.map((recommendation: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">
                         {recommendation}
@@ -296,8 +296,8 @@ const Reports: React.FC = () => {
 
                 {/* Próximos Passos */}
                 <div className="mb-4">
-                  <p className="text-slate-400 text-sm mb-2">Próximos Passos</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-slate-400 text-xs md:text-sm mb-2">Próximos Passos</p>
+                  <div className="flex flex-wrap gap-1 md:gap-2">
                     {report.nextSteps.map((step: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">
                         {step}
@@ -308,8 +308,8 @@ const Reports: React.FC = () => {
 
                 {/* Anexos */}
                 <div>
-                  <p className="text-slate-400 text-sm mb-2">Anexos</p>
-                  <div className="flex flex-wrap gap-2">
+                  <p className="text-slate-400 text-xs md:text-sm mb-2">Anexos</p>
+                  <div className="flex flex-wrap gap-1 md:gap-2">
                     {report.attachments.map((attachment: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">
                         {attachment}
@@ -320,8 +320,8 @@ const Reports: React.FC = () => {
               </div>
 
               {/* Ações */}
-              <div className="flex flex-col space-y-2 lg:ml-6 mt-4 lg:mt-0">
-                <div className="flex space-x-2">
+              <div className="flex flex-row lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 lg:ml-6 mt-4 lg:mt-0">
+                <div className="flex space-x-1 md:space-x-2">
                   <button className="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-500/20 rounded-lg transition-colors" title="Visualizar">
                     <Eye className="w-4 h-4" />
                   </button>
@@ -333,7 +333,7 @@ const Reports: React.FC = () => {
                   </button>
                 </div>
                 
-                <div className="flex space-x-2">
+                <div className="flex space-x-1 md:space-x-2">
                   <button className="p-2 text-orange-400 hover:text-orange-300 hover:bg-orange-500/20 rounded-lg transition-colors" title="Imprimir">
                     <Printer className="w-4 h-4" />
                   </button>
@@ -348,39 +348,39 @@ const Reports: React.FC = () => {
       </div>
 
       {/* Resumo por Tipo */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-slate-800/80 rounded-lg p-6 border border-slate-700">
-          <h3 className="text-lg font-bold text-white mb-4">📊 Relatórios por Tipo</h3>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
+        <div className="bg-slate-800/80 rounded-lg p-4 md:p-6 border border-slate-700">
+          <h3 className="text-base md:text-lg font-bold text-white mb-4">📊 Relatórios por Tipo</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-slate-300">IMRE</span>
-              <span className="text-blue-400 font-bold">2 relatórios</span>
+              <span className="text-slate-300 text-sm md:text-base">IMRE</span>
+              <span className="text-blue-400 font-bold text-sm md:text-base">2 relatórios</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-300">AEC</span>
-              <span className="text-red-400 font-bold">1 relatório</span>
+              <span className="text-slate-300 text-sm md:text-base">AEC</span>
+              <span className="text-red-400 font-bold text-sm md:text-base">1 relatório</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-300">Retorno</span>
-              <span className="text-green-400 font-bold">1 relatório</span>
+              <span className="text-slate-300 text-sm md:text-base">Retorno</span>
+              <span className="text-green-400 font-bold text-sm md:text-base">1 relatório</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-slate-800/80 rounded-lg p-6 border border-slate-700">
-          <h3 className="text-lg font-bold text-white mb-4">📈 Estatísticas</h3>
+        <div className="bg-slate-800/80 rounded-lg p-4 md:p-6 border border-slate-700">
+          <h3 className="text-base md:text-lg font-bold text-white mb-4">📈 Estatísticas</h3>
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-slate-300">Taxa de Conclusão</span>
-              <span className="text-green-400 font-bold">75%</span>
+              <span className="text-slate-300 text-sm md:text-base">Taxa de Conclusão</span>
+              <span className="text-green-400 font-bold text-sm md:text-base">75%</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-300">Páginas Médias</span>
-              <span className="text-blue-400 font-bold">7.5</span>
+              <span className="text-slate-300 text-sm md:text-base">Páginas Médias</span>
+              <span className="text-blue-400 font-bold text-sm md:text-base">7.5</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-300">Tamanho Médio</span>
-              <span className="text-purple-400 font-bold">2.2 MB</span>
+              <span className="text-slate-300 text-sm md:text-base">Tamanho Médio</span>
+              <span className="text-purple-400 font-bold text-sm md:text-base">2.2 MB</span>
             </div>
           </div>
         </div>

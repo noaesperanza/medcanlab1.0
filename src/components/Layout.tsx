@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import ProtectedRoute from './ProtectedRoute'
@@ -8,9 +8,22 @@ import Sidebar from './Sidebar'
 import { NoaPlatformChat } from './NoaPlatformChat'
 import Breadcrumbs from './Breadcrumbs'
 import NavegacaoIndividualizada from './NavegacaoIndividualizada'
+import MobileResponsiveWrapper from './MobileResponsiveWrapper'
 
 const Layout: React.FC = () => {
   const { user, isLoading } = useAuth()
+  const [isMobile, setIsMobile] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   if (isLoading) {
     return (
@@ -71,12 +84,49 @@ const Layout: React.FC = () => {
   if (user?.type === 'patient') {
     return (
       <ProtectedRoute>
+        <MobileResponsiveWrapper>
+          <div className="min-h-screen bg-slate-900">
+            {/* Main Content - sem sidebar externa */}
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <NavegacaoIndividualizada />
+              <main className={`flex-1 bg-slate-900 ${isMobile ? 'px-2 py-2' : 'px-4 py-4'}`}>
+                <Outlet />
+              </main>
+              <Footer />
+            </div>
+            
+            {/* Avatar Nôa Esperança */}
+            <NoaPlatformChat 
+              userName={user?.name || 'Usuário'}
+              userCode={user?.id || 'USER-001'}
+            />
+          </div>
+        </MobileResponsiveWrapper>
+      </ProtectedRoute>
+    )
+  }
+
+  // Layout padrão para outros tipos de usuário (com sidebar)
+  return (
+    <ProtectedRoute>
+      <MobileResponsiveWrapper onMobileMenuToggle={setIsSidebarOpen}>
         <div className="min-h-screen bg-slate-900">
-          {/* Main Content - sem sidebar externa */}
-          <div className="flex flex-col min-h-screen">
+          {/* Sidebar */}
+          <Sidebar 
+            userType={user?.type} 
+            isMobile={isMobile}
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
+          />
+          
+          {/* Main Content */}
+          <div className={`flex flex-col min-h-screen transition-all duration-300 ${
+            isMobile ? 'ml-0' : 'lg:ml-80'
+          }`}>
             <Header />
             <NavegacaoIndividualizada />
-            <main className="flex-1 bg-slate-900" style={{ marginLeft: '2%', marginRight: '2%' }}>
+            <main className={`flex-1 bg-slate-900 ${isMobile ? 'px-2 py-2' : 'px-4 py-4 lg:ml-4'}`}>
               <Outlet />
             </main>
             <Footer />
@@ -88,33 +138,7 @@ const Layout: React.FC = () => {
             userCode={user?.id || 'USER-001'}
           />
         </div>
-      </ProtectedRoute>
-    )
-  }
-
-  // Layout padrão para outros tipos de usuário (com sidebar)
-  return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-slate-900">
-        {/* Sidebar */}
-        <Sidebar userType={user?.type} />
-        
-        {/* Main Content */}
-        <div className="flex flex-col min-h-screen lg:ml-80">
-          <Header />
-          <NavegacaoIndividualizada />
-          <main className="flex-1 bg-slate-900 lg:ml-4" style={{ marginLeft: '2%', marginRight: '2%' }}>
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
-        
-        {/* Avatar Nôa Esperança */}
-        <NoaPlatformChat 
-          userName={user?.name || 'Usuário'}
-          userCode={user?.id || 'USER-001'}
-        />
-      </div>
+      </MobileResponsiveWrapper>
     </ProtectedRoute>
   )
 }

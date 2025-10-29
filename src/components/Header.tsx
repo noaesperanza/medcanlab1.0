@@ -62,18 +62,18 @@ const Header: React.FC = () => {
   const isActive = (path: string) => location.pathname === path
 
   return (
-    <header className="bg-slate-800 shadow-lg border-b border-slate-700">
-      <div className="px-4 sm:px-6 lg:px-8">
+    <header className="bg-slate-800 shadow-lg border-b border-slate-700 header-mobile">
+      <div className="px-2 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo e Título */}
-          <div className="flex items-center space-x-3">
-            <Link to="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-primary-600 to-accent-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">M</span>
+          <div className="flex items-center space-x-2 md:space-x-3">
+            <Link to="/" className="flex items-center space-x-2 md:space-x-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-primary-600 to-accent-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg md:text-xl">M</span>
               </div>
-              <div className="hidden md:block">
-                <div className="text-white font-bold text-lg">MedCannLab 3.0</div>
-                <div className="text-slate-400 text-xs">Consultório Escola Dr. Eduardo Faveret • Pós-graduação em Cannabis Medicinal</div>
+              <div className="hidden sm:block">
+                <div className="text-white font-bold text-base md:text-lg">MedCannLab 3.0</div>
+                <div className="text-slate-400 text-xs md:text-sm">Consultório Escola Dr. Eduardo Faveret • Pós-graduação em Cannabis Medicinal</div>
               </div>
             </Link>
           </div>
@@ -100,30 +100,30 @@ const Header: React.FC = () => {
           )}
 
           {/* User Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 md:space-x-4">
             {user ? (
               <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center space-x-2 text-slate-200 hover:text-primary-400 transition-colors duration-200"
                 >
-                  <div className="w-8 h-8 bg-primary-600 rounded-full flex items-center justify-center">
-                    <User className="w-4 h-4 text-white" />
+                  <div className="w-6 h-6 md:w-8 md:h-8 bg-primary-600 rounded-full flex items-center justify-center">
+                    <User className="w-3 h-3 md:w-4 md:h-4 text-white" />
                   </div>
-                  <span className="hidden sm:block text-sm font-medium">{user.name}</span>
+                  <span className="hidden sm:block text-xs md:text-sm font-medium">{user.name}</span>
                 </button>
 
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-md shadow-lg py-1 z-50 border border-slate-700">
-                    <div className="px-4 py-2 border-b border-slate-700">
-                      <p className="text-sm font-medium text-white">{user.name}</p>
-                      <p className="text-xs text-slate-400">{user.email}</p>
+                  <div className="absolute right-0 mt-2 w-40 md:w-48 bg-slate-800 rounded-md shadow-lg py-1 z-50 border border-slate-700">
+                    <div className="px-3 md:px-4 py-2 border-b border-slate-700">
+                      <p className="text-xs md:text-sm font-medium text-white">{user.name}</p>
+                      <p className="text-xs text-slate-400 truncate">{user.email}</p>
                     </div>
                     <Link
                       to="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-slate-200 hover:bg-slate-700"
+                      className="flex items-center px-3 md:px-4 py-2 text-xs md:text-sm text-slate-200 hover:bg-slate-700"
                     >
-                      <Settings className="w-4 h-4 mr-2" />
+                      <Settings className="w-3 h-3 md:w-4 md:h-4 mr-2" />
                       Configurações
                     </Link>
                     <button
@@ -144,9 +144,9 @@ const Header: React.FC = () => {
                           window.location.href = '/'
                         }
                       }}
-                      className="flex items-center w-full px-4 py-2 text-sm text-slate-200 hover:bg-slate-700"
+                      className="flex items-center w-full px-3 md:px-4 py-2 text-xs md:text-sm text-slate-200 hover:bg-slate-700"
                     >
-                      <LogOut className="w-4 h-4 mr-2" />
+                      <LogOut className="w-3 h-3 md:w-4 md:h-4 mr-2" />
                       Sair
                     </button>
                   </div>
@@ -155,7 +155,7 @@ const Header: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200"
+                className="bg-primary-600 hover:bg-primary-700 text-white px-3 md:px-4 py-2 rounded-lg font-medium transition-colors duration-200 text-xs md:text-sm"
               >
                 Entrar
               </Link>
@@ -166,7 +166,7 @@ const Header: React.FC = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="md:hidden p-2 rounded-md text-slate-200 hover:text-primary-400 hover:bg-slate-700"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
@@ -179,7 +179,7 @@ const Header: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`block px-3 py-2 rounded-md text-base font-medium transition-colors duration-200 ${
+                  className={`block px-3 py-3 rounded-md text-sm font-medium transition-colors duration-200 ${
                     isActive(item.href)
                       ? 'text-primary-400 bg-primary-900/30'
                       : 'text-slate-200 hover:text-primary-400 hover:bg-slate-700/50'
