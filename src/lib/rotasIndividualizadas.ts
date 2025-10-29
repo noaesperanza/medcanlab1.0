@@ -90,14 +90,6 @@ export const ROTAS_INDIVIDUALIZADAS: Record<string, UserRoute> = {
         icon: '🤖'
       },
       {
-        path: '/app/clinica/paciente/relatorios',
-        component: () => import('../pages/Reports').then(m => m.default),
-        requiredRole: 'patient',
-        title: 'Meus Relatórios',
-        description: 'Visualizar relatórios clínicos',
-        icon: '📊'
-      },
-      {
         path: '/app/clinica/paciente/agenda',
         component: () => import('../pages/PatientAgenda').then(m => m.default),
         requiredRole: 'patient',

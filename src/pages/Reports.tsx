@@ -274,7 +274,7 @@ const Reports: React.FC = () => {
                 <div className="mb-4">
                   <p className="text-slate-400 text-sm mb-2">Principais Achados</p>
                   <div className="flex flex-wrap gap-2">
-                    {report.keyFindings.map((finding, index) => (
+                    {report.keyFindings.map((finding: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-slate-700 text-slate-300 text-xs rounded-full">
                         {finding}
                       </span>
@@ -286,7 +286,7 @@ const Reports: React.FC = () => {
                 <div className="mb-4">
                   <p className="text-slate-400 text-sm mb-2">Recomendações</p>
                   <div className="flex flex-wrap gap-2">
-                    {report.recommendations.map((recommendation, index) => (
+                    {report.recommendations.map((recommendation: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-blue-500/20 text-blue-400 text-xs rounded-full">
                         {recommendation}
                       </span>
@@ -298,7 +298,7 @@ const Reports: React.FC = () => {
                 <div className="mb-4">
                   <p className="text-slate-400 text-sm mb-2">Próximos Passos</p>
                   <div className="flex flex-wrap gap-2">
-                    {report.nextSteps.map((step, index) => (
+                    {report.nextSteps.map((step: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full">
                         {step}
                       </span>
@@ -310,7 +310,7 @@ const Reports: React.FC = () => {
                 <div>
                   <p className="text-slate-400 text-sm mb-2">Anexos</p>
                   <div className="flex flex-wrap gap-2">
-                    {report.attachments.map((attachment, index) => (
+                    {report.attachments.map((attachment: any, index: number) => (
                       <span key={index} className="px-2 py-1 bg-purple-500/20 text-purple-400 text-xs rounded-full">
                         {attachment}
                       </span>

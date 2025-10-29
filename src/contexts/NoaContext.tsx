@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react'
 import { NoaEsperancaCore, noaEsperancaConfig, NoaInteraction } from '../lib/noaEsperancaCore'
 import { NoaResidentAI, residentAIConfig, AIResponse } from '../lib/noaResidentAI'
+import { useAuth } from './AuthContext'
 
 export interface NoaMessage {
   id: string
@@ -50,6 +51,9 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
   
+  // Acessar dados do usuário para individualização
+  const { user } = useAuth()
+  
   // Inicializar Nôa Esperança Core (apenas uma vez)
   const [noaCore] = useState(() => new NoaEsperancaCore(noaEsperancaConfig))
   
@@ -70,9 +74,9 @@ export const NoaProvider: React.FC<NoaProviderProps> = ({ children }) => {
     setIsTyping(true)
 
     try {
-      // Processar com IA Residente
+      // Processar com IA Residente incluindo email do usuário para individualização
       console.log('🧠 Processando mensagem com IA Residente...', content)
-      const aiResponse = await residentAI.processMessage(content)
+      const aiResponse = await residentAI.processMessage(content, user?.id, user?.email)
       
       console.log('✅ Resposta da IA Residente:', aiResponse)
       

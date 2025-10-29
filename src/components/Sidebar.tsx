@@ -41,12 +41,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
   const getNavigationItems = () => {
     const adminItems = [
       { 
-        name: '🏠 Dashboard', 
-        href: '/app/professional-dashboard', 
-        icon: Home,
-        section: 'main'
-      },
-      { 
         name: '📅 Agendamentos', 
         href: '/app/professional-scheduling', 
         icon: Calendar,
@@ -71,7 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
         section: 'ehr'
       },
       { 
-        name: '💬 Chat com Paciente', 
+        name: 'Atendimento', 
         href: '/app/professional-dashboard', 
         icon: MessageCircle,
         section: 'quick'
@@ -99,7 +93,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
     const patientItems = [
       { name: 'Início', href: '/app/dashboard', icon: Home, section: 'main' },
       { name: '🤖 Chat NOA', href: '/app/patient-noa-chat', icon: Brain, section: 'quick' },
-      { name: '📊 Meus Relatórios', href: '/app/reports', icon: FileText, section: 'quick' },
       { name: '📅 Agendamentos', href: '/app/patient-appointments', icon: Clock, section: 'quick' },
       { name: '💬 Chat com Meu Médico', href: '/app/patient-chat', icon: Users, section: 'quick' },
       { name: '👤 Meu Perfil', href: '/app/profile', icon: User, section: 'profile' },
@@ -107,25 +100,13 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
 
     const professionalItems = [
       { 
-        name: '🏠 Dashboard', 
-        href: '/app/professional-dashboard', 
-        icon: Home,
-        section: 'main'
-      },
-      { 
-        name: '📊 Meus Relatórios', 
-        href: '/app/reports', 
-        icon: FileText,
-        section: 'quick'
-      },
-      { 
         name: '📅 Agendamentos', 
         href: '/app/professional-scheduling', 
         icon: Calendar,
         section: 'quick'
       },
       { 
-        name: '💬 Chat com Paciente', 
+        name: 'Atendimento', 
         href: '/app/professional-dashboard', 
         icon: MessageCircle,
         section: 'quick'
@@ -313,14 +294,6 @@ const Sidebar: React.FC<SidebarProps> = ({ userType = 'patient' }) => {
                 })}
             </div>
 
-            {/* Ações Rápidas */}
-            {!isCollapsed && (
-              <div className="mb-4">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-3">
-                  Ações Rápidas
-                </h3>
-              </div>
-            )}
             <div className="space-y-1 mb-4">
               {navigationItems
                 .filter(item => (item as any).section === 'quick')

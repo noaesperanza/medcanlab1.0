@@ -64,6 +64,8 @@ import { PaymentCheckout } from './pages/PaymentCheckout'
 import { LessonPreparation } from './pages/LessonPreparation'
 import { ProfessionalFinancial } from './pages/ProfessionalFinancial'
 import EduardoFaveretDashboard from './pages/EduardoFaveretDashboard'
+import RicardoValencaDashboard from './pages/RicardoValencaDashboard'
+import PatientManagementAdvanced from './pages/PatientManagementAdvanced'
 
 function App() {
   return (
@@ -86,12 +88,14 @@ function App() {
               {/* Seletor de eixo */}
               <Route path="/selecionar-eixo" element={<EixoSelector />} />
               
-              <Route path="/app" element={<Layout />}>
-                <Route index element={<RedirectIndividualizado />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="home" element={<Dashboard />} />
-                <Route path="test" element={<TestPage />} />
-                <Route path="eduardo-faveret-dashboard" element={<EduardoFaveretDashboard />} />
+        <Route path="/app" element={<Layout />}>
+          <Route index element={<SmartDashboardRedirect />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="home" element={<Dashboard />} />
+          <Route path="test" element={<TestPage />} />
+          <Route path="eduardo-faveret-dashboard" element={<EduardoFaveretDashboard />} />
+          <Route path="ricardo-valenca-dashboard" element={<RicardoValencaDashboard />} />
+          <Route path="patient-management-advanced" element={<PatientManagementAdvanced />} />
                 
                 {/* Rotas Individualizadas por Eixo e Tipo */}
                 {/* EIXO CLÍNICA */}

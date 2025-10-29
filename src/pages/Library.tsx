@@ -15,10 +15,14 @@ import {
   CheckCircle,
   AlertCircle,
   User,
-  Heart
+  Heart,
+  RefreshCw,
+  TrendingUp,
+  BarChart3
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
+import { KnowledgeBaseIntegration, KnowledgeDocument, KnowledgeStats } from '../services/knowledgeBaseIntegration'
 
 // 🧪 TESTE DE CONTROLE DO DEPLOY: Teste concluído com sucesso!
 // ✅ O Vercel detecta erros de build automaticamente
@@ -27,6 +31,7 @@ import { useAuth } from '../contexts/AuthContext'
 const Library: React.FC = () => {
   const { user } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedType, setSelectedType] = useState('all')
   const [selectedUserType, setSelectedUserType] = useState('all') // Novo filtro
@@ -36,9 +41,13 @@ const Library: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [uploadSuccess, setUploadSuccess] = useState(false)
-  const [realDocuments, setRealDocuments] = useState<any[]>([])
+  const [realDocuments, setRealDocuments] = useState<KnowledgeDocument[]>([])
   const [isLoadingDocuments, setIsLoadingDocuments] = useState(true)
   const [totalDocs, setTotalDocs] = useState(0)
+  const [lastLoadTime, setLastLoadTime] = useState<number>(0)
+  const [cacheExpiry, setCacheExpiry] = useState<number>(30000) // 30 segundos
+  const [knowledgeStats, setKnowledgeStats] = useState<KnowledgeStats | null>(null)
+  const [showStats, setShowStats] = useState(false)
 
   // Tipos de usuário
   const userTypes = [
@@ -110,53 +119,83 @@ const Library: React.FC = () => {
   // console.log('📊 Contadores de categorias:', categoriesWithCount)
   // console.log('📚 Documentos reais completos:', realDocuments)
 
-  // Usar apenas documentos reais do banco de dados
-  const filteredDocuments = realDocuments.filter((doc: any) => {
-    // Filtro de busca
-    const matchesSearch = searchTerm === '' || 
-                         doc.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.summary?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         doc.keywords?.some((tag: string) => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    
-    // Filtro de categoria - verificar category, isLinkedToAI, tags ou keywords
-    let matchesCategory = true
-    if (selectedCategory !== 'all') {
-      if (selectedCategory === 'ai-documents') {
-        // Para IA Residente, verificar múltiplos critérios
-        matchesCategory = doc.isLinkedToAI === true || 
-                         doc.category === 'ai-documents' ||
-                         (doc.tags && doc.tags.includes('ai-documents')) ||
-                         (doc.keywords && doc.keywords.some((k: string) => k === 'ai-documents')) ||
-                         (doc.tags && doc.tags.includes('upload')) // Documentos enviados via upload
-      } else {
-        // Para outras categorias, verificar category OU tags/keywords
-        matchesCategory = doc.category === selectedCategory ||
-                         (doc.tags && doc.tags.includes(selectedCategory)) ||
-                         (doc.keywords && doc.keywords.some((k: string) => k === selectedCategory))
-      }
+  // Estado para documentos filtrados com busca semântica
+  const [filteredDocuments, setFilteredDocuments] = useState<KnowledgeDocument[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+
+  // Função para realizar busca semântica
+  const performSemanticSearch = async () => {
+    if (!debouncedSearchTerm.trim()) {
+      // Se não há termo de busca, usar filtros normais
+      const filtered = realDocuments.filter((doc: KnowledgeDocument) => {
+        // Filtro de categoria
+        let matchesCategory = true
+        if (selectedCategory !== 'all') {
+          if (selectedCategory === 'ai-documents') {
+            matchesCategory = doc.isLinkedToAI === true || doc.category === 'ai-documents'
+          } else {
+            matchesCategory = doc.category === selectedCategory
+          }
+        }
+        
+        // Filtro de tipo de arquivo
+        const matchesType = selectedType === 'all' || doc.file_type === selectedType
+        
+        // Filtro de tipo de usuário
+        const matchesUserType = selectedUserType === 'all' || 
+                              (doc.target_audience && doc.target_audience.includes(selectedUserType))
+        
+        // Filtro de área de conhecimento
+        const matchesArea = selectedArea === 'all' || 
+                           doc.keywords?.some((k: string) => k.toLowerCase().includes(selectedArea)) ||
+                           doc.tags?.some((tag: string) => tag.toLowerCase().includes(selectedArea)) ||
+                           doc.title?.toLowerCase().includes(selectedArea) ||
+                           doc.summary?.toLowerCase().includes(selectedArea)
+        
+        return matchesCategory && matchesType && matchesUserType && matchesArea
+      })
+      setFilteredDocuments(filtered)
+      return
     }
-    
-    // Filtro de tipo de arquivo
-    const matchesType = selectedType === 'all' || doc.file_type === selectedType || doc.type === selectedType
-    
-    // Filtro de tipo de usuário - procurar no target_audience, user_type ou tags
-    const docUserType = doc.target_audience || doc.user_type || doc.tags
-    const matchesUserType = selectedUserType === 'all' || 
-                          (docUserType && (
-                            Array.isArray(docUserType) && docUserType.includes(selectedUserType) ||
-                            docUserType === selectedUserType ||
-                            doc.tags?.includes(selectedUserType)
-                          ))
-    
-    // Filtro de área de conhecimento - procurar em keywords, tags ou título
-    const matchesArea = selectedArea === 'all' || 
-                       doc.keywords?.some((k: string) => k.toLowerCase().includes(selectedArea)) ||
-                       doc.tags?.some((tag: string) => tag.toLowerCase().includes(selectedArea)) ||
-                       doc.title?.toLowerCase().includes(selectedArea) ||
-                       doc.summary?.toLowerCase().includes(selectedArea)
-    
-    return matchesSearch && matchesCategory && matchesType && matchesUserType && matchesArea
-  })
+
+    setIsSearching(true)
+    try {
+      // Usar busca semântica da base de conhecimento
+      const searchResults = await KnowledgeBaseIntegration.semanticSearch(debouncedSearchTerm, {
+        category: selectedCategory !== 'all' ? selectedCategory : undefined,
+        audience: selectedUserType !== 'all' ? selectedUserType : undefined,
+        aiLinkedOnly: selectedCategory === 'ai-documents',
+        limit: 50
+      })
+
+      // Aplicar filtros adicionais
+      const filtered = searchResults.filter((doc: KnowledgeDocument) => {
+        const matchesType = selectedType === 'all' || doc.file_type === selectedType
+        const matchesUserType = selectedUserType === 'all' || 
+                              (doc.target_audience && doc.target_audience.includes(selectedUserType))
+        
+        const matchesArea = selectedArea === 'all' || 
+                           doc.keywords?.some((k: string) => k.toLowerCase().includes(selectedArea)) ||
+                           doc.tags?.some((tag: string) => tag.toLowerCase().includes(selectedArea)) ||
+                           doc.title?.toLowerCase().includes(selectedArea) ||
+                           doc.summary?.toLowerCase().includes(selectedArea)
+        
+        return matchesType && matchesUserType && matchesArea
+      })
+
+      setFilteredDocuments(filtered)
+    } catch (error) {
+      console.error('❌ Erro na busca semântica:', error)
+      setFilteredDocuments([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  // Efeito para realizar busca semântica quando os filtros mudam
+  useEffect(() => {
+    performSemanticSearch()
+  }, [debouncedSearchTerm, selectedCategory, selectedType, selectedUserType, selectedArea, realDocuments])
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -273,8 +312,9 @@ const Library: React.FC = () => {
 
       const documentMetadata = {
         title: file.name,
+        content: `Documento: ${file.name}\nTipo: ${fileExt}\nTamanho: ${(file.size / 1024 / 1024).toFixed(2)} MB\nEnviado em: ${new Date().toLocaleDateString('pt-BR')}`,
         file_type: fileExt || 'unknown',
-        file_url: publicUrl, // Usando file_url em vez de file_path
+        file_url: publicUrl,
         file_size: file.size,
         author: user?.name || 'Usuário',
         category: documentCategory,
@@ -301,10 +341,30 @@ const Library: React.FC = () => {
       console.log('✅ Metadata salva!', documentData)
 
       // Aguardar um pouco para garantir que o banco foi atualizado
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, 1000))
 
-      // Recarregar lista de documentos
-      await loadDocuments()
+      // Recarregar lista de documentos com retry
+      let retryCount = 0
+      const maxRetries = 3
+      
+      while (retryCount < maxRetries) {
+        await loadDocuments(true) // Force reload após upload
+        
+        // Verificar se o documento foi carregado
+        const currentDocs = realDocuments
+        const newDocExists = currentDocs.some(doc => doc.title === file.name)
+        
+        if (newDocExists) {
+          console.log('✅ Documento encontrado na lista após upload!')
+          break
+        } else {
+          console.log(`⚠️ Documento não encontrado, tentativa ${retryCount + 1}/${maxRetries}`)
+          retryCount++
+          if (retryCount < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, 1000))
+          }
+        }
+      }
 
       if (progressInterval) clearInterval(progressInterval)
       setUploadProgress(100)
@@ -381,53 +441,46 @@ const Library: React.FC = () => {
     }
   ]
 
-  // Função para carregar documentos
-  const loadDocuments = async () => {
+  // Função para carregar documentos com cache usando a integração da base de conhecimento
+  const loadDocuments = async (forceReload: boolean = false) => {
+    const now = Date.now()
+    
+    // Verificar se o cache ainda é válido
+    if (!forceReload && lastLoadTime > 0 && (now - lastLoadTime) < cacheExpiry && realDocuments.length > 0) {
+      console.log('📋 Usando cache de documentos (válido por mais', Math.round((cacheExpiry - (now - lastLoadTime)) / 1000), 'segundos)')
+      return
+    }
+    
     setIsLoadingDocuments(true)
     try {
-      console.log('🔄 Recarregando documentos...')
-      const { data, error, count } = await supabase
-        .from('documents')
-        .select('*', { count: 'exact' })
-        .order('created_at', { ascending: false })
+      console.log('🔄 Carregando base de conhecimento completa...')
       
-      if (error) {
-        console.error('❌ Erro ao carregar documentos:', error)
-        alert('Erro ao carregar documentos: ' + error.message)
-        return
-      }
+      // Carregar documentos usando a integração da base de conhecimento
+      const documents = await KnowledgeBaseIntegration.getAllDocuments()
       
-      console.log('📚 Documentos carregados:', data?.length || 0)
+      console.log('📚 Documentos carregados da base de conhecimento:', documents.length)
+      console.log('📋 Documentos vinculados à IA:', documents.filter(d => d.isLinkedToAI).length)
       
-      if (data && data.length > 0) {
-        // Remover duplicatas baseado no título E no ID (para garantir que sejam realmente diferentes)
-        const uniqueDocuments = data.filter((doc, index, self) => {
-          // Procurar se já existe um documento com o mesmo título
-          const foundIndex = self.findIndex(d => d.title === doc.title)
-          // Se o índice encontrado é o índice atual, é único
-          // OU se é a primeira ocorrência desse título
-          return foundIndex === index
-        })
+      if (documents.length > 0) {
+        setRealDocuments(documents)
+        setTotalDocs(documents.length)
+        setLastLoadTime(now)
         
-        console.log('📋 Documentos únicos filtrados:', uniqueDocuments.map(d => ({
-          id: d.id,
-          title: d.title,
-          category: d.category,
-          isLinkedToAI: d.isLinkedToAI
-        })))
+        // Carregar estatísticas da base de conhecimento
+        const stats = await KnowledgeBaseIntegration.getKnowledgeStats()
+        setKnowledgeStats(stats)
         
-        setRealDocuments(uniqueDocuments)
-        setTotalDocs(uniqueDocuments.length)
-        const totalCount = count || data.length
-        console.log(`✅ ${uniqueDocuments.length} documentos únicos carregados do Supabase (${totalCount} totais, ${totalCount - uniqueDocuments.length} duplicatas removidas)`)
+        console.log(`✅ ${documents.length} documentos carregados da base de conhecimento`)
+        console.log('📊 Estatísticas:', stats)
       } else {
-        console.log('⚠️ Nenhum documento encontrado')
+        console.log('⚠️ Nenhum documento encontrado na base de conhecimento')
         setRealDocuments([])
         setTotalDocs(0)
+        setLastLoadTime(now)
       }
     } catch (error) {
-      console.error('❌ Erro ao carregar documentos:', error)
-      alert('Erro ao carregar documentos')
+      console.error('❌ Erro ao carregar base de conhecimento:', error)
+      alert('Erro ao carregar base de conhecimento')
     } finally {
       setIsLoadingDocuments(false)
     }
@@ -438,27 +491,132 @@ const Library: React.FC = () => {
     loadDocuments()
   }, [])
 
+  // Debounce para busca
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm)
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [searchTerm])
+
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl">
-              <Brain className="w-8 h-8 text-white" />
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl">
+                <Brain className="w-8 h-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
+                  Base de Conhecimento
+                </h1>
+                <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
+                  Nôa Esperança IA • Educação • Pesquisa
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white dark:text-slate-100">
-                Base de Conhecimento
-              </h1>
-              <p className="text-sm text-purple-600 dark:text-purple-400 font-medium">
-                Nôa Esperança IA • Educação • Pesquisa
-              </p>
-            </div>
+            
+            {/* Estatísticas da Base de Conhecimento */}
+            {knowledgeStats && (
+              <div className="flex flex-wrap gap-4">
+                <button
+                  onClick={() => setShowStats(!showStats)}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-semibold transition-all"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Estatísticas
+                </button>
+                
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-1">
+                    <Brain className="w-4 h-4 text-purple-500" />
+                    <span className="text-gray-600 dark:text-gray-300">
+                      {knowledgeStats.aiLinkedDocuments} vinculados à IA
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                    <span className="text-gray-600 dark:text-gray-300">
+                      {knowledgeStats.averageRelevance.toFixed(2)} relevância média
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-          <p className="text-gray-600 dark:text-gray-300">
+          
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
             Treinamento da IA • Recursos educacionais • Referências científicas • Protocolos clínicos
           </p>
+
+          {/* Painel de Estatísticas Expandido */}
+          {showStats && knowledgeStats && (
+            <div className="mt-6 p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-200 dark:border-purple-700">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                    {knowledgeStats.totalDocuments}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">
+                    Total de Documentos
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                    {knowledgeStats.aiLinkedDocuments}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">
+                    Vinculados à IA
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-green-600 dark:text-green-400">
+                    {knowledgeStats.averageRelevance.toFixed(2)}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">
+                    Relevância Média
+                  </div>
+                </div>
+                
+                <div className="text-center">
+                  <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">
+                    {knowledgeStats.topCategories.length}
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">
+                    Categorias Ativas
+                  </div>
+                </div>
+              </div>
+              
+              {/* Top Categorias */}
+              <div className="mt-6">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">
+                  📊 Top Categorias
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {knowledgeStats.topCategories.map((cat, index) => (
+                    <div
+                      key={cat.category}
+                      className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                    >
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        {cat.category}
+                      </span>
+                      <span className="text-xs bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 px-2 py-1 rounded-full">
+                        {cat.count}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Filters - 3 Columns: User Types, Categories, Areas */}
@@ -622,7 +780,7 @@ const Library: React.FC = () => {
             {filteredDocuments.length} {filteredDocuments.length === 1 ? 'documento encontrado' : 'documentos encontrados'}
           </p>
           <button
-            onClick={loadDocuments}
+            onClick={() => loadDocuments(true)}
             disabled={isLoadingDocuments || isUploading}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
@@ -744,12 +902,35 @@ const Library: React.FC = () => {
                         Visualizar
                       </button>
                       <button 
-                        onClick={() => {
+                        onClick={async () => {
                           if (doc.file_url) {
-                            const link = document.createElement('a')
-                            link.href = doc.file_url
-                            link.download = doc.title
-                            link.click()
+                            try {
+                              // Incrementar contador de downloads
+                              const { error: updateError } = await supabase
+                                .from('documents')
+                                .update({ downloads: (doc.downloads || 0) + 1 })
+                                .eq('id', doc.id)
+                              
+                              if (updateError) {
+                                console.error('Erro ao atualizar downloads:', updateError)
+                              }
+                              
+                              // Fazer download
+                              const link = document.createElement('a')
+                              link.href = doc.file_url
+                              link.download = doc.title
+                              link.target = '_blank'
+                              link.click()
+                              
+                              // Atualizar contador local
+                              setRealDocuments(prev => prev.map(d => 
+                                d.id === doc.id ? { ...d, downloads: (d.downloads || 0) + 1 } : d
+                              ))
+                              
+                            } catch (error) {
+                              console.error('Erro no download:', error)
+                              alert('Erro ao fazer download do arquivo')
+                            }
                           } else {
                             alert('URL do arquivo não disponível')
                           }

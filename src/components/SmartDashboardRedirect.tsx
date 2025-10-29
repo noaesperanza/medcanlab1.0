@@ -19,6 +19,18 @@ const SmartDashboardRedirect: React.FC = () => {
     return <Navigate to="/app/eduardo-faveret-dashboard" replace />
   }
 
+  // Redirecionamento especial para Dr. Ricardo Valença (Admin)
+  if (user.email === 'rrvalenca@gmail.com' || user.name === 'Dr. Ricardo Valença' || user.email === 'iaianoaesperanza@gmail.com') {
+    console.log('🎯 Redirecionando Dr. Ricardo Valença para dashboard administrativo')
+    return <Navigate to="/app/ricardo-valenca-dashboard" replace />
+  }
+
+  // Redirecionamento para usuários admin
+  if (user.type === 'admin') {
+    console.log('🎯 Redirecionando usuário admin para dashboard administrativo')
+    return <Navigate to="/app/ricardo-valenca-dashboard" replace />
+  }
+
   // Usar o novo sistema de rotas individualizadas para outros usuários
   const defaultRoute = getDefaultRoute(user.type)
   

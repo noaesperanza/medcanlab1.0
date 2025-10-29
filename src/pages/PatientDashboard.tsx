@@ -191,51 +191,6 @@ const PatientDashboard: React.FC = () => {
 
             {/* Relatórios */}
             <div className="bg-slate-800 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">📊 Meus Relatórios</h3>
-              {loadingReports ? (
-                <div className="text-center py-4">
-                  <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                  <p className="text-slate-400 text-sm">Carregando relatórios...</p>
-                </div>
-              ) : reports.length > 0 ? (
-                <div className="space-y-3">
-                  {reports.slice(0, 3).map((report) => (
-                    <div key={report.id} className="bg-slate-700 rounded-lg p-3">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-semibold text-white">
-                          {report.report_type === 'initial_assessment' ? 'Avaliação Inicial' : 'Relatório'}
-                        </h4>
-                        <span className="text-xs text-slate-400">
-                          {new Date(report.generated_at).toLocaleDateString('pt-BR')}
-                        </span>
-                      </div>
-                      <div className="flex items-center space-x-4 text-xs text-slate-400">
-                        <span>Score: {report.content.scores.clinical_score}/100</span>
-                        <span>Protocolo: {report.protocol}</span>
-                      </div>
-                    </div>
-                  ))}
-                  {reports.length > 3 && (
-                    <p className="text-slate-400 text-xs text-center">
-                      +{reports.length - 3} relatórios adicionais
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <div className="text-center py-4">
-                  <div className="w-12 h-12 bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <FileText className="w-6 h-6 text-slate-400" />
-                  </div>
-                  <p className="text-slate-400 text-sm mb-1">Nenhum relatório disponível</p>
-                  <p className="text-slate-500 text-xs">Complete sua avaliação clínica inicial</p>
-                </div>
-              )}
-              <button 
-                onClick={handleViewReports}
-                className="w-full mt-4 text-purple-400 hover:text-purple-300 transition-colors text-sm"
-              >
-                Ver todos os relatórios
-              </button>
             </div>
 
             {/* Chat com Profissional */}

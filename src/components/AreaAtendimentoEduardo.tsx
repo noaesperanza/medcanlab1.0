@@ -30,10 +30,8 @@ import {
 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useAuth } from '../contexts/AuthContext'
-import QuickPrescriptions from '../components/QuickPrescriptions'
-import MedicalRecord from '../components/MedicalRecord'
-import IntegrativePrescriptions from '../components/IntegrativePrescriptions'
-import ClinicalReports from '../components/ClinicalReports'
+import QuickPrescriptions from './QuickPrescriptions'
+import IntegrativePrescriptions from './IntegrativePrescriptions'
 
 interface Patient {
   id: string
@@ -48,14 +46,14 @@ interface Patient {
   priority?: 'high' | 'medium' | 'low'
 }
 
-const ProfessionalDashboard: React.FC = () => {
+const AreaAtendimentoEduardo: React.FC = () => {
   const { user } = useAuth()
   const [patientSearch, setPatientSearch] = useState('')
   const [clinicalNotes, setClinicalNotes] = useState('')
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null)
   const [patients, setPatients] = useState<Patient[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions' | 'clinical-reports'>('dashboard')
+  const [activeSection, setActiveSection] = useState<'dashboard' | 'kpis' | 'newsletter' | 'prescriptions'>('dashboard')
 
   // Buscar pacientes do banco de dados
   useEffect(() => {
@@ -158,7 +156,7 @@ const ProfessionalDashboard: React.FC = () => {
   const renderDashboard = () => (
     <div className="space-y-6">
       {/* KPIs Principais */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 shadow-lg border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
@@ -176,27 +174,11 @@ const ProfessionalDashboard: React.FC = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-green-700">Agendamentos Hoje</p>
-              <p className="text-3xl font-bold text-green-900">8</p>
-              <p className="text-xs text-green-600 mt-1">3 próximos</p>
+              <p className="text-3xl font-bold text-green-900">-</p>
+              <p className="text-xs text-green-600 mt-1">Sem dados</p>
             </div>
             <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center">
               <Calendar className="h-6 w-6 text-white" />
-            </div>
-          </div>
-        </div>
-        
-        <div 
-          onClick={() => setActiveSection('clinical-reports')}
-          className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl p-6 shadow-lg border border-orange-200 cursor-pointer hover:shadow-xl transition-shadow"
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-orange-700">Relatórios da Avaliação Clínica Inicial</p>
-              <p className="text-3xl font-bold text-orange-900">3</p>
-              <p className="text-xs text-orange-600 mt-1">Compartilhados pelos pacientes</p>
-            </div>
-            <div className="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center">
-              <FileText className="h-6 w-6 text-white" />
             </div>
           </div>
         </div>
@@ -394,10 +376,7 @@ const ProfessionalDashboard: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">Área de Atendimento</h1>
-          <p className="text-slate-600">Prontuário Eletrônico - Atendimento ao Paciente</p>
-          <div className="mt-2 text-sm text-slate-500">
-            Conectado como <span className="font-semibold">{user?.user_metadata?.name || 'Usuário'}</span>
-          </div>
+          <p className="text-slate-600">Gestão de pacientes e consultas - Neurologia Pediátrica</p>
         </div>
 
         {/* Navegação */}
@@ -421,7 +400,7 @@ const ProfessionalDashboard: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              KPIs Tempo Real
+              KPIs
             </button>
             <button
               onClick={() => setActiveSection('newsletter')}
@@ -431,7 +410,7 @@ const ProfessionalDashboard: React.FC = () => {
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
-              Newsletter Científico
+              Newsletter
             </button>
             <button
               onClick={() => setActiveSection('prescriptions')}
@@ -443,16 +422,6 @@ const ProfessionalDashboard: React.FC = () => {
             >
               Prescrições
             </button>
-            <button
-              onClick={() => setActiveSection('clinical-reports')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeSection === 'clinical-reports'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              Relatórios Clínicos
-            </button>
           </nav>
         </div>
 
@@ -461,10 +430,9 @@ const ProfessionalDashboard: React.FC = () => {
         {activeSection === 'kpis' && renderKPIs()}
         {activeSection === 'newsletter' && renderNewsletter()}
         {activeSection === 'prescriptions' && renderPrescriptions()}
-        {activeSection === 'clinical-reports' && <ClinicalReports />}
       </div>
     </div>
   )
 }
 
-export default ProfessionalDashboard
+export default AreaAtendimentoEduardo
